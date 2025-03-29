@@ -5,6 +5,29 @@
                 <li class="submenu-open">
                     <h6 class="submenu-hdr">Main</h6>
                     <ul>
+                        <li><a href="/admin/dashboard"><i data-feather="grid"></i><span>Dashboard</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="submenu-open">
+                    <h6 class="submenu-hdr">Master</h6>
+                    <ul>
+                        <li><a href="/admin/jabatan"><i data-feather="circle"></i><span>Jabatan</span></a>
+                        </li>
+                        <li><a href="/admin/role"><i data-feather="circle"></i><span>Role</span></a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="submenu-open">
+                    <h6 class="submenu-hdr">User Management</h6>
+                    <ul>
+                        <li><a href="/admin/pegawai"><i data-feather="user-check"></i><span>Pegawai</span></a></li>
+                        <li><a href="/admin/users"><i data-feather="shield"></i><span>Users</span></a></li>
+                    </ul>
+                </li>
+                <li class="submenu-open">
+                    <h6 class="submenu-hdr">Main</h6>
+                    <ul>
                         <li class="submenu">
                             <a href="javascript:void(0);"><i data-feather="grid"></i><span>Dashboard</span><span
                                     class="menu-arrow"></span></a>

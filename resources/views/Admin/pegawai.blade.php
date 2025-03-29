@@ -1,5 +1,5 @@
 @extends('Layouts.app')
-@section('title', 'Jabatan')
+@section('title', 'Pegawai')
 @section('content')
     <div class="page-wrapper">
         <div class="content">
@@ -22,7 +22,7 @@
                 </ul>
                 <div class="page-btn">
                     <a class="btn btn-added" id="btnTambahPegawai"><i data-feather="plus-circle" class="me-2"></i>TAMBAH
-                        PEGAWAI</a>
+                        ROLE</a>
                 </div>
             </div>
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Jabatan\JabatanController;
 use App\Http\Controllers\Pegawai\PegawaiController;
+use App\Http\Controllers\Role\RoleController;
 use App\Models\Jabatan;
 use Illuminate\Support\Facades\Route;
 
@@ -41,3 +42,12 @@ Route::post('/admin/pegawai/storePegawai', [PegawaiController::class, 'storePega
 Route::get('/admin/pegawai/getPegawaiByID/{id}', [PegawaiController::class, 'getPegawaiByID']);
 Route::post('/admin/pegawai/updatePegawai/{id}', [PegawaiController::class, 'updatePegawai']);
 Route::delete('/admin/pegawai/deletePegawai/{id}', [PegawaiController::class, 'deletePegawai']);
+
+Route::get('/admin/role', function () {
+    return view('Admin.role');
+});
+Route::get('/admin/role/getRole', [RoleController::class, 'getRole']);
+Route::post('/admin/role/storeRole', [RoleController::class, 'storeRole']);
+Route::get('/admin/role/getRoleByID/{id}', [RoleController::class, 'getRoleByID']);
+Route::post('/admin/role/updateRole/{id}', [RoleController::class, 'updateRole']);
+Route::delete('/admin/role/deleteRole/{id}', [RoleController::class, 'deleteRole']);
