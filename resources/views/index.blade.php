@@ -9,9 +9,9 @@
         content="admin, estimates, bootstrap, business, corporate, creative, invoice, html5, responsive, Projects">
     <meta name="author" content="Dreamguys - Bootstrap Admin Template">
     <meta name="robots" content="noindex, nofollow">
-    <title>Login - Unggul Kencana</title>
+    <title>Unggul Kencana - Login</title>
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/img/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/img/favicon.ico">
 
     <link rel="stylesheet" href="{{ asset('assets') }}/css/bootstrap.min.css">
 
@@ -42,13 +42,13 @@
                             <div class="login-userset">
                                 <div class="login-userheading">
                                     <h3>Sign In</h3>
-                                    <h4>Akses panel Unggul Kencana menggunakan username dan kata sandi Anda.</h4>
+                                    <h4>Access the Dashboard panel using your email and passcode.</h4>
                                 </div>
                                 <div class="form-login">
-                                    <label class="form-label">Username</label>
+                                    <label class="form-label">Email Address</label>
                                     <div class="form-addons">
-                                        <input type="text" name="username" class="form-control">
-                                        <img src="{{ asset('assets') }}/img/icons/user-icon.svg" alt="img">
+                                        <input type="text" name="email" class="form-control">
+                                        <img src="{{ asset('assets') }}/img/icons/mail.svg" alt="img">
                                     </div>
                                 </div>
                                 <div class="form-login">
@@ -61,16 +61,11 @@
                                 <div class="form-login">
                                     <button class="btn btn-login" type="submit">Sign In</button>
                                 </div>
-                                <div class="signinform">
-                                    <h4>
-                                        * Silahkan hubungi ADMIN untuk mendapatkan username dan password
-                                    </h4>
-                                </div>
                             </div>
                         </form>
                     </div>
                     <div class="my-4 d-flex justify-content-center align-items-center copyright-text">
-                        <p>Copyright &copy; 2023 Unggul Kencana. All rights reserved</p>
+                        <p>Copyright &copy; 2023 Trifecta. All rights reserved</p>
                     </div>
                 </div>
             </div>
@@ -89,10 +84,10 @@
     </div>
 
     <script src="{{ asset('assets') }}/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-    <script src="{{ asset('assets') }}/pages/login.js" type="text/javascript"></script>
+    <script src="{{ asset('assets') }}/js/pages/login.js" type="text/javascript"></script>
+
     <script src="{{ asset('assets') }}/js/feather.min.js" type="text/javascript"></script>
-    <!-- Toastr -->
-    <script src="{{ asset('assets') }}/plugins/toastr/toastr.min.js"></script>
+
     <script src="{{ asset('assets') }}/js/bootstrap.bundle.min.js" type="text/javascript"></script>
     <script src="{{ asset('assets') }}/js/theme-script.js" type="text/javascript"></script>
     <script src="{{ asset('assets') }}/js/script.js" type="text/javascript"></script>
