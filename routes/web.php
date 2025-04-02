@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Diskon\DiskonController;
 use App\Http\Controllers\Role\RoleController;
 use App\Http\Controllers\Users\UsersController;
 use App\Http\Controllers\Jabatan\JabatanController;
@@ -85,6 +86,17 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/jenisproduk/getJenisProduk', [JenisProdukController::class, 'getJenisProduk']);
     Route::post('/admin/jenisproduk/storeJenisProduk', [JenisProdukController::class, 'storeJenisProduk']);
     Route::get('/admin/jenisproduk/getJenisProdukByID/{id}', [JenisProdukController::class, 'getJenisProdukByID']);
+    Route::post('/admin/jenisproduk/updateJenisProduk/{id}', [JenisProdukController::class, 'updateJenisProduk']);
+    Route::delete('/admin/jenisproduk/deleteJenisProduk/{id}', [JenisProdukController::class, 'deleteJenisProduk']);
+
+    Route::get('/admin/diskon', function () {
+        return view('Admin.diskon');
+    });
+    Route::get('/admin/diskon/getDiskon', [DiskonController::class, 'getDiskon']);
+    Route::post('/admin/diskon/storeDiskon', [DiskonController::class, 'storeDiskon']);
+    Route::get('/admin/diskon/getDiskonByID/{id}', [DiskonController::class, 'getDiskonByID']);
+    Route::post('/admin/diskon/updateDiskon/{id}', [DiskonController::class, 'updateDiskon']);
+    Route::delete('/admin/diskon/deleteDiskon/{id}', [DiskonController::class, 'deleteDiskon']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
 });

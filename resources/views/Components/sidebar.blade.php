@@ -16,7 +16,9 @@
                         </li>
                         <li><a href="/admin/role"><i data-feather="circle"></i><span>Role</span></a>
                         </li>
-                        <li><a href="/admin/role"><i data-feather="circle"></i><span>Kondisi</span></a>
+                        <li><a href="/admin/kondisi"><i data-feather="circle"></i><span>Kondisi</span></a>
+                        </li>
+                        <li><a href="/admin/diskon"><i data-feather="circle"></i><span>Diskon</span></a>
                         </li>
                     </ul>
                 </li>

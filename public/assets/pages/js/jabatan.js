@@ -135,13 +135,13 @@ $(document).ready(function () {
                         errorMessage += `${errors[key][0]}\n`;
                     }
                     const dangertoastExamplee =
-                        document.getElementById("dangerToastError");
+                        document.getElementById("dangerToast");
                     const toast = new bootstrap.Toast(dangertoastExamplee);
                     $(".toast-body").text(errorMessage);
                     toast.show();
                 } else {
                     const dangertoastExamplee =
-                        document.getElementById("dangerToastError");
+                        document.getElementById("dangerToast");
                     const toast = new bootstrap.Toast(dangertoastExamplee);
                     $(".toast-body").text(response.message);
                     toast.show();

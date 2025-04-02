@@ -1,12 +1,12 @@
 @extends('Layouts.app')
-@section('title', 'Jenis Produk')
+@section('title', 'Diskon')
 @section('content')
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
                 <div class="add-item d-flex">
                     <div class="page-title">
-                        <h4>DAFTAR JENIS PRODUK</h4>
+                        <h4>DAFTAR DISKON</h4>
                     </div>
                 </div>
                 <ul class="table-top-head">
@@ -21,8 +21,8 @@
                     </li>
                 </ul>
                 <div class="page-btn">
-                    <a class="btn btn-added" id="btnTambahJenisProduk"><i data-feather="plus-circle"
-                            class="me-2"></i>TAMBAH JENIS PRODUK</a>
+                    <a class="btn btn-added" id="btnTambahDiskon"><i data-feather="plus-circle" class="me-2"></i>TAMBAH
+                        DISKON / PROMO</a>
                 </div>
             </div>
 
@@ -38,11 +38,12 @@
                     </div>
 
                     <div class="table-responsive product-list">
-                        <table id="jenisProdukTable" class="table table-hover" style="width: 100%">
+                        <table id="diskonTable" class="table table-hover" style="width: 100%">
                             <thead>
                                 <tr>
                                     <th>NO.</th>
-                                    <th>JENIS PRODUK</th>
+                                    <th>DISKON / PROMO</th>
+                                    <th>NILAI</th>
                                     <th>STATUS</th>
                                     <th class="no-sort">ACTION</th>
                                 </tr>
@@ -57,42 +58,31 @@
         </div>
     </div>
 
-    <!-- md Tambah Jenis Produk -->
-    <div class="modal fade" id="mdTambahJenisProduk">
+    <!-- md Tambah Diskon -->
+    <div class="modal fade" id="mdTambahDiskon">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="page-title">
-                        <h4>TAMBAH JENIS PRODUK</h4>
+                        <h4>TAMBAH DISKON / PROMO</h4>
                     </div>
                     <button type="button" class="close bg-danger text-white fs-16" data-bs-dismiss="modal"
                         aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="formTambahJenisProduk" method="POST" enctype="multipart/form-data">
+                <form id="formTambahDiskon" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">JENIS PRODUK<span class="text-danger ms-1">*</span></label>
-                            <input type="text" name="jenisproduk" class="form-control">
+                            <label class="form-label">NAMA DISKON / PROMO<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="diskon" class="form-control">
                         </div>
-                        <div class="add-choosen">
-                            <div class="mb-3">
-                                <label class="form-label">ICON</label>
-                                <div class="image-upload ">
-                                    <input type="file" name="imagejenisproduk" id="imageJenisProduk">
-                                    <div class="image-uploads">
-                                        <i data-feather="upload" class="plus-down-add me-0"></i>
-                                        <h4>UPLOAD ICON</h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="phone-img"
-                                style="width: 150px; height: 150px; overflow: hidden; border-radius: 8px;">
-                                <div id="imageJenisProdukPreview" alt="previewImage"
-                                    style="width: 150px; height: 150px; display: block; overflow: hidden;"></div>
-                            </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">NILAI<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="nilai" class="form-control">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -104,20 +94,20 @@
         </div>
     </div>
 
-    <!-- md Tambah Jenis Produk -->
-    <div class="modal fade" id="mdEditJenisProduk">
+    <!-- md Tambah Diskon -->
+    <div class="modal fade" id="mdEditDiskon">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="page-title">
-                        <h4>EDIT JENIS PRODUK</h4>
+                        <h4>EDIT DISKON / PROMO</h4>
                     </div>
                     <button type="button" class="close bg-danger text-white fs-16" data-bs-dismiss="modal"
                         aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="formEditJenisProduk" method="POST" enctype="multipart/form-data">
+                <form id="formEditDiskon" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
@@ -125,25 +115,12 @@
                             <input type="text" name="id" id="editid" class="form-control" readonly>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">JENIS PRODUK<span class="text-danger ms-1">*</span></label>
-                            <input type="text" name="jenisproduk" id="editjenisproduk" class="form-control">
+                            <label class="form-label">NAMA DISKON / PROMO<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="diskon" id="editdiskon" class="form-control">
                         </div>
-                        <div class="add-choosen">
-                            <div class="mb-3">
-                                <label class="form-label">ICON</label>
-                                <div class="image-upload ">
-                                    <input type="file" name="imagejenisproduk" id="editImageJenisProduk">
-                                    <div class="image-uploads">
-                                        <i data-feather="upload" class="plus-down-add me-0"></i>
-                                        <h4>UPLOAD ICON</h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="phone-img"
-                                style="width: 150px; height: 150px; overflow: hidden; border-radius: 8px;">
-                                <div id="editImageJenisProdukPreview" alt="previewImage"
-                                    style="width: 150px; height: 150px; display: block; overflow: hidden;"></div>
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label">NILAI<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="nilai" id="editnilai" class="form-control">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -157,5 +134,5 @@
 
     <!-- /Add Jenis -->
     <script src="{{ asset('assets') }}/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-    <script src="{{ asset('assets') }}/pages/js/jenisproduk.js"></script>
+    <script src="{{ asset('assets') }}/pages/js/diskon.js"></script>
 @endsection
