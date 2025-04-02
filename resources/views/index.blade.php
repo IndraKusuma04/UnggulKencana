@@ -37,7 +37,7 @@
                                 <img src="{{ asset('assets') }}/img/logo-white.png" alt>
                             </a>
                         </div>
-                        <form id="pushLogin" method="POST">
+                        <form id="pushLogin" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="login-userset">
                                 <div class="login-userheading">
@@ -72,19 +72,29 @@
         </div>
     </div>
 
-    <div class="customizer-links" id="setdata">
-        <ul class="sticky-sidebar">
-            <li class="sidebar-icons">
-                <a href="#" class="navigation-add" data-bs-toggle="tooltip" data-bs-placement="left"
-                    data-bs-original-title="Theme">
-                    <i data-feather="settings" class="feather-five"></i>
-                </a>
-            </li>
-        </ul>
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="successToast" class="toast colored-toast bg-secondary-transparent" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="toast-header bg-secondary text-fixed-white">
+                <strong class="me-auto">Peringatan !</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+            </div>
+        </div>
+        <div id="dangerToast" class="toast colored-toast bg-danger-transparent" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="toast-header bg-danger text-fixed-white">
+                <strong class="me-auto">Peringatan !</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+            </div>
+        </div>
     </div>
 
     <script src="{{ asset('assets') }}/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-    <script src="{{ asset('assets') }}/js/pages/login.js" type="text/javascript"></script>
+    <script src="{{ asset('assets') }}/pages/login.js" type="text/javascript"></script>
 
     <script src="{{ asset('assets') }}/js/feather.min.js" type="text/javascript"></script>
 
