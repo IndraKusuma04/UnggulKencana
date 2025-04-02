@@ -1,12 +1,13 @@
 <?php
 
-use App\Models\Jabatan;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Role\RoleController;
 use App\Http\Controllers\Users\UsersController;
 use App\Http\Controllers\Jabatan\JabatanController;
+use App\Http\Controllers\Kondisi\KondisiController;
 use App\Http\Controllers\Pegawai\PegawaiController;
+use App\Http\Controllers\Produk\JenisProdukController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +69,22 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/users/getUsers', [UsersController::class, 'getUsers']);
     Route::get('/admin/users/getUsersByID/{id}', [UsersController::class, 'getUsersByID']);
     Route::post('/admin/users/updateUsers/{id}', [UsersController::class, 'updateUsers']);
+
+    Route::get('/admin/kondisi', function () {
+        return view('Admin.kondisi');
+    });
+    Route::get('/admin/kondisi/getKondisi', [KondisiController::class, 'getKondisi']);
+    Route::post('/admin/kondisi/storeKondisi', [KondisiController::class, 'storeKondisi']);
+    Route::get('/admin/kondisi/getKondisiByID/{id}', [KondisiController::class, 'getKondisiByID']);
+    Route::post('/admin/kondisi/updateKondisi/{id}', [KondisiController::class, 'updateKondisi']);
+    Route::delete('/admin/kondisi/deleteKondisi/{id}', [KondisiController::class, 'deleteKondisi']);
+
+    Route::get('/admin/jenisproduk', function () {
+        return view('Admin.jenisproduk');
+    });
+    Route::get('/admin/jenisproduk/getJenisProduk', [JenisProdukController::class, 'getJenisProduk']);
+    Route::post('/admin/jenisproduk/storeJenisProduk', [JenisProdukController::class, 'storeJenisProduk']);
+    Route::get('/admin/jenisproduk/getJenisProdukByID/{id}', [JenisProdukController::class, 'getJenisProdukByID']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
 });
