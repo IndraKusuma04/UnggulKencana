@@ -30,6 +30,9 @@
 
     <link rel="stylesheet" href="{{ asset('assets') }}/css/dataTables.bootstrap5.min.css">
 
+    <link rel="stylesheet" href="{{ asset('assets') }}/plugins/owlcarousel/owl.carousel.min.css">
+    <link rel="stylesheet" href="{{ asset('assets') }}/plugins/owlcarousel/owl.theme.default.min.css">
+
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/fontawesome/css/fontawesome.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/fontawesome/css/all.min.css">
 
@@ -90,6 +93,8 @@
     <script src="{{ asset('assets') }}/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 
     <script src="{{ asset('assets') }}/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js" type="text/javascript"></script>
+
+    <script src="{{ asset('assets') }}/plugins/owlcarousel/owl.carousel.min.js" type="text/javascript"></script>
 
     <script src="{{ asset('assets') }}/plugins/sweetalert/sweetalert2.all.min.js" type="text/javascript"></script>
     <script src="{{ asset('assets') }}/plugins/sweetalert/sweetalerts.min.js" type="text/javascript"></script>

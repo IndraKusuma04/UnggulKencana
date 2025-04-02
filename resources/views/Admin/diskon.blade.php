@@ -78,8 +78,6 @@
                             <label class="form-label">NAMA DISKON / PROMO<span class="text-danger ms-1">*</span></label>
                             <input type="text" name="diskon" class="form-control">
                         </div>
-                    </div>
-                    <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">NILAI<span class="text-danger ms-1">*</span></label>
                             <input type="text" name="nilai" class="form-control">

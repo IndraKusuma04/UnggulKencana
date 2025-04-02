@@ -9,6 +9,7 @@ use App\Http\Controllers\Jabatan\JabatanController;
 use App\Http\Controllers\Kondisi\KondisiController;
 use App\Http\Controllers\Pegawai\PegawaiController;
 use App\Http\Controllers\Produk\JenisProdukController;
+use App\Http\Controllers\Produk\ProdukController;
 
 /*
 |--------------------------------------------------------------------------
@@ -97,6 +98,13 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/diskon/getDiskonByID/{id}', [DiskonController::class, 'getDiskonByID']);
     Route::post('/admin/diskon/updateDiskon/{id}', [DiskonController::class, 'updateDiskon']);
     Route::delete('/admin/diskon/deleteDiskon/{id}', [DiskonController::class, 'deleteDiskon']);
+
+    Route::get('/admin/produk', function () {
+        return view('Admin.produk');
+    });
+    Route::get('/admin/produk/getProduk', [ProdukController::class, 'getProduk']);
+    Route::post('/admin/produk/storeProduk', [ProdukController::class, 'storeProduk']);
+    Route::get('/admin/produk/getProdukByID/{id}', [ProdukController::class, 'getProdukByID']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
 });
