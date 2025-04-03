@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d0e9a868dabf1fd8df971928d0612783",
+    "content-hash": "26e4e3dafa3b19b36735e30b9186f9f5",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1615,6 +1615,54 @@
                 "source": "https://github.com/laravel/tinker/tree/v2.10.1"
             },
             "time": "2025-01-27T14:24:01+00:00"
+        },
+        {
+            "name": "lavela/phpjasper",
+            "version": "v3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lavela/phpjasper.git",
+                "reference": "d3d7bbc7d1d78766dd5c554189ba1680b9b0517a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lavela/phpjasper/zipball/d3d7bbc7d1d78766dd5c554189ba1680b9b0517a",
+                "reference": "d3d7bbc7d1d78766dd5c554189ba1680b9b0517a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PHPJasper\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Leandro Cintra Bitencourt",
+                    "email": "leandrobitencourt.ti@gmail.com",
+                    "role": "lead"
+                }
+            ],
+            "description": "Gerador de relatórios PHP",
+            "keywords": [
+                "pdf",
+                "relatórios"
+            ],
+            "support": {
+                "issues": "https://github.com/lavela/phpjasper/issues",
+                "source": "https://github.com/lavela/phpjasper/tree/v3.0"
+            },
+            "time": "2018-03-07T17:22:33+00:00"
         },
         {
             "name": "league/commonmark",

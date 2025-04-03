@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.4.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cetakBarcodeProduk" pageWidth="226" pageHeight="68" columnWidth="216" leftMargin="5" rightMargin="5" topMargin="5" bottomMargin="5" uuid="c4ec7935-be65-4e72-b227-c9d326d62621">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter"/>
+	<property name="com.jaspersoft.studio.unit." value="mm"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="mm"/>
+	<parameter name="Parameter1" class="java.lang.Integer"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT * FROM `dbunggulkencana`.produk WHERE id =  $P{Parameter1} ]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="id"/>
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<field name="kodeproduk" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="kodeproduk"/>
+		<property name="com.jaspersoft.studio.field.label" value="kodeproduk"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<field name="jenisproduk_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="jenisproduk_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="jenisproduk_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<field name="nama" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nama"/>
+		<property name="com.jaspersoft.studio.field.label" value="nama"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<field name="harga_jual" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="harga_jual"/>
+		<property name="com.jaspersoft.studio.field.label" value="harga_jual"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<field name="harga_beli" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="harga_beli"/>
+		<property name="com.jaspersoft.studio.field.label" value="harga_beli"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<field name="berat" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="berat"/>
+		<property name="com.jaspersoft.studio.field.label" value="berat"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<field name="karat" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="karat"/>
+		<property name="com.jaspersoft.studio.field.label" value="karat"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<field name="lingkar" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="lingkar"/>
+		<property name="com.jaspersoft.studio.field.label" value="lingkar"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<field name="panjang" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="panjang"/>
+		<property name="com.jaspersoft.studio.field.label" value="panjang"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<field name="keterangan" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="keterangan"/>
+		<property name="com.jaspersoft.studio.field.label" value="keterangan"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<field name="kondisi_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="kondisi_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="kondisi_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<field name="image_produk" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="image_produk"/>
+		<property name="com.jaspersoft.studio.field.label" value="image_produk"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<field name="status" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="status"/>
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="produk"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="58" splitType="Stretch">
+			<textField>
+				<reportElement x="110" y="0" width="50" height="8" uuid="31faa614-546f-433f-864f-60b1624b3ad1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Nama :"+$F{nama}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="110" y="8" width="50" height="8" uuid="99ce2ea1-06c6-4dac-99c2-5bd2c826dacd"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Berat :"+$F{berat}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="160" y="0" width="50" height="8" uuid="1edc2c8b-b222-48ec-937f-6553f3edc67a"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Lingkar :"+$F{lingkar}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="160" y="8" width="50" height="8" uuid="6baeaaf0-3479-4bdb-aba7-be2e0b0ec2f6"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Panjang :"+$F{panjang}]]></textFieldExpression>
+			</textField>
+			<image hAlign="Right">
+				<reportElement x="110" y="16" width="100" height="42" uuid="0415a66a-13bc-46fb-b002-ff317ba12147"/>
+				<imageExpression><![CDATA["http://127.0.0.1:8000/storage/barcode/" + $F{image_produk}]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+</jasperReport>

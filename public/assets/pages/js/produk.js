@@ -476,4 +476,12 @@ $(document).ready(function () {
         const url = `/admin/produk/detailProduk/${produkID}`; // Sesuaikan dengan route Laravel
         window.location.href = url;
     });
+
+    // Ketika tombol cetak barcode produk ditekan
+    $(document).on("click", ".print-barcode", function () {
+        const produkID = $(this).data("id");
+
+        // Buka laporan di tab baru
+        window.open(`/admin/report/cetakBarcodeProduk/${produkID}`, '_blank');
+    });
 })

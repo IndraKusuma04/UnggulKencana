@@ -10,6 +10,7 @@ use App\Http\Controllers\Kondisi\KondisiController;
 use App\Http\Controllers\Pegawai\PegawaiController;
 use App\Http\Controllers\Produk\JenisProdukController;
 use App\Http\Controllers\Produk\ProdukController;
+use App\Http\Controllers\Report\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -110,6 +111,8 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/produk/detailProduk/{id}', function () {
         return view('Admin.detailProduk');
     });
+
+    Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
 });
