@@ -78,7 +78,7 @@
                             <input type="text" name="role" class="form-control">
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer d-flex justify-content-between">
                         <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
                         <button type="submit" class="btn btn-primary">SIMPAN</button>
                     </div>
@@ -112,7 +112,7 @@
                             <input type="text" name="role" id="editrole" class="form-control">
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer d-flex justify-content-between">
                         <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
                         <button type="submit" class="btn btn-primary">SIMPAN</button>
                     </div>

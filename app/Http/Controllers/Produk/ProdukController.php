@@ -7,6 +7,7 @@ use App\Models\JenisProduk;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -99,5 +100,95 @@ class ProdukController extends Controller
         $produk = Produk::where('id', $id)->with(['jenisproduk', 'kondisi'])->get();
 
         return response()->json(['success' => true, 'message' => 'Data Produk Berhasil Ditemukan', 'Data' => $produk]);
+    }
+
+    public function updateProduk(Request $request, $id)
+    {
+        $produk = Produk::where('id', $id)->first();
+
+        $messages = [
+            'required' => ':attribute wajib di isi !!!',
+            'integer'  => ':attribute format wajib menggunakan angka',
+            'mimes'    => ':attribute format wajib menggunakan PNG/JPG'
+        ];
+
+        $credentials = $request->validate([
+            'nama'          =>  'required',
+            'jenis'         =>  'required|' . Rule::in(JenisProduk::where('status', 1)->pluck('id')),
+            'harga_jual'    =>  'integer',
+            'harga_beli'    =>  'integer',
+            'keterangan'    =>  'string',
+            'berat'         =>  [
+                'required',
+                'regex:/^\d+\.\d{1,}$/'
+            ],
+            'kondisi'       =>  'required',
+            'karat'         =>  'required|integer',
+            'lingkar'       =>  'integer',
+            'panjang'       =>  'integer',
+            'imageProduk'   =>  'nullable|mimes:png,jpg',
+        ], $messages);
+
+        if ($request->file('imageProduk')) {
+            $pathavatar     = 'storage/produk/' . $produk->image_produk;
+
+            if (File::exists($pathavatar)) {
+                File::delete($pathavatar);
+            }
+
+            $extension = $request->file('imageProduk')->getClientOriginalExtension();
+            $newImage = $produk->kodeproduk . '.' . $extension;
+            $request->file('imageProduk')->storeAs('produk', $newImage);
+            $request['imageProduk'] = $newImage;
+
+            $updateProduk = Produk::where('id', $id)
+                ->update([
+                    'nama'              =>  $request->nama,
+                    'jenisproduk_id'    =>  $request->jenis,
+                    'kondisi_id'        =>  $request->kondisi,
+                    'berat'             =>  $request->berat,
+                    'karat'             =>  $request->karat,
+                    'lingkar'           =>  $request->lingkar,
+                    'panjang'           =>  $request->panjang,
+                    'harga_jual'        =>  $request->hargajual,
+                    'harga_beli'        =>  $request->hargabeli,
+                    'keterangan'        =>  $request->keterangan,
+                    'image_produk'      =>  $newImage,
+                ]);
+        } else {
+            $updateProduk = Produk::where('id', $id)
+                ->update([
+                    'nama'              =>  $request->nama,
+                    'jenisproduk_id'    =>  $request->jenis,
+                    'kondisi_id'        =>  $request->kondisi,
+                    'berat'             =>  $request->berat,
+                    'karat'             =>  $request->karat,
+                    'lingkar'           =>  $request->lingkar,
+                    'panjang'           =>  $request->panjang,
+                    'harga_jual'        =>  $request->hargajual,
+                    'harga_beli'        =>  $request->hargabeli,
+                    'keterangan'        =>  $request->keterangan,
+                ]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Data Produk Berhasil Disimpan', 'Data' => $produk]);
+    }
+
+    public function deleteProduk($id)
+    {
+        // Cari data produk berdasarkan ID
+        $produk = Produk::find($id);
+
+        // Periksa apakah data ditemukan
+        if (!$produk) {
+            return response()->json(['success' => false, 'message' => 'Produk tidak ditemukan.'], 404);
+        }
+
+        // Update status menjadi 0 (soft delete manual)
+        $produk->update([
+            'status' => 0,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Produk Berhasil Dihapus.']);
     }
 }

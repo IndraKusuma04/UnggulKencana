@@ -105,6 +105,11 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/produk/getProduk', [ProdukController::class, 'getProduk']);
     Route::post('/admin/produk/storeProduk', [ProdukController::class, 'storeProduk']);
     Route::get('/admin/produk/getProdukByID/{id}', [ProdukController::class, 'getProdukByID']);
+    Route::post('/admin/produk/updateProduk/{id}', [ProdukController::class, 'updateProduk']);
+    Route::delete('/admin/produk/deleteProduk/{id}', [ProdukController::class, 'deleteProduk']);
+    Route::get('/admin/produk/detailProduk/{id}', function () {
+        return view('Admin.detailProduk');
+    });
 
     Route::get('/logout', [AuthController::class, 'logout']);
 });

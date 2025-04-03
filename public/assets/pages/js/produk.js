@@ -110,7 +110,7 @@ $(document).ready(function () {
                                 <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit Produk">
                                     <i data-feather="edit" class="feather-edit"></i>
                                 </a>
-                                <a class="me-2 print-barcode p-2 btn-print" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Cetak Barcode">
+                                <a class="me-2 print-barcode p-2 btn-print" target="_blank" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Cetak Barcode">
                                     <i data-feather="printer" class="feather-print"></i>
                                 </a>
                                 <a class="confirm-text p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Hapus Produk">
@@ -189,46 +189,46 @@ $(document).ready(function () {
     $("#btnTambahProduk").on("click", function () {
         uploadImage("imageproduk", "imageProdukPreview");
 
-            $.ajax({
-                url: "/admin/jenisproduk/getJenisProduk", // Endpoint untuk mendapatkan data jabatan
-                type: "GET",
-                success: function (response) {
-                    let options
-                    response.Data.forEach((item) => {
-                        options += `<option value="${item.id}">${item.jenis_produk}</option>`;
-                    });
-                    $("#jenisproduk").html(options); // Masukkan data ke select
-                },
-                error: function () {
-                    Swal.fire(
-                        "Gagal!",
-                        "Tidak dapat mengambil data jenis produk.",
-                        "error"
-                    );
-                },
-            });
-        
-            $.ajax({
-                url: "/admin/kondisi/getKondisi", // Endpoint untuk mendapatkan data jabatan
-                type: "GET",
-                success: function (response) {
-                    let options
-                    response.Data.forEach((item) => {
-                        options += `<option value="${item.id}">${item.kondisi}</option>`;
-                    });
-                    $("#kondisi").html(options); // Masukkan data ke select
-                },
-                error: function () {
-                    Swal.fire(
-                        "Gagal!",
-                        "Tidak dapat mengambil data kondisi.",
-                        "error"
-                    );
-                },
-            });
+        $.ajax({
+            url: "/admin/jenisproduk/getJenisProduk", // Endpoint untuk mendapatkan data jabatan
+            type: "GET",
+            success: function (response) {
+                let options
+                response.Data.forEach((item) => {
+                    options += `<option value="${item.id}">${item.jenis_produk}</option>`;
+                });
+                $("#jenisproduk").html(options); // Masukkan data ke select
+            },
+            error: function () {
+                Swal.fire(
+                    "Gagal!",
+                    "Tidak dapat mengambil data jenis produk.",
+                    "error"
+                );
+            },
+        });
 
-            $("#mdTambahProduk").modal("show");
-        
+        $.ajax({
+            url: "/admin/kondisi/getKondisi", // Endpoint untuk mendapatkan data jabatan
+            type: "GET",
+            success: function (response) {
+                let options
+                response.Data.forEach((item) => {
+                    options += `<option value="${item.id}">${item.kondisi}</option>`;
+                });
+                $("#kondisi").html(options); // Masukkan data ke select
+            },
+            error: function () {
+                Swal.fire(
+                    "Gagal!",
+                    "Tidak dapat mengambil data kondisi.",
+                    "error"
+                );
+            },
+        });
+
+        $("#mdTambahProduk").modal("show");
+
     });
 
     //ketika submit form tambah produk
@@ -294,6 +294,7 @@ $(document).ready(function () {
                 // Ambil data pertama
                 let data = response.Data[0];
 
+                editUploadImage("editImageproduk", "editImageProdukPreview");
                 // Isi modal dengan data produk
                 $("#editid").val(data.id);
                 $("#editkodeprouk").val(data.kodeproduk);
@@ -366,23 +367,23 @@ $(document).ready(function () {
     });
 
     // Ketika modal ditutup, reset semua field
-    $("#mdEditKondisi").on("hidden.bs.modal", function () {
+    $("#mdEditProduk").on("hidden.bs.modal", function () {
         // Reset form input (termasuk gambar dan status)
-        $("#formEditKondisi")[0].reset();
+        $("#formEditProduk")[0].reset();
     });
 
     // // Kirim data ke server saat form disubmit
-    $(document).on("submit", "#formEditKondisi", function (e) {
+    $(document).on("submit", "#formEditProduk", function (e) {
         e.preventDefault(); // Mencegah form submit secara default
 
         // Buat objek FormData
         const formData = new FormData(this);
         // Ambil ID dari form
-        const idKondisi = formData.get("id"); // Mengambil nilai input dengan name="id"
+        const idProduk = formData.get("id"); // Mengambil nilai input dengan name="id"
 
         // Kirim data ke server menggunakan AJAX
         $.ajax({
-            url: `/admin/kondisi/updateKondisi/${idKondisi}`, // URL untuk mengupdate data pegawai
+            url: `/admin/produk/updateProduk/${idProduk}`, // URL untuk mengupdate data pegawai
             type: "POST", // Gunakan metode POST (atau PATCH jika route mendukung)
             data: formData, // Gunakan FormData
             processData: false, // Jangan proses FormData sebagai query string
@@ -394,8 +395,8 @@ $(document).ready(function () {
                 const toast = new bootstrap.Toast(successtoastExample);
                 $(".toast-body").text(response.message);
                 toast.show();
-                $("#mdEditKondisi").modal("hide"); // Tutup modal
-                tableKondisi.ajax.reload(null, false); // Reload data dari server
+                $("#mdEditProduk").modal("hide"); // Tutup modal
+                tableProduk.ajax.reload(null, false); // Reload data dari server
             },
             error: function (xhr) {
                 const errors = xhr.responseJSON.errors;
@@ -430,7 +431,7 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 // Kirim permintaan hapus (gunakan itemId)
-                fetch(`/admin/kondisi/deleteKondisi/${deleteID}`, {
+                fetch(`/admin/produk/deleteProduk/${deleteID}`, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
@@ -446,7 +447,7 @@ $(document).ready(function () {
                                 "Data berhasil dihapus.",
                                 "success"
                             );
-                            tableKondisi.ajax.reload(null, false); // Reload data dari server
+                            tableProduk.ajax.reload(null, false); // Reload data dari server
                         } else {
                             Swal.fire(
                                 "Gagal!",
@@ -467,5 +468,12 @@ $(document).ready(function () {
                 Swal.fire("Dibatalkan", "Data tidak dihapus.", "info");
             }
         });
+    });
+
+    // Ketika tombol detail produk ditekan
+    $(document).on("click", ".btn-detail", function () {
+        const produkID = $(this).data("id");
+        const url = `/admin/produk/detailProduk/${produkID}`; // Sesuaikan dengan route Laravel
+        window.location.href = url;
     });
 })
