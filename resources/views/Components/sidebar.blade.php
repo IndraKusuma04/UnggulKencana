@@ -36,7 +36,7 @@
                         </li>
                         <li><a href="/admin/produk"><i data-feather="circle"></i><span>Produk</span></a>
                         </li>
-                        <li><a href="/admin/role"><i data-feather="circle"></i><span>Kondisi</span></a>
+                        <li><a href="/admin/nampan"><i data-feather="circle"></i><span>Nampan</span></a>
                         </li>
                     </ul>
                 </li>

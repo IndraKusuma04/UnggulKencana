@@ -7,6 +7,8 @@ use App\Http\Controllers\Role\RoleController;
 use App\Http\Controllers\Users\UsersController;
 use App\Http\Controllers\Jabatan\JabatanController;
 use App\Http\Controllers\Kondisi\KondisiController;
+use App\Http\Controllers\Nampan\NampanController;
+use App\Http\Controllers\Nampan\NampanProdukController;
 use App\Http\Controllers\Pegawai\PegawaiController;
 use App\Http\Controllers\Produk\JenisProdukController;
 use App\Http\Controllers\Produk\ProdukController;
@@ -111,6 +113,23 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/produk/detailProduk/{id}', function () {
         return view('Admin.detailProduk');
     });
+
+    Route::get('/admin/nampan', function () {
+        return view('Admin.nampan');
+    });
+    Route::get('/admin/nampan/getNampan', [NampanController::class, 'getNampan']);
+    Route::post('/admin/nampan/storeNampan', [NampanController::class, 'storeNampan']);
+    Route::get('/admin/nampan/getNampanByID/{id}', [NampanController::class, 'getNampanByID']);
+    Route::post('/admin/nampan/updateNampan/{id}', [NampanController::class, 'updateNampan']);
+    Route::delete('/admin/nampan/deleteNampan/{id}', [NampanController::class, 'deleteNampan']);
+
+    Route::get('/admin/nampan/NampanProduk/{id}', function () {
+        return view('Admin.nampanProduk');
+    });
+    Route::get('/admin/nampan/nampanProduk/getNampanProduk/{id}', [NampanProdukController::class, 'getNampanProduk']);
+    Route::get('/admin/nampan/nampanProduk/getProdukNampan/{id}', [NampanProdukController::class, 'getProdukNampan']);
+    Route::post('/admin/nampan/nampanproduk/storeProdukNampan/{id}', [NampanProdukController::class, 'storeProdukNampan']);
+    Route::delete('/admin/nampan/nampanproduk/deleteNampanProduk/{id}', [NampanProdukController::class, 'deleteNampanProduk']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
 
