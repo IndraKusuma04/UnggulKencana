@@ -131,6 +131,10 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::post('/admin/nampan/nampanproduk/storeProdukNampan/{id}', [NampanProdukController::class, 'storeProdukNampan']);
     Route::delete('/admin/nampan/nampanproduk/deleteNampanProduk/{id}', [NampanProdukController::class, 'deleteNampanProduk']);
 
+    Route::get('/admin/scanbarcode', function () {
+        return view('Admin.scanbarcode');
+    });
+
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
 
     Route::get('/logout', [AuthController::class, 'logout']);

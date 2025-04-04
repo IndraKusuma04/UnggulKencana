@@ -27,8 +27,8 @@
                 </div>
                 <div class="page-btn import">
                     <a onclick="history.back();" class="btn btn-added btn-secondary" data-bs-toggle="modal"
-                        data-bs-target="#view-notes"><i data-feather="chevrons-left" class="me-2"></i> Kembali Ke
-                        Nampan</a>
+                        data-bs-target="#view-notes"><i data-feather="chevrons-left" class="me-2"></i> KEMBALI KE
+                        NAMPAN</a>
                 </div>
             </div>
 

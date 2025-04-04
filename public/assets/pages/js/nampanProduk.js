@@ -57,9 +57,15 @@ $(document).ready(function () {
                     },
                     {
                         data: "produk.berat",
+                        render: function (data, type, row) {
+                            return parseFloat(data).toFixed(1) + " gram"; // Menampilkan 1 angka desimal
+                        }
                     },
                     {
                         data: "produk.karat",
+                        render: function (data, type, row) {
+                            return data + " K"; // Menampilkan K
+                        }
                     },
                     {
                         data: "produk.harga_jual",
@@ -144,7 +150,12 @@ $(document).ready(function () {
                     },
                     { data: "kodeproduk" },
                     { data: "nama" },
-                    { data: "berat" },
+                    {
+                        data: "berat",
+                        render: function (data, type, row) {
+                            return parseFloat(data).toFixed(1) + " gram"; // Menampilkan 1 angka desimal
+                        }
+                    },
                 ],
                 initComplete: function (settings, json) {
                     $('.dataTables_filter').appendTo('#tableSearch');

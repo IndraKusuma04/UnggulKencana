@@ -99,6 +99,10 @@
     <script src="{{ asset('assets') }}/plugins/sweetalert/sweetalert2.all.min.js" type="text/javascript"></script>
     <script src="{{ asset('assets') }}/plugins/sweetalert/sweetalerts.min.js" type="text/javascript"></script>
 
+    <script src="{{ asset('assets') }}/plugins/theia-sticky-sidebar/ResizeSensor.js" type="text/javascript"></script>
+    <script src="{{ asset('assets') }}/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="text/javascript">
+    </script>
+
     <script src="{{ asset('assets') }}/js/theme-script.js" type="text/javascript"></script>
     <script src="{{ asset('assets') }}/js/script.js" type="text/javascript"></script>
 </body>
