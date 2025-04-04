@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Nampan;
 
 use App\Http\Controllers\Controller;
 use App\Models\Nampan;
+use App\Models\NampanProduk;
 use Illuminate\Http\Request;
 
 class NampanController extends Controller
@@ -84,6 +85,12 @@ class NampanController extends Controller
         $nampan->update([
             'status' => 0,
         ]);
+
+        if ($nampan) {
+            NampanProduk::where('nampan_id', $id)->update([
+                'status'    => 0,
+            ]);
+        }
 
         return response()->json(['success' => true, 'message' => 'Nampan Berhasil Dihapus.']);
     }
