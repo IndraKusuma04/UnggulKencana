@@ -134,6 +134,7 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/scanbarcode', function () {
         return view('Admin.scanbarcode');
     });
+    Route::get('/admin/scanbarcode/getProdukByScanbarcode/{id}', [ProdukController::class, 'getProdukByScanbarcode']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
 

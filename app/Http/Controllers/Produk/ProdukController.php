@@ -61,7 +61,7 @@ class ProdukController extends Controller
 
         $kodeproduk = $this->generateKodeProduk();
 
-        $content = QrCode::format('png')->size(300)->generate($kodeproduk); // Ini menghasilkan data PNG sebagai string
+        $content = QrCode::format('png')->size(300)->margin(5)->generate($kodeproduk); // Ini menghasilkan data PNG sebagai string
 
         // Tentukan nama file
         $fileName = 'barcode/' . $kodeproduk . '.png';
@@ -190,5 +190,12 @@ class ProdukController extends Controller
         ]);
 
         return response()->json(['success' => true, 'message' => 'Produk Berhasil Dihapus.']);
+    }
+
+    public function getProdukByScanbarcode($id)
+    {
+        $produk = Produk::where('kodeproduk', $id)->with(['jenisproduk', 'kondisi'])->get();
+
+        return response()->json(['success' => true, 'message' => 'Data Produk Berhasil Ditemukan', 'Data' => $produk]);
     }
 }
