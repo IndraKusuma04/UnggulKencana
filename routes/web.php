@@ -14,6 +14,7 @@ use App\Http\Controllers\Pelanggan\PelangganController;
 use App\Http\Controllers\Produk\JenisProdukController;
 use App\Http\Controllers\Produk\ProdukController;
 use App\Http\Controllers\Report\ReportController;
+use App\Http\Controllers\Suplier\SuplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -145,6 +146,15 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/pelanggan/getPelangganByID/{id}', [PelangganController::class, 'getPelangganByID']);
     Route::post('/admin/pelanggan/updatePelanggan/{id}', [PelangganController::class, 'updatePelanggan']);
     Route::delete('/admin/pelanggan/deletePelanggan/{id}', [PelangganController::class, 'deletePelanggan']);
+
+    Route::get('/admin/suplier', function () {
+        return view('Admin.suplier');
+    });
+    Route::get('/admin/suplier/getSuplier', [SuplierController::class, 'getSuplier']);
+    Route::post('/admin/suplier/storeSuplier', [SuplierController::class, 'storeSuplier']);
+    Route::get('/admin/suplier/getSuplierByID/{id}', [SuplierController::class, 'getSuplierByID']);
+    Route::post('/admin/suplier/updateSuplier/{id}', [SuplierController::class, 'updateSuplier']);
+    Route::delete('/admin/suplier/deleteSuplier/{id}', [SuplierController::class, 'deleteSuplier']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
 
