@@ -16,8 +16,6 @@
 
     <link rel="stylesheet" href="{{ asset('assets') }}/css/bootstrap.min.css">
 
-    <link rel="stylesheet" href="{{ asset('assets') }}/css/bootstrap-datetimepicker.min.css">
-
     <link rel="stylesheet" href="{{ asset('assets') }}/css/animate.css">
 
     <link rel="stylesheet" href="{{ asset('assets') }}/css/feather.css">
@@ -29,6 +27,10 @@
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css">
 
     <link rel="stylesheet" href="{{ asset('assets') }}/css/dataTables.bootstrap5.min.css">
+
+    <!-- Datepicker CSS -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
 
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/owlcarousel/owl.carousel.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/owlcarousel/owl.theme.default.min.css">
@@ -90,7 +92,6 @@
     <script src="{{ asset('assets') }}/plugins/select2/js/select2.min.js" type="text/javascript"></script>
 
     <script src="{{ asset('assets') }}/js/moment.min.js" type="text/javascript"></script>
-    <script src="{{ asset('assets') }}/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
 
     <script src="{{ asset('assets') }}/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js" type="text/javascript"></script>
 
@@ -102,6 +103,9 @@
     <script src="{{ asset('assets') }}/plugins/theia-sticky-sidebar/ResizeSensor.js" type="text/javascript"></script>
     <script src="{{ asset('assets') }}/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="text/javascript">
     </script>
+
+    <!-- Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script src="{{ asset('assets') }}/js/script.js" type="text/javascript"></script>
 </body>
 

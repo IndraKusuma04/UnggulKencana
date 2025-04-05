@@ -10,6 +10,7 @@ use App\Http\Controllers\Kondisi\KondisiController;
 use App\Http\Controllers\Nampan\NampanController;
 use App\Http\Controllers\Nampan\NampanProdukController;
 use App\Http\Controllers\Pegawai\PegawaiController;
+use App\Http\Controllers\Pelanggan\PelangganController;
 use App\Http\Controllers\Produk\JenisProdukController;
 use App\Http\Controllers\Produk\ProdukController;
 use App\Http\Controllers\Report\ReportController;
@@ -135,6 +136,15 @@ Route::middleware(['checkRole:admin'])->group(function () {
         return view('Admin.scanbarcode');
     });
     Route::get('/admin/scanbarcode/getProdukByScanbarcode/{id}', [ProdukController::class, 'getProdukByScanbarcode']);
+
+    Route::get('/admin/pelanggan', function () {
+        return view('Admin.pelanggan');
+    });
+    Route::get('/admin/pelanggan/getPelanggan', [PelangganController::class, 'getPelanggan']);
+    Route::post('/admin/pelanggan/storePelanggan', [PelangganController::class, 'storePelanggan']);
+    Route::get('/admin/pelanggan/getPelangganByID/{id}', [PelangganController::class, 'getPelangganByID']);
+    Route::post('/admin/pelanggan/updatePelanggan/{id}', [PelangganController::class, 'updatePelanggan']);
+    Route::delete('/admin/pelanggan/deletePelanggan/{id}', [PelangganController::class, 'deletePelanggan']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
 
