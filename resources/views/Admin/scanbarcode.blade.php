@@ -35,13 +35,9 @@
                                 data-feather="chevron-up" class="feather-chevron-up"></i></a>
                     </li>
                 </ul>
-                <div class="page-btn">
-                    <a class="btn btn-added" id="btnScanBarcode"><i data-feather="maximize" class="me-2"></i>SCAN
-                        BARCODE</a>
-                </div>
             </div>
 
-            <div class="d-flex justify-content-center d-none" id="scannerContainer">
+            <div class="d-flex justify-content-center" id="scannerContainer">
                 <div class="card col-lg-4">
                     <div class="card-body d-flex justify-content-center">
                         <div class="col-12 d-flex">

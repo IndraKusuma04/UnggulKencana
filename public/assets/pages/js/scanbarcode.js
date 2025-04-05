@@ -1,7 +1,4 @@
 $(document).ready(function () {
-    $('#btnScanBarcode').on('click', function () {
-        $('#scannerContainer').removeClass('d-none');
-    });
 
     let lastScannedCode = null;
 

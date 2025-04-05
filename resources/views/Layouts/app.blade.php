@@ -12,7 +12,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Unggul Kencana | @yield('title')</title>
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/img/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/img/logo.png">
 
     <link rel="stylesheet" href="{{ asset('assets') }}/css/bootstrap.min.css">
 
@@ -102,8 +102,6 @@
     <script src="{{ asset('assets') }}/plugins/theia-sticky-sidebar/ResizeSensor.js" type="text/javascript"></script>
     <script src="{{ asset('assets') }}/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="text/javascript">
     </script>
-
-    <script src="{{ asset('assets') }}/js/theme-script.js" type="text/javascript"></script>
     <script src="{{ asset('assets') }}/js/script.js" type="text/javascript"></script>
 </body>
 
