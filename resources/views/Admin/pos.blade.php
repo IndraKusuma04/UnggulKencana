@@ -45,8 +45,8 @@
                                     <select class="select" id="pelanggan" name="pelanggan">
                                     </select>
                                 </div>
-                                <a href="#" class="btn btn-primary btn-icon" data-bs-toggle="modal"
-                                    data-bs-target="#create"><i data-feather="user-plus" class="feather-16"></i></a>
+                                <a href="#" class="btn btn-primary btn-icon" id="btnTambahPelanggan"><i
+                                        data-feather="user-plus" class="feather-16"></i></a>
                             </div>
                         </div>
                         <div class="product-added block-section">
@@ -54,9 +54,9 @@
                                 <h6 class="d-flex align-items-center mb-0">PRODUK DITAMBAHKAN<span class="count"
                                         id="keranjangCount"></span>
                                 </h6>
-                                <a href="javascript:void(0);" class="d-flex align-items-center text-danger"><span
-                                        class="me-1"><i data-feather="x" class="feather-16"></i></span>Clear
-                                    all</a>
+                                <a href="javascript:void(0);" class="d-flex align-items-center text-danger"
+                                    id="deleteSemua"><span class="me-1"><i data-feather="x"
+                                            class="feather-16"></i></span>BATALKAN SEMUA</a>
                             </div>
                             <div class="product-wrap">
                                 <div class="product-list d-flex align-items-center justify-content-between">
@@ -103,12 +103,58 @@
                             <a href="javascript:void(0);" class="btn btn-danger btn-icon flex-fill"><span
                                     class="me-1 d-flex align-items-center"><i data-feather="trash-2"
                                         class="feather-16"></i></span>Void</a>
-                            <a href="javascript:void(0);" class="btn btn-success btn-icon flex-fill" data-bs-toggle="modal"
-                                data-bs-target="#payment-completed"><span class="me-1 d-flex align-items-center"><i
-                                        data-feather="credit-card" class="feather-16"></i></span>Payment</a>
+                            <a href="javascript:void(0);" class="btn btn-success btn-icon flex-fill" id="payment"><span
+                                    class="me-1 d-flex align-items-center"><i data-feather="credit-card"
+                                        class="feather-16"></i></span>Payment</a>
                         </div>
                     </aside>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- md Tambah pelanggan -->
+    <div class="modal fade" id="mdTambahPelanggan">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="page-title">
+                        <h4>TAMBAH PELANGGAN</h4>
+                    </div>
+                    <button type="button" class="close bg-danger text-white fs-16" data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formTambahPelanggan" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">NIK<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="nik" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">NAMA<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="nama" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">KONTAK<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="kontak" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">TANGGAL LAHIR<span class="text-danger ms-1">*</span></label>
+                            <input type="date" name="tanggal" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ALAMAT<span class="text-danger ms-1">*</span></label>
+                            <textarea class="form-control" name="alamat" cols="10" rows="5"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
+                        <button type="submit" class="btn btn-primary">SIMPAN</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

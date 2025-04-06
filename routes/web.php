@@ -162,7 +162,12 @@ Route::middleware(['checkRole:admin'])->group(function () {
         return view('Admin.pos');
     });
     Route::get('/admin/keranjang/getKeranjang', [KeranjangController::class, 'getKeranjang']);
+    Route::get('/admin/keranjang/getKodeKeranjang', [KeranjangController::class, 'getKodeKeranjang']);
     Route::get('/admin/transaksi/getKodeTransaksi', [TransaksiController::class, 'getKodeTransaksi']);
+    Route::post('/admin/keranjang/addToCart', [KeranjangController::class, 'addToCart']);
+    Route::delete('/admin/keranjang/deleteKeranjangAll', [KeranjangController::class, 'deleteKeranjangAll']);
+    Route::delete('/admin/keranjang/deleteKeranjangByID/{id}', [KeranjangController::class, 'deleteKeranjangByID']);
+    Route::post('/admin/transaksi/payment', [TransaksiController::class, 'payment']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
 

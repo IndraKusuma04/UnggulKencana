@@ -1,5 +1,10 @@
 $(document).ready(function () {
 
+    //ketika button tambah di tekan
+    $("#btnTambahPelanggan").on("click", function () {
+        $("#mdTambahPelanggan").modal("show");
+    });
+
     function getNampan() {
         $.ajax({
             url: '/admin/nampan/getNampan',
@@ -299,27 +304,310 @@ $(document).ready(function () {
     });
 
     // Event listener untuk tombol "Tambah ke Keranjang"
-    $(document).on("click",".add-to-cart", function () {
+    $(document).on("click", ".add-to-cart", function () {
         const produkId = $(this).data("id");
         $.ajax({
-            url: "/admin/keranjang/storeProdukToCart",
+            url: "/admin/keranjang/addToCart",
             method: "POST",
             data: {
                 id: produkId,
-                total: total,
                 _token: $('meta[name="csrf-token"]').attr('content') // Jika menggunakan Laravel
             },
             success: function (response) {
-                if (response.success) {
-                    alert("Produk berhasil ditambahkan ke keranjang.");
-                    // Perbarui tampilan keranjang jika diperlukan
-                } else {
-                    alert("Gagal menambahkan produk ke keranjang.");
+                if (response.success === true) {
+                    // Menampilkan notifikasi sukses menggunakan Bootstrap Toast
+                    const successtoastExample =
+                        document.getElementById("successToast");
+                    const toast = new bootstrap.Toast(successtoastExample);
+                    $(".toast-body").text(response.message);
+                    toast.show();
+
+                    getKeranjang();
+                } else if (response.status === "error") {
+                    // Menampilkan notifikasi error menggunakan Bootstrap Toast
+                    const dangertoastExamplee =
+                        document.getElementById("dangerToast");
+                    const toast = new bootstrap.Toast(dangertoastExamplee);
+                    $(".toast-body").text(response.message);
+                    toast.show();
                 }
             },
             error: function () {
-                alert("Terjadi kesalahan. Silakan coba lagi.");
+                const dangertoastExample =
+                    document.getElementById("dangerToast");
+                const toast = new bootstrap.Toast(dangertoastExample);
+                document.getElementById("dangerToastMessage").innerText =
+                    "Terjadi kesalahan pada server."; // Pesan fallback
+                toast.show();
             }
         });
     });
+
+    // ketika button hapus di tekan
+    $(document).on("click", "#deleteSemua", function () {
+        // SweetAlert2 untuk konfirmasi
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Produk ini akan dibatalkan semua ?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Batalkan!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Kirim permintaan hapus (gunakan itemId)
+                fetch(`/admin/keranjang/deleteKeranjangAll`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            Swal.fire(
+                                "Dibatalkan!",
+                                "Produk berhasil dibatalkan.",
+                                "success"
+                            );
+                            getKeranjang();
+                        } else {
+                            Swal.fire(
+                                "Gagal!",
+                                "Terjadi kesalahan saat membatalkan produk.",
+                                "error"
+                            );
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire(
+                            "Gagal!",
+                            "Terjadi kesalahan dalam membatalkan produk.",
+                            "error"
+                        );
+                    });
+            } else {
+                // Jika batal, beri tahu pengguna
+                Swal.fire("Dibatalkan", "Produk tidak dibatalkan.", "info");
+            }
+        });
+    });
+
+    // ketika button hapus di tekan
+    $(document).on("click", ".confirm-text", function () {
+        const deleteID = $(this).data("id");
+
+        // SweetAlert2 untuk konfirmasi
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Produk ini akan dibatalkan?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Batal!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Kirim permintaan hapus (gunakan itemId)
+                fetch(`/admin/keranjang/deleteKeranjangByID/${deleteID}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            Swal.fire(
+                                "Dibatalkan!",
+                                "Produk berhasil dibatalkan.",
+                                "success"
+                            );
+                            getKeranjang();
+                        } else {
+                            Swal.fire(
+                                "Gagal!",
+                                "Terjadi kesalahan saat membatalkan produk.",
+                                "error"
+                            );
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire(
+                            "Gagal!",
+                            "Terjadi kesalahan dalam membatalkan produk.",
+                            "error"
+                        );
+                    });
+            } else {
+                // Jika batal, beri tahu pengguna
+                Swal.fire("Dibatalkan", "Data tidak dibatalkan.", "info");
+            }
+        });
+    });
+
+    //ketika submit form tambah kondisi
+    $("#formTambahPelanggan").on("submit", function (event) {
+        event.preventDefault(); // Mencegah form submit secara default
+        // Ambil elemen input file
+
+        // Buat objek FormData
+        const formData = new FormData(this);
+        $.ajax({
+            url: "/admin/pelanggan/storePelanggan", // Endpoint Laravel untuk menyimpan pegawai
+            type: "POST",
+            data: formData,
+            processData: false, // Agar data tidak diubah menjadi string
+            contentType: false, // Agar header Content-Type otomatis disesuaikan
+            success: function (response) {
+                const successtoastExample =
+                    document.getElementById("successToast");
+                const toast = new bootstrap.Toast(successtoastExample);
+                $(".toast-body").text(response.message);
+                toast.show();
+                $("#mdTambahPelanggan").modal("hide"); // Tutup modal
+
+                $.ajax({
+                    url: "/admin/pelanggan/getPelanggan", // Endpoint untuk mendapatkan data pelanggan
+                    type: "GET",
+                    success: function (response) {
+                        let options
+                        response.Data.forEach((item) => {
+                            options += `<option value="${item.id}">${item.nama}</option>`;
+                        });
+                        $("#pelanggan").html(options); // Masukkan data ke select
+                    },
+                    error: function () {
+                        Swal.fire(
+                            "Gagal!",
+                            "Tidak dapat mengambil data pelanggan.",
+                            "error"
+                        );
+                    },
+                });
+            },
+            error: function (xhr) {
+                // Tampilkan pesan error dari server
+                const errors = xhr.responseJSON.errors;
+                if (errors) {
+                    let errorMessage = "";
+                    for (let key in errors) {
+                        errorMessage += `${errors[key][0]}\n`;
+                    }
+                    const dangertoastExamplee =
+                        document.getElementById("dangerToast");
+                    const toast = new bootstrap.Toast(dangertoastExamplee);
+                    $(".toast-body").text(errorMessage);
+                    toast.show();
+                } else {
+                    const dangertoastExamplee =
+                        document.getElementById("dangerToast");
+                    const toast = new bootstrap.Toast(dangertoastExamplee);
+                    $(".toast-body").text(response.message);
+                    toast.show();
+                }
+            },
+        });
+    });
+
+    // ketika button payment di tekan
+    $(document).on("click", "#payment", function (e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: "Konfirmasi Pembayaran",
+            text: "Apakah kamu yakin ingin melanjutkan ke pembayaran?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Lanjutkan!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                prosesCheckout(); // Panggil fungsi pembayaran
+            } else {
+                Swal.fire("Dibatalkan", "Transaksi belum diproses.", "info");
+            }
+        });
+    });
+
+    function prosesCheckout() {
+        const csrfToken = $('meta[name="csrf-token"]').attr("content");
+        const pelanggan = $("#pelanggan").val();
+        const diskon = $("#diskon").val();
+        const transaksi_id = $("#kodetransaksi").text();
+        const grandTotalText = $("#grandTotal").text();
+
+        if (!pelanggan || !diskon || pelanggan === "Walk in Customer" || diskon === "zero") {
+            showToast("danger", "Pelanggan atau diskon belum dipilih.");
+            return;
+        }
+
+        const grandTotal = parseInt(grandTotalText.replace(/[^\d]/g, ""), 10); // Hapus format Rp
+
+        // Ambil kodekeranjang dulu
+        $.ajax({
+            url: "/admin/keranjang/getKodeKeranjang", // endpoint khusus untuk ambil kodekeranjang
+            type: "GET",
+            success: function (res) {
+                if (res.success && res.kode) {
+                    const kodekeranjang = res.kode;
+
+                    // Kirim data pembayaran lengkap
+                    $.ajax({
+                        url: "/admin/transaksi/payment", // Endpoint Laravel
+                        type: "POST",
+                        data: {
+                            _token: csrfToken,
+                            pelangganID: pelanggan,
+                            diskonID: diskon,
+                            transaksiID: transaksi_id,
+                            kodeKeranjangID: kodekeranjang,
+                            total: grandTotal,
+                        },
+                        success: function (res) {
+                            if (res.success) {
+                                showToast("success", res.message);
+                                getKeranjang(); 
+                                getNampanProduk();
+
+                                $("#grandTotal").text("Rp0");
+                                $("#total").text("Rp0");
+                                $("#subtotal").text("Rp0");
+                                $("#diskonDipilih").text("0 %");
+                                $("#pelanggan").val("");
+                                $("#diskon").val("");
+                                // window.open(`/admin/transaksi/cetak/${res.transaksi_id}`, "_blank"); // optional
+                            } else {
+                                showToast("danger", res.message);
+                            }
+                        },
+                        error: function () {
+                            showToast("danger", "Gagal memproses pembayaran.");
+                        }
+                    });
+
+                } else {
+                    showToast("danger", "Gagal mengambil kode keranjang.");
+                }
+            },
+            error: function () {
+                showToast("danger", "Terjadi kesalahan saat mengambil kode keranjang.");
+            }
+        });
+    }
+
+    function showToast(type, message) {
+        const toastId = type === "success" ? "successToast" : "dangerToast";
+        const toast = new bootstrap.Toast(document.getElementById(toastId));
+        $("#" + toastId + " .toast-body").text(message);
+        toast.show();
+    }
+
+
 })
