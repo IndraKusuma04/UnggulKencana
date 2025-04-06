@@ -14,8 +14,31 @@ class NampanProdukController extends Controller
 {
     public function getNampanProduk($id)
     {
-        $nampanProduk = NampanProduk::with(['nampan', 'produk', 'user'])->where('nampan_id', $id)->where('status', 1)->get();
-        return response()->json(['success' => true, 'message' => 'Data Nampan Produk Berhasil Ditemukan', 'Data' => $nampanProduk]);
+        $query = NampanProduk::with(['nampan', 'produk', 'user'])->where('status', 1);
+
+        if ($id !== 'all') {
+            $query->where('nampan_id', $id);
+        }
+
+        $nampanProduk = $query->get();
+
+        // Tambahkan hargatotal ke setiap produk
+        $nampanProduk->each(function ($item) {
+            if ($item->produk) {
+                $item->produk->hargatotal = number_format(
+                    (float) $item->produk->harga_jual * (float) $item->produk->berat,
+                    2,
+                    '.',
+                    ''
+                );
+            }
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Nampan Produk Berhasil Ditemukan',
+            'Data' => $nampanProduk
+        ]);
     }
 
     public function getProdukNampan($id)

@@ -3,7 +3,6 @@ $(document).ready(function () {
     let lastScannedCode = null;
 
     function onScanSuccess(decodedText, decodedResult) {
-        // Cegah proses ulang QR yang sama
         if (decodedText === lastScannedCode) return;
         lastScannedCode = decodedText;
 
@@ -18,58 +17,67 @@ $(document).ready(function () {
                 "X-CSRF-TOKEN": CSRF_TOKEN
             },
             success: function (data) {
-                if (data.success && data.Data.length > 0) {
-                    let produk = data.Data[0];
+                if (data.success == true) {
+                    let produk = data.Data; // ✅ Ambil data dari 'Data'
+
                     $('#kodeproduk').text(produk.kodeproduk);
                     $('#namaImage').text(produk.nama);
-                    $('#jenisproduk').text(produk.jenisproduk.jenis_produk);
+                    $('#jenisproduk').text(produk.jenisproduk ? produk.jenisproduk.jenis_produk : '-');
                     $('#berat').text(parseFloat(produk.berat).toFixed(1) + " gram");
                     $('#karat').text(produk.karat + " K");
                     $('#lingkar').text(produk.lingkar + " cm");
                     $('#panjang').text(produk.panjang + " cm");
                     $('#harga').text(formatRupiah(produk.harga_jual));
-                    // Menentukan status produk
-                    if (produk.status == 1) {
-                        $('#status').html('<span class="badge badge-success">Ready</span>'); // Menampilkan badge sukses
-                    } else {
-                        $('#status').html('<span class="badge badge-danger">Non Ready</span>'); // Menampilkan badge danger
-                    }
+
+                    $('#status').html(
+                        produk.status == 1
+                            ? '<span class="badge badge-success">Ready</span>'
+                            : '<span class="badge badge-danger">Non Ready</span>'
+                    );
+
                     $('#keterangan').text(produk.keterangan);
 
-                    // Menampilkan barcode gambar
-                    if (produk.image_produk) {
-                        $('#barcode').attr('src', `/storage/barcode/${produk.image_produk}`);
-                    } else {
-                        $('#barcode').attr('src', '/assets/img/notfound.png');
-                    }
+                    $('#barcode').attr('src', produk.image_produk ? `/storage/barcode/${produk.image_produk}` : '/assets/img/notfound.png');
+                    $('#imageProduk').attr('src', produk.image_produk ? `/storage/produk/${produk.image_produk}` : '/assets/img/notfound.png');
 
-                    // Menampilkan gambar
-                    if (produk.image_produk) {
-                        $('#imageProduk').attr('src', `/storage/produk/${produk.image_produk}`);
-                    } else {
-                        $('#imageProduk').attr('src', '/assets/img/notfound.png');
-                    }
-
-                    // Tampilkan toast sukses
                     const toast = new bootstrap.Toast(document.getElementById("successToast"));
                     $(".toast-body").text(data.message);
                     toast.show();
 
-                    // Reset scanner dalam 3 detik supaya bisa scan lagi
                     setTimeout(() => {
                         lastScannedCode = null;
                     }, 3000);
                 } else {
-                    const toast = new bootstrap.Toast(document.getElementById("dangerToastScan"));
+                    // Data tidak ditemukan dari server (success == false)
+                    const toast = new bootstrap.Toast(document.getElementById("successToast"));
+                    $(".toast-body").text(data.message || "Data tidak ditemukan.");
                     toast.show();
+
+                    // Reset scanner
+                    setTimeout(() => {
+                        lastScannedCode = null;
+                    }, 3000);
                 }
             },
-            error: function () {
-                const toast = new bootstrap.Toast(document.getElementById("dangerToastScan"));
+            error: function (jqXHR) {
+                // Tangani error dari server (404, 500, dsb)
+                let errorMessage = "Terjadi kesalahan saat memproses permintaan.";
+                if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                    errorMessage = jqXHR.responseJSON.message;
+                }
+
+                const toast = new bootstrap.Toast(document.getElementById("dangerToast"));
+                $(".toast-body").text(errorMessage);
                 toast.show();
+
+                // Reset scanner
+                setTimeout(() => {
+                    lastScannedCode = null;
+                }, 3000);
             }
         });
     }
+
 
     // Fungsi untuk format angka menjadi Rupiah
     function formatRupiah(angka) {

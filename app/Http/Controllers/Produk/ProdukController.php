@@ -194,7 +194,11 @@ class ProdukController extends Controller
 
     public function getProdukByScanbarcode($id)
     {
-        $produk = Produk::where('kodeproduk', $id)->with(['jenisproduk', 'kondisi'])->get();
+        $produk = Produk::with(['jenisproduk', 'kondisi'])->where('kodeproduk', $id)->first();
+
+        if (!$produk) {
+            return response()->json(['success' => false, 'message' => 'Produk tidak ditemukan.'], 404);
+        }
 
         return response()->json(['success' => true, 'message' => 'Data Produk Berhasil Ditemukan', 'Data' => $produk]);
     }

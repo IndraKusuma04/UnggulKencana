@@ -27,4 +27,9 @@ class Nampan extends Model
     {
         return $this->belongsTo(JenisProduk::class, 'jenisproduk_id', 'id');
     }
+
+    public function produk()
+    {
+        return $this->hasMany(NampanProduk::class, 'nampan_id');
+    }
 }

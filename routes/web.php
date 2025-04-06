@@ -6,6 +6,7 @@ use App\Http\Controllers\Diskon\DiskonController;
 use App\Http\Controllers\Role\RoleController;
 use App\Http\Controllers\Users\UsersController;
 use App\Http\Controllers\Jabatan\JabatanController;
+use App\Http\Controllers\Keranjang\KeranjangController;
 use App\Http\Controllers\Kondisi\KondisiController;
 use App\Http\Controllers\Nampan\NampanController;
 use App\Http\Controllers\Nampan\NampanProdukController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Produk\JenisProdukController;
 use App\Http\Controllers\Produk\ProdukController;
 use App\Http\Controllers\Report\ReportController;
 use App\Http\Controllers\Suplier\SuplierController;
+use App\Http\Controllers\Transaksi\TransaksiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -155,6 +157,12 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/suplier/getSuplierByID/{id}', [SuplierController::class, 'getSuplierByID']);
     Route::post('/admin/suplier/updateSuplier/{id}', [SuplierController::class, 'updateSuplier']);
     Route::delete('/admin/suplier/deleteSuplier/{id}', [SuplierController::class, 'deleteSuplier']);
+
+    Route::get('/admin/pos', function () {
+        return view('Admin.pos');
+    });
+    Route::get('/admin/keranjang/getKeranjang', [KeranjangController::class, 'getKeranjang']);
+    Route::get('/admin/transaksi/getKodeTransaksi', [TransaksiController::class, 'getKodeTransaksi']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
 

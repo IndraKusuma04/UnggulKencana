@@ -11,9 +11,19 @@ class NampanController extends Controller
 {
     public function getNampan()
     {
-        $nampan = Nampan::where('status', 1)->with(['jenisProduk'])->get();
+        $nampan = Nampan::where('status', 1)
+            ->with(['jenisProduk'])
+            ->withCount('produk') // <--- hitung total produk per nampan
+            ->get();
 
-        return response()->json(['success' => true, 'message' => 'Data Nampan Berhasil Ditemukan', 'Data' => $nampan]);
+        $totalProdukAll = NampanProduk::where('status', 1)->count();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Nampan Berhasil Ditemukan',
+            'Total' => $totalProdukAll,
+            'Data' => $nampan
+        ]);
     }
 
     public function storeNampan(Request $request)
