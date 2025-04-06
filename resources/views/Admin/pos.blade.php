@@ -4,14 +4,12 @@
     <div class="page-wrapper pos-pg-wrapper">
         <div class="content pos-design p-0">
             <div class="btn-row d-sm-flex align-items-center">
-                <a href="javascript:void(0);" class="btn btn-secondary mb-xs-3" data-bs-toggle="modal"
-                    data-bs-target="#orders"><span class="me-1 d-flex align-items-center"><i data-feather="shopping-cart"
-                            class="feather-16"></i></span>View Orders</a>
-                <a href="javascript:void(0);" class="btn btn-info"><span class="me-1 d-flex align-items-center"><i
-                            data-feather="rotate-cw" class="feather-16"></i></span>Reset</a>
-                <a href="javascript:void(0);" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recents"><span
+                <a href="javascript:void(0);" class="btn btn-secondary mb-xs-3" id="modalTransaksi"><span
+                        class="me-1 d-flex align-items-center"><i data-feather="shopping-cart"
+                            class="feather-16"></i></span>LIHAT ORDER</a>
+                <a href="javascript:void(0);" class="btn btn-primary" id="refreshButton"><span
                         class="me-1 d-flex align-items-center"><i data-feather="refresh-ccw"
-                            class="feather-16"></i></span>Transaction</a>
+                            class="feather-16"></i></span>REFRESH</a>
             </div>
             <div class="row align-items-start pos-wrapper">
                 <div class="col-md-12 col-lg-8">
@@ -97,12 +95,6 @@
                             </a>
                         </div>
                         <div class="btn-row d-sm-flex align-items-center justify-content-between">
-                            <a href="javascript:void(0);" class="btn btn-info btn-icon flex-fill" data-bs-toggle="modal"
-                                data-bs-target="#hold-order"><span class="me-1 d-flex align-items-center"><i
-                                        data-feather="pause" class="feather-16"></i></span>Hold</a>
-                            <a href="javascript:void(0);" class="btn btn-danger btn-icon flex-fill"><span
-                                    class="me-1 d-flex align-items-center"><i data-feather="trash-2"
-                                        class="feather-16"></i></span>Void</a>
                             <a href="javascript:void(0);" class="btn btn-success btn-icon flex-fill" id="payment"><span
                                     class="me-1 d-flex align-items-center"><i data-feather="credit-card"
                                         class="feather-16"></i></span>Payment</a>
@@ -158,6 +150,45 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade pos-modal" id="mdTransaksi" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header p-4">
+                    <h5 class="modal-title">Recent Transactions</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="table-top">
+                        <div class="search-set">
+                            <div class="search-input">
+                                <a class="btn btn-searchset d-flex align-items-center h-100"><img
+                                        src="{{ asset('assets') }}/img/icons/search-white.svg" alt="img"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="transaksiTable" class="table table-hover" style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th>TANGGAL</th>
+                                    <th>NO TRANSAKSI</th>
+                                    <th>PELANGGAN</th>
+                                    <th>TOTAL </th>
+                                    <th>STATUS </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- /Add Jenis -->
     <script src="{{ asset('assets') }}/js/jquery-3.7.1.min.js" type="text/javascript"></script>

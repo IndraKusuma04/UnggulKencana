@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -24,13 +25,13 @@ class Transaksi extends Model
     ];
 
     /**
-     * Get the keranjang that owns the Transaksi
+     * Get all of the keranjang for the Transaksi
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function keranjang(): BelongsTo
+    public function keranjang(): HasMany
     {
-        return $this->belongsTo(Keranjang::class, 'kodekeranjang_id', 'kodekeranjang');
+        return $this->hasMany(Keranjang::class, 'kodekeranjang', 'kodekeranjang_id');
     }
 
     /**

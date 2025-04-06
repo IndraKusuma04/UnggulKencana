@@ -169,7 +169,16 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::delete('/admin/keranjang/deleteKeranjangByID/{id}', [KeranjangController::class, 'deleteKeranjangByID']);
     Route::post('/admin/transaksi/payment', [TransaksiController::class, 'payment']);
 
+    Route::get('/admin/transaksi', function () {
+        return view('Admin.transaksi');
+    });
+    Route::get('/admin/transaksi/getTransaksi', [TransaksiController::class, 'getTransaksi']);
+    Route::get('/admin/transaksi/konfirmasiPembayaran/{id}', [TransaksiController::class, 'konfirmasiPembayaran']);
+    Route::get('/admin/transaksi/konfirmasiPembatalanPembayaran/{id}', [TransaksiController::class, 'konfirmasiPembatalanPembayaran']);
+    Route::get('/admin/transaksi/getTransaksiByID/{id}', [TransaksiController::class, 'getTransaksiByID']);
+
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
+    Route::get('/admin/report/cetakTransaksi/{id}', [ReportController::class, 'cetakTransaksi']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
 });

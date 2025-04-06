@@ -1,8 +1,23 @@
 $(document).ready(function () {
 
+    // Inisialisasi tooltip Bootstrap
+    function initializeTooltip() {
+        $('[data-bs-toggle="tooltip"]').tooltip();
+    }
+
     //ketika button tambah di tekan
     $("#btnTambahPelanggan").on("click", function () {
         $("#mdTambahPelanggan").modal("show");
+    });
+
+    //function refresh
+    $(document).on("click", "#refreshButton", function () {
+        getKeranjang();
+        getNampanProduk();
+        const successtoastExample = document.getElementById("successToast");
+        const toast = new bootstrap.Toast(successtoastExample);
+        $(".toast-body").text("Data Keranjang Berhasil Direfresh");
+        toast.show();
     });
 
     function getNampan() {
@@ -609,5 +624,83 @@ $(document).ready(function () {
         toast.show();
     }
 
+    //load data pelanggan
+    function getTransaksi() {
+        // Datatable
+        if ($('#transaksiTable').length > 0) {
+            tableTransaksi = $('#transaksiTable').DataTable({
+                "scrollX": false, // Jangan aktifkan scroll horizontal secara paksa
+                "bFilter": true,
+                "sDom": 'fBtlpi',
+                "ordering": true,
+                "language": {
+                    search: ' ',
+                    sLengthMenu: '_MENU_',
+                    searchPlaceholder: "Search",
+                    info: "_START_ - _END_ of _TOTAL_ items",
+                    paginate: {
+                        next: ' <i class=" fa fa-angle-right"></i>',
+                        previous: '<i class="fa fa-angle-left"></i> '
+                    },
+                },
+                ajax: {
+                    url: `/admin/transaksi/getTransaksi`, // Ganti dengan URL endpoint server Anda
+                    type: 'GET', // Metode HTTP (GET/POST)
+                    dataSrc: 'Data' // Jalur data di response JSON
+                },
+                columns: [
+                    {
+                        data: "tanggal",
+                    },
+                    {
+                        data: "kodetransaksi",
+                    },
+                    {
+                        data: "pelanggan.nama",
+                    },
+                    {
+                        data: "total",
+                        render: function (data, type, row) {
+                            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(data);
+                        }
+                    },
+                    {
+                        data: 'status',
+                        render: function (data, type, row) {
+                            // Menampilkan badge sesuai dengan status
+                            if (data == 1) {
+                                return `<span class="badge bg-success fw-medium fs-10">Active</span>`;
+                            } else if (data == 2) {
+                                return `<span class="badge bg-danger fw-medium fs-10">In Active</span>`;
+                            } else {
+                                return `<span class="badge bg-secondary fw-medium fs-10">Unknown</span>`;
+                            }
+                        }
+                    }
+                ],
+                initComplete: (settings, json) => {
+                    $('.dataTables_filter').appendTo('#tableSearch');
+                    $('.dataTables_filter').appendTo('.search-input');
+                },
+                drawCallback: function () {
+                    // Re-inisialisasi Feather Icons setelah render ulang DataTable
+                    feather.replace();
+                    // Re-inisialisasi tooltip Bootstrap setelah render ulang DataTable
+                    initializeTooltip();
+                }
+            });
+        }
+    }
+
+   
+
+    //ketika button tambah di tekan
+    $("#modalTransaksi").on("click", function () {
+        if ($.fn.DataTable.isDataTable('#transaksiTable')) {
+            $('#transaksiTable').DataTable().clear().destroy();
+        }
+        getTransaksi();
+        $("#mdTransaksi").modal("show");
+    });
 
 })

@@ -89,4 +89,38 @@ class TransaksiController extends Controller
             'message' => 'Transaksi gagal disimpan.',
         ]);
     }
+
+    public function getTransaksi()
+    {
+        $transaksi = Transaksi::with(['keranjang', 'keranjang.produk', 'pelanggan'])->get();
+
+        return response()->json(['success' => true, 'message' => 'Data Transaksi Berhasil Ditemukan', 'Data' => $transaksi]);
+    }
+
+    public function konfirmasiPembayaran($id)
+    {
+        $transaksi  = Transaksi::where('id', $id)
+            ->update([
+                'status' => 2,
+            ]);
+
+        return response()->json(['success' => true, 'message' => 'Pembayaran Berhasil Dikonfirmasi']);
+    }
+
+    public function konfirmasiPembatalanPembayaran($id)
+    {
+        $transaksi  = Transaksi::where('id', $id)
+            ->update([
+                'status' => 0,
+            ]);
+
+        return response()->json(['success' => true, 'message' => 'Pembatalan Pembayaran Berhasil Dikonfirmasi']);
+    }
+
+    public function getTransaksiByID($id)
+    {
+        $transaksi = Transaksi::with(['keranjang', 'keranjang.produk', 'pelanggan', 'user', 'user.pegawai', 'diskon'])->where('id', $id)->get();
+
+        return response()->json(['success' => true, 'message' => 'Transaksi Berhasil Ditemukan', 'Data' => $transaksi]);
+    }
 }
