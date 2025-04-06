@@ -49,6 +49,13 @@
                         <li><a href="/admin/suplier"><i data-feather="archive"></i><span> Suplier</span></a></li>
                     </ul>
                 </li>
+                <li class="submenu-open">
+                    <h6 class="submenu-hdr">Transaksi</h6>
+                    <ul>
+                        <li><a href="/admin/pos"><i data-feather="hard-drive"></i><span> POS</span></a></li>
+                        <li><a href="/admin/suplier"><i data-feather="archive"></i><span> Suplier</span></a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>

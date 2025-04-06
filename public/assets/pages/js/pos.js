@@ -123,6 +123,10 @@ $(document).ready(function () {
                                             <span>BERAT: ${parseFloat(item.produk.berat).toFixed(1)} gram</span>
                                             <p>${hargajual}</p>
                                         </div>
+                                        <div class="align-items-center justify-content-between price text-center">
+                                            <button data-id="${item.produk.id}" class="btn btn-sm btn-secondary  mr-2 add-to-cart ">ADD TO CART
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             `;
@@ -198,7 +202,7 @@ $(document).ready(function () {
                         `;
                     });
 
-                     totalHargaKeranjang = Number(response.TotalHargaKeranjang);
+                    totalHargaKeranjang = Number(response.TotalHargaKeranjang);
 
                     // Format Grand Total ke dalam format mata uang Rupiah
                     const subtotalHarga = totalHargaKeranjang.toLocaleString('id-ID', {
@@ -292,5 +296,30 @@ $(document).ready(function () {
         $('#diskonDipilih').text(diskonPersen + "%");
         $('#total').text(grandTotalFormatted);
         $('#grandTotal').text(grandTotalFormatted);
+    });
+
+    // Event listener untuk tombol "Tambah ke Keranjang"
+    $(document).on("click",".add-to-cart", function () {
+        const produkId = $(this).data("id");
+        $.ajax({
+            url: "/admin/keranjang/storeProdukToCart",
+            method: "POST",
+            data: {
+                id: produkId,
+                total: total,
+                _token: $('meta[name="csrf-token"]').attr('content') // Jika menggunakan Laravel
+            },
+            success: function (response) {
+                if (response.success) {
+                    alert("Produk berhasil ditambahkan ke keranjang.");
+                    // Perbarui tampilan keranjang jika diperlukan
+                } else {
+                    alert("Gagal menambahkan produk ke keranjang.");
+                }
+            },
+            error: function () {
+                alert("Terjadi kesalahan. Silakan coba lagi.");
+            }
+        });
     });
 })
