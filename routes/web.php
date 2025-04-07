@@ -12,6 +12,7 @@ use App\Http\Controllers\Nampan\NampanController;
 use App\Http\Controllers\Nampan\NampanProdukController;
 use App\Http\Controllers\Pegawai\PegawaiController;
 use App\Http\Controllers\Pelanggan\PelangganController;
+use App\Http\Controllers\Pembelian\PembelianController;
 use App\Http\Controllers\Produk\JenisProdukController;
 use App\Http\Controllers\Produk\ProdukController;
 use App\Http\Controllers\Report\ReportController;
@@ -176,6 +177,11 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/transaksi/konfirmasiPembayaran/{id}', [TransaksiController::class, 'konfirmasiPembayaran']);
     Route::get('/admin/transaksi/konfirmasiPembatalanPembayaran/{id}', [TransaksiController::class, 'konfirmasiPembatalanPembayaran']);
     Route::get('/admin/transaksi/getTransaksiByID/{id}', [TransaksiController::class, 'getTransaksiByID']);
+
+    Route::get('/admin/pembelian', function () {
+        return view('Admin.pembelian');
+    });
+    Route::get('/admin/pembelian/getPembelian', [PembelianController::class, 'getPembelian']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
     Route::get('/admin/report/cetakTransaksi/{id}', [ReportController::class, 'cetakTransaksi']);

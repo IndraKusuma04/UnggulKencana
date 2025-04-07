@@ -54,6 +54,8 @@
                     <ul>
                         <li><a href="/admin/pos"><i data-feather="hard-drive"></i><span> POS</span></a></li>
                         <li><a href="/admin/transaksi"><i data-feather="file-minus"></i><span> Transaksi</span></a></li>
+                        <li><a href="/admin/pembelian"><i data-feather="shopping-bag"></i><span> Pembelian</span></a>
+                        </li>
                     </ul>
                 </li>
             </ul>
