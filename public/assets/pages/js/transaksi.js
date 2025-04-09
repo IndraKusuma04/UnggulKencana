@@ -254,7 +254,7 @@ $(document).ready(function () {
 
                 // Format: 7 April 2025
                 let tanggalFormatted = new Intl.DateTimeFormat('id-ID', {
-                    day: 'numeric',
+                    day: 'numeric', 
                     month: 'long',
                     year: 'numeric'
                 }).format(tanggalBaru);
@@ -285,8 +285,8 @@ $(document).ready(function () {
                         <tr>
                             <td>${produk.kodeproduk}</td>
                             <td>${produk.nama}</td>
-                            <td>${parseFloat(produk.berat).toFixed(1)} gram</td>
-                            <td>Rp ${Number(produk.harga_jual).toLocaleString('id-ID')}</td>
+                            <td>${parseFloat(item.berat).toFixed(1)} gram</td>
+                            <td>Rp ${Number(item.harga_jual).toLocaleString('id-ID')}</td>
                             <td>Rp ${Number(item.total).toLocaleString('id-ID')}</td>
                         </tr>
                     `;

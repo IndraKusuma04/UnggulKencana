@@ -82,6 +82,11 @@ class KeranjangController extends Controller
 
         $request['kodekeranjang']   = $generateCode;
         $request['produk_id']       = $request->id;
+        $request['berat']           = $request->berat;
+        $request['karat']           = $request->karat;
+        $request['harga_jual']      = $request->harga_jual;
+        $request['lingkar']         = $request->lingkar;
+        $request['panjang']         = $request->panjang;
         $request['total']           = $total;
         $request['oleh']            = Auth::user()->id;
         $request['status']          = 1;

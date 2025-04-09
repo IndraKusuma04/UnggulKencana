@@ -15,6 +15,11 @@ class Keranjang extends Model
     [
         'kodekeranjang',
         'produk_id',
+        'harga_jual',
+        'berat',
+        'karat',
+        'lingkar',
+        'panjang',
         'total',
         'oleh',
         'status'

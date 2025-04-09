@@ -123,19 +123,36 @@ $(document).ready(function () {
     getPembelian();
 
     //ketika button tambah di tekan
-    $("#btnTambahKondisi").on("click", function () {
-        $("#mdTambahKondisi").modal("show");
+    $("#btnTambahPembelian").on("click", function () {
+        Swal.fire({
+            title: 'Pilih Jenis Pembelian',
+            text: 'Apakah produk berasal dari toko atau luar toko?',
+            icon: 'question',
+            showCloseButton: true, // ⨉ tombol silang di pojok kanan atas
+            showDenyButton: true,
+            confirmButtonText: '<i class="fa fa-store"></i> Dari Toko',
+            denyButtonText: '<i class="fa fa-truck"></i> Diluar Toko',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Munculkan form "Dari Toko"
+                $("#mdPembelianDariToko").modal("show");
+            } else if (result.isDenied) {
+                // Munculkan form "Diluar Toko"
+                $("#modalDiluarToko").modal("show");
+            }
+        });
     });
 
     //ketika submit form tambah kondisi
-    $("#formTambahKondisi").on("submit", function (event) {
+    $("#formCariByKodeTransaksi").on("submit", function (event) {
         event.preventDefault(); // Mencegah form submit secara default
-        // Ambil elemen input file
-
         // Buat objek FormData
         const formData = new FormData(this);
+        // Ambil ID dari form
+        const KodeTransaksi = formData.get("kodetransaksi"); // Mengambil nilai input dengan name="id"
+
         $.ajax({
-            url: "/admin/kondisi/storeKondisi", // Endpoint Laravel untuk menyimpan pegawai
+            url: `/admin/pembelian/daritoko/getPembelianByKodeTransaksi/${KodeTransaksi}`, // Endpoint Laravel untuk menyimpan pegawai
             type: "POST",
             data: formData,
             processData: false, // Agar data tidak diubah menjadi string
@@ -146,8 +163,8 @@ $(document).ready(function () {
                 const toast = new bootstrap.Toast(successtoastExample);
                 $(".toast-body").text(response.message);
                 toast.show();
-                $("#mdTambahKondisi").modal("hide"); // Tutup modal
-                tableKondisi.ajax.reload(null, false); // Reload data dari server
+                $("#mfFormProdukPembelianPelanggan").modal("show"); // Tutup modal
+                produkPembelianPelanggan.ajax.reload(null, false); // Reload data dari server
             },
             error: function (xhr) {
                 // Tampilkan pesan error dari server

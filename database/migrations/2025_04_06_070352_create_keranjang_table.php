@@ -15,6 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('kodekeranjang', 100)->index();
             $table->unsignedBigInteger('produk_id');
+            $table->integer('harga_jual')->default(0);
+            $table->decimal('berat', 8, 3)->default(0.000);
+            $table->integer('karat');
+            $table->integer('lingkar')->default(0);
+            $table->integer('panjang')->default(0);
             $table->integer('total');
             $table->unsignedBigInteger('oleh');
             $table->integer('status');

@@ -60,30 +60,31 @@
         </div>
     </div>
 
-    <!-- md Tambah Pembelian -->
-    <div class="modal fade" id="mdTambahPembelian">
+    <!-- md Pembelian Dari Toko -->
+    <div class="modal fade" id="mdPembelianDariToko">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="page-title">
-                        <h4>TAMBAH PEMBELIAN</h4>
+                        <h4>PEMBELIAN DARI TOKO</h4>
                     </div>
                     <button type="button" class="close bg-danger text-white fs-16" data-bs-dismiss="modal"
                         aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="formTambahPembelian" method="POST" enctype="multipart/form-data">
+                <form id="formCariByKodeTransaksi" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">KONDISI<span class="text-danger ms-1">*</span></label>
-                            <input type="text" name="kondisi" class="form-control">
+                            <label class="form-label">CARI DENGAN KODE TRANSAKSI<span
+                                    class="text-danger ms-1">*</span></label>
+                            <input type="text" name="kodetransaksi" class="form-control">
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-between">
                         <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
-                        <button type="submit" class="btn btn-primary">SIMPAN</button>
+                        <button type="submit" class="btn btn-primary">CARI</button>
                     </div>
                 </form>
             </div>

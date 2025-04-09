@@ -144,7 +144,7 @@ $(document).ready(function () {
                                             <p>${hargajual}</p>
                                         </div>
                                         <div class="align-items-center justify-content-between price text-center">
-                                            <button data-id="${item.produk.id}" class="btn btn-sm btn-secondary  mr-2 add-to-cart ">ADD TO CART
+                                            <button data-id="${item.produk.id}" data-berat="${item.produk.berat}" data-karat="${item.produk.karat}" data-harga="${item.produk.harga_jual}" data-lingkar="${item.produk.lingkar}" data-panjang="${item.produk.panjang}" class="btn btn-sm btn-secondary  mr-2 add-to-cart ">ADD TO CART
                                             </button>
                                         </div>
                                     </div>
@@ -321,11 +321,21 @@ $(document).ready(function () {
     // Event listener untuk tombol "Tambah ke Keranjang"
     $(document).on("click", ".add-to-cart", function () {
         const produkId = $(this).data("id");
+        const dataBerat = $(this).data("berat");
+        const dataKarat = $(this).data("karat");
+        const dataHarga = $(this).data("harga");
+        const dataLingkar = $(this).data("lingkar");
+        const dataPanjang = $(this).data("panjang");
         $.ajax({
             url: "/admin/keranjang/addToCart",
             method: "POST",
             data: {
                 id: produkId,
+                berat: dataBerat,
+                karat: dataKarat,
+                harga_jual: dataHarga,
+                lingkar: dataLingkar,
+                panjang: dataPanjang,
                 _token: $('meta[name="csrf-token"]').attr('content') // Jika menggunakan Laravel
             },
             success: function (response) {
