@@ -183,7 +183,9 @@ Route::middleware(['checkRole:admin'])->group(function () {
     });
     Route::get('/admin/pembelian/getPembelian', [PembelianController::class, 'getPembelian']);
 
-    Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
+    Route::get('/admin/report/cetakBarcodeProduk/{id}', function () {
+        return view('Reports.cetakbarcode');
+    });
     Route::get('/admin/report/cetakTransaksi/{id}', [ReportController::class, 'cetakTransaksi']);
 
     Route::get('/logout', [AuthController::class, 'logout']);

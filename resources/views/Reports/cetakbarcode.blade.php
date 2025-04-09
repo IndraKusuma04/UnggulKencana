@@ -1,92 +1,49 @@
-<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabel dengan Ukuran 24mm × 55mm</title>
-    <style>
-        @page {
-            size: 55mm 24mm;
-            margin: 0;
-        }
-
-        body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        table {
-            width: 55mm;
-            height: 24mm;
-            border-collapse: collapse;
-            border: 1px solid black;
-            font-size: 4px;
-            /* Mengatur ukuran font agar muat */
-        }
-
-        td {
-            border: 1px solid black;
-            padding: 1mm;
-            word-wrap: break-word;
-            /* Memastikan teks panjang tetap terbagi ke baris berikutnya */
-            overflow-wrap: break-word;
-            /* Menghindari teks yang keluar dari batas */
-        }
-
-        .left {
-            width: 60%;
-        }
-
-        .right {
-            width: 40%;
-        }
-
-        .top-right {
-            height: 50%;
-        }
-
-        .bottom-right {
-            height: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .barcode-image {
-            max-width: 100%;
-            /* Menyesuaikan lebar gambar dengan lebar kolom */
-            max-height: 50%;
-            /* Menyesuaikan tinggi gambar agar tidak melebihi 50% */
-            object-fit: contain;
-            /* Menjaga rasio aspek gambar */
-        }
-    </style>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>
+        Label Page
+    </title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
-
-    <table>
-        <tr>
-            <td class="left" rowspan="2"></td>
-            <td class="right top-right">ini tulisan nama dan detail produk yang lebih panjang untuk menguji layout</td>
-        </tr>
-        <tr>
-            <td class="right bottom-right">
-                <img src="{{ asset('storage/barcode/UCuU5N0LZX.png') }}" alt="barcode" class="barcode-image">
-            </td>
-        </tr>
-    </table>
-
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div class="bg-white p-4 shadow-lg">
+        <div class="grid grid-cols-1 gap-2">
+            <!-- Label 1 -->
+            <div class="flex items-center justify-between border p-2">
+                <div class="flex flex-col items-center">
+                    <img alt="Barcode" class="mb-1" height="50" src="{{ asset('storage/barcode/lX5Z931wXR.png') }}"
+                        width="50" />
+                    <span class="text-xs">
+                        Giant Black Hole
+                    </span>
+                    <span class="text-xs">
+                        12345
+                    </span>
+                </div>
+                <div class="flex-1 border-t border-gray-300 mx-2">
+                </div>
+                <div class="flex flex-col items-center">
+                    <img alt="Barcode" class="mb-1" height="50"
+                        src="{{ asset('storage/barcode/lX5Z931wXR.png') }}" width="50" />
+                    <span class="text-xs">
+                        Giant Black Hole
+                    </span>
+                    <span class="text-xs">
+                        12345
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             window.print();
         });
     </script>
-
 </body>
 
 </html>

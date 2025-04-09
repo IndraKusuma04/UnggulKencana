@@ -69,7 +69,7 @@
                     <ul class="table-top-head">
                         <li>
                             <a data-bs-toggle="tooltip" data-bs-placement="top" title="Pdf"><img
-                                    src="{{ asset('assets') }}/img/icons/pdf.svg" alt="img"></a>
+                                    src="{{ asset('assets') }}/img/icons/product-print.svg" alt="img"></a>
                         </li>
                         <li>
                             <a data-bs-toggle="tooltip" id="btnPrintModal" data-bs-placement="top" title="Pdf"><img
