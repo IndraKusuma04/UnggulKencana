@@ -119,7 +119,9 @@ class TransaksiController extends Controller
 
     public function getTransaksiByID($id)
     {
-        $transaksi = Transaksi::with(['keranjang', 'keranjang.produk', 'pelanggan', 'user', 'user.pegawai', 'diskon'])->where('id', $id)->get();
+        $transaksi = Transaksi::with(['keranjang' => function ($query) {
+            $query->where('status', '!=', 0);
+        }, 'keranjang.produk', 'pelanggan', 'user', 'user.pegawai', 'diskon'])->where('id', $id)->get();
 
         return response()->json(['success' => true, 'message' => 'Transaksi Berhasil Ditemukan', 'Data' => $transaksi]);
     }

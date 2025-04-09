@@ -147,47 +147,48 @@ $(document).ready(function () {
     $("#formCariByKodeTransaksi").on("submit", function (event) {
         event.preventDefault(); // Mencegah form submit secara default
         // Buat objek FormData
-        const formData = new FormData(this);
-        // Ambil ID dari form
-        const KodeTransaksi = formData.get("kodetransaksi"); // Mengambil nilai input dengan name="id"
+        // const formData = new FormData(this);
+        // // Ambil ID dari form
+        // const KodeTransaksi = formData.get("kodetransaksi"); // Mengambil nilai input dengan name="id"
 
-        $.ajax({
-            url: `/admin/pembelian/daritoko/getPembelianByKodeTransaksi/${KodeTransaksi}`, // Endpoint Laravel untuk menyimpan pegawai
-            type: "POST",
-            data: formData,
-            processData: false, // Agar data tidak diubah menjadi string
-            contentType: false, // Agar header Content-Type otomatis disesuaikan
-            success: function (response) {
-                const successtoastExample =
-                    document.getElementById("successToast");
-                const toast = new bootstrap.Toast(successtoastExample);
-                $(".toast-body").text(response.message);
-                toast.show();
-                $("#mfFormProdukPembelianPelanggan").modal("show"); // Tutup modal
-                produkPembelianPelanggan.ajax.reload(null, false); // Reload data dari server
-            },
-            error: function (xhr) {
-                // Tampilkan pesan error dari server
-                const errors = xhr.responseJSON.errors;
-                if (errors) {
-                    let errorMessage = "";
-                    for (let key in errors) {
-                        errorMessage += `${errors[key][0]}\n`;
-                    }
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage);
-                    toast.show();
-                } else {
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(response.message);
-                    toast.show();
-                }
-            },
-        });
+        $("#mdFormPembelianDariToko").modal("show"); // Tutup modal
+        // $.ajax({
+        //     url: `/admin/pembelian/daritoko/getPembelianByKodeTransaksi/${KodeTransaksi}`, // Endpoint Laravel untuk menyimpan pegawai
+        //     type: "POST",
+        //     data: formData,
+        //     processData: false, // Agar data tidak diubah menjadi string
+        //     contentType: false, // Agar header Content-Type otomatis disesuaikan
+        //     success: function (response) {
+        //         const successtoastExample =
+        //             document.getElementById("successToast");
+        //         const toast = new bootstrap.Toast(successtoastExample);
+        //         $(".toast-body").text(response.message);
+        //         toast.show();
+        //         $("#mdFormPembelianDariToko").modal("show"); // Tutup modal
+        //         // produkPembelianPelanggan.ajax.reload(null, false); // Reload data dari server
+        //     },
+        //     error: function (xhr) {
+        //         // Tampilkan pesan error dari server
+        //         const errors = xhr.responseJSON.errors;
+        //         if (errors) {
+        //             let errorMessage = "";
+        //             for (let key in errors) {
+        //                 errorMessage += `${errors[key][0]}\n`;
+        //             }
+        //             const dangertoastExamplee =
+        //                 document.getElementById("dangerToast");
+        //             const toast = new bootstrap.Toast(dangertoastExamplee);
+        //             $(".toast-body").text(errorMessage);
+        //             toast.show();
+        //         } else {
+        //             const dangertoastExamplee =
+        //                 document.getElementById("dangerToast");
+        //             const toast = new bootstrap.Toast(dangertoastExamplee);
+        //             $(".toast-body").text(response.message);
+        //             toast.show();
+        //         }
+        //     },
+        // });
     });
 
     // Ketika modal ditutup, reset semua field
