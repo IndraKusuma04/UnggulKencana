@@ -18,6 +18,7 @@ class PembelianProduk extends Model
         'jenisproduk_id',
         'harga',
         'harga_beli',
+        'harga_jual',
         'berat',
         'karat',
         'lingkar',

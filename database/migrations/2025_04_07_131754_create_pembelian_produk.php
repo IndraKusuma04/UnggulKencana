@@ -18,12 +18,13 @@ return new class extends Migration
             $table->unsignedBigInteger('jenisproduk_id');
             $table->string('nama', 100);
             $table->integer('harga_beli')->default(0);
+            $table->integer('harga_jual')->default(0);
             $table->decimal('berat', 8, 3)->default(0.000);
-            $table->integer('karat');
+            $table->integer('karat')->default(0);
             $table->integer('lingkar')->default(0);
             $table->integer('panjang')->default(0);
             $table->text('keterangan')->nullable();
-            $table->unsignedBigInteger('kondisi_id');
+            $table->unsignedBigInteger('kondisi_id')->nullable();
             $table->integer('status'); // 1 = aktif, 0 = rusak/kusam
             $table->unsignedBigInteger('oleh');
             $table->timestamps();

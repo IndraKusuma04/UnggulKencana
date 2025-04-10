@@ -139,13 +139,13 @@
                                 </div>
                                 <div class="card table-list-card">
                                     <div class="table-responsive product-list">
-                                        <table class="table pembelianProdukTable table-hover" style="width: 100%">
+                                        <table id="keranjangPembelianProduk" class="table table-hover" style="width: 100%">
                                             <thead>
                                                 <tr>
-                                                    <th>No.</th>
-                                                    <th>Nama Produk</th>
-                                                    <th>Berat </th>
-                                                    <th>Action</th>
+                                                    <th>NO.</th>
+                                                    <th>KODE PRODUK</th>
+                                                    <th>BERAT </th>
+                                                    <th>ACTION</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -155,6 +155,11 @@
                                 </div>
                                 <form method="POST" enctype="multipart/form-data" id="storePembelian">
                                     @csrf
+                                    <div class="mb-3">
+                                        <label class="form-label">KONDISI</label>
+                                        <select class="select" name="kondisi" id="kondisi">
+                                        </select>
+                                    </div>
                                     <div class="mb-3">
                                         <label class="form-label">HARGA BELI<span
                                                 class="text-danger ms-1">*</span></label>

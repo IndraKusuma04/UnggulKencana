@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Pembelian;
 
+use App\Models\Produk;
+use App\Models\Keranjang;
 use App\Models\Pembelian;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
+use App\Models\PembelianProduk;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Produk;
+use Illuminate\Support\Facades\Auth;
 
 class PembelianController extends Controller
 {
@@ -73,8 +76,52 @@ class PembelianController extends Controller
         return $newKodeKeranjang;
     }
 
+    public function getPembelianProduk()
+    {
+        $pembelianProduk = PembelianProduk::where('status', 1)->get();
+
+        return response()->json(['success' => true, 'message' => 'Data Pembelian Produk Berhasil Ditemukan', 'Data' => $pembelianProduk]);
+    }
+
     public function storeProdukToPembelianProduk(Request $request)
     {
-        $produk = Produk::where('kodeproduk', $request->id)->first();
+        $request->validate([
+            'id'  => 'required|integer|exists:keranjang,id',
+        ]);
+
+        $keranjang = Keranjang::findOrFail($request->id);
+        $produk = Produk::findOrFail($keranjang->produk_id);
+
+        // Cek apakah kodeproduk sudah ada di pembelian_produk
+        $existing = PembelianProduk::where('kodeproduk', $produk->kodeproduk)->first();
+
+        if ($existing) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Produk sudah ada di keranjang pembelian.',
+            ]);
+        }
+
+        $kodepembelianproduk = $this->generateKodePembelianProduk();
+
+        PembelianProduk::create([
+            'kodepembelianproduk'   => $kodepembelianproduk,
+            'kodeproduk'            => $produk->kodeproduk,
+            'jenisproduk_id'        => $produk->jenisproduk_id,
+            'nama'                  => $produk->nama,
+            'keterangan'            => $produk->keterangan,
+            'harga_jual'            => $keranjang->harga_jual,
+            'berat'                 => $keranjang->berat,
+            'karat'                 => $keranjang->karat,
+            'lingkar'               => $keranjang->lingkar,
+            'panjang'               => $keranjang->panjang,
+            'oleh'                  => Auth::user()->id,
+            'status'                => 1,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Produk berhasil ditambahkan ke pembelian.',
+        ]);
     }
 }

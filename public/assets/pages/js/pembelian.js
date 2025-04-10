@@ -208,13 +208,15 @@ $(document).ready(function () {
                                         render: function (data, type, row) {
                                             return parseFloat(data).toFixed(1) + " gram"; // Menampilkan 1 angka desimal
                                         }
-                                     },
+                                    },
                                     {
                                         data: "harga",
                                         render: function (data) {
                                             return new Intl.NumberFormat('id-ID', {
                                                 style: 'currency',
-                                                currency: 'IDR'
+                                                currency: 'IDR',
+                                                minimumFractionDigits: 0, // Menentukan jumlah angka di belakang koma
+                                                maximumFractionDigits: 0  // Menentukan jumlah angka di belakang koma
                                             }).format(data);
                                         }
                                     },
@@ -243,10 +245,34 @@ $(document).ready(function () {
                             tabelTransksiByKodeTransaksi.clear().rows.add(tableData).draw();
                         }
 
-                        
+
                         $("#titlekodetransaksi").text(response.Data[0].kodetransaksi);
                         $("#detailpelanggan").val(response.Data[0].pelanggan.nama);
                         $("#idpelanggan").val(response.Data[0].pelanggan.id);
+
+                        // 🔁 Muat data pembelian_produk ke DataTable kedua
+                        loadDetailPembelianProduk(response.Data[0].kodetransaksi);
+
+                        // loadKondisi
+                        $.ajax({
+                            url: "/admin/kondisi/getKondisi", // Endpoint untuk mendapatkan data jabatan
+                            type: "GET",
+                            success: function (response) {
+                                let options
+                                response.Data.forEach((item) => {
+                                    options += `<option value="${item.id}">${item.kondisi}</option>`;
+                                });
+                                $("#kondisi").html(options); // Masukkan data ke select
+                            },
+                            error: function () {
+                                Swal.fire(
+                                    "Gagal!",
+                                    "Tidak dapat mengambil data kondisi.",
+                                    "error"
+                                );
+                            },
+                        });
+
                     } else {
                         // Tangani jika tidak ada data keranjang
                         const dangertoastExamplee =
@@ -255,6 +281,7 @@ $(document).ready(function () {
                         $(".toast-body").text(response.message);
                         toast.show();
                     }
+
                 } else {
                     // Tangani jika success=false
                     const dangertoastExamplee =
@@ -293,10 +320,124 @@ $(document).ready(function () {
         $("#formCariByKodeTransaksi")[0].reset();
     });
 
-    // Tangani klik tombol pilih produk
-    $(document).on('click', '.btn-pilihproduk', function () {
-        const produkId = $(this).data('id');
+    function loadDetailPembelianProduk() {
+        if ($('#keranjangPembelianProduk').length > 0) {
+            if ($.fn.DataTable.isDataTable('#keranjangPembelianProduk')) {
+                $('#keranjangPembelianProduk').DataTable().destroy();
+            }
+
+            $('#keranjangPembelianProduk').DataTable({
+                scrollX: false,
+                bFilter: false,
+                sDom: 'fBtlpi',
+                ordering: true,
+                language: {
+                    search: ' ',
+                    sLengthMenu: '_MENU_',
+                    searchPlaceholder: "Search",
+                    info: "_START_ - _END_ of _TOTAL_ items",
+                    paginate: {
+                        next: ' <i class="fa fa-angle-right"></i>',
+                        previous: '<i class="fa fa-angle-left"></i>'
+                    },
+                },
+                ajax: {
+                    url: `/admin/pembelian/getPembelianProduk`,
+                    type: 'GET',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    dataSrc: 'Data'
+                },
+                columns: [
+                    {
+                        data: null,
+                        render: (data, type, row, meta) => meta.row + 1,
+                        orderable: false,
+                    },
+                    { data: "kodeproduk" },
+                    {
+                        data: "berat",
+                        render: data => `${parseFloat(data).toFixed(1)} gram`
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        className: "action-table-data",
+                        render: (data, type, row) => `
+                            <div class="edit-delete-action">
+                                <a class="me-2 p-2 btn-edit-produk" data-id="${row.id}" title="Edit Produk">
+                                    <i data-feather="edit"></i>
+                                </a>
+                                <a class="p-2 btn-delete-produk" data-id="${row.id}" title="Hapus Produk">
+                                    <i data-feather="trash-2"></i>
+                                </a>
+                            </div>
+                        `
+                    }
+                ],
+                drawCallback: function () {
+                    feather.replace();
+                    initializeTooltip();
+                }
+            });
+        }
+    }
+
+
+    // Event ketika tombol pilih produk diklik
+    $(document).on("click", ".btn-pilihproduk", function () {
+        const idProduk = $(this).data("id");
+
+        Swal.fire({
+            title: "Pilih Produk Ini?",
+            text: "Produk akan ditambahkan ke dalam pembelian.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Pilih",
+            cancelButtonText: "Batal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Kirim data via AJAX ke Laravel
+                $.ajax({
+                    url: "/admin/pembelian/storeProdukToPembelianProduk",
+                    type: "POST",
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        id: idProduk
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Berhasil!",
+                                text: response.message
+                            });
+
+                            // Reload DataTable pembelian_produk (pastikan sudah diinisialisasi sebelumnya)
+                            if ($.fn.DataTable.isDataTable('#keranjangPembelianProduk')) {
+                                $('#keranjangPembelianProduk').DataTable().ajax.reload();
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: "info",
+                                title: "Wait!",
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Terjadi Kesalahan!",
+                            text: "Tidak dapat menambahkan produk."
+                        });
+                    }
+                });
+            }
+        });
     });
+
 
 
     //ketika button edit di tekan
