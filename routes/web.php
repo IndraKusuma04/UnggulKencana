@@ -182,6 +182,7 @@ Route::middleware(['checkRole:admin'])->group(function () {
         return view('Admin.pembelian');
     });
     Route::get('/admin/pembelian/getPembelian', [PembelianController::class, 'getPembelian']);
+    Route::post('/admin/pembelian/getTransaksiByKodeTransaksi', [PembelianController::class, 'getTransaksiByKodeTransaksi']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', function () {
         return view('Reports.cetakbarcode');

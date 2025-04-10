@@ -18,7 +18,7 @@ class CheckRole
     {
         // Jika user belum login, arahkan ke halaman login
         if (!Auth::check()) {
-            return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
+            return redirect('/')->with('error', 'Silakan login terlebih dahulu.');
         }
 
         // Jika user sudah login dan mencoba akses halaman login, redirect ke dashboard
