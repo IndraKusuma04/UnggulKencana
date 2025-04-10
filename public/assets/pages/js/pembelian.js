@@ -203,7 +203,12 @@ $(document).ready(function () {
                                 columns: [
                                     { data: "kodeproduk" },
                                     { data: "nama" },
-                                    { data: "berat" },
+                                    {
+                                        data: "berat",
+                                        render: function (data, type, row) {
+                                            return parseFloat(data).toFixed(1) + " gram"; // Menampilkan 1 angka desimal
+                                        }
+                                     },
                                     {
                                         data: "harga",
                                         render: function (data) {
@@ -240,7 +245,8 @@ $(document).ready(function () {
 
                         
                         $("#titlekodetransaksi").text(response.Data[0].kodetransaksi);
-                        $("#detailpelanggan").text(response.Data[0].pelanggan.nama);
+                        $("#detailpelanggan").val(response.Data[0].pelanggan.nama);
+                        $("#idpelanggan").val(response.Data[0].pelanggan.id);
                     } else {
                         // Tangani jika tidak ada data keranjang
                         const dangertoastExamplee =
@@ -290,13 +296,6 @@ $(document).ready(function () {
     // Tangani klik tombol pilih produk
     $(document).on('click', '.btn-pilihproduk', function () {
         const produkId = $(this).data('id');
-
-        // Misalnya: tampilkan di console atau lakukan sesuatu
-        
-
-        // Atau jalankan fungsi lain seperti membuka modal, copy data ke form, dll
-        // contoh:
-        // tambahProdukKeForm(produkId);
     });
 
 

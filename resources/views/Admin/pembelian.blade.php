@@ -162,8 +162,8 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">PELANGGAN<span class="text-danger ms-1">*</span></label>
-                                        <input type="text" name="pelanggan" id="detailpelanggan"
-                                            class="form-control">
+                                        <input type="text" id="detailpelanggan" class="form-control" readonly>
+                                        <input type="hidden" name="pelanggan" id="idpelanggan" class="form-control">
                                     </div>
                                 </form>
                             </div>
