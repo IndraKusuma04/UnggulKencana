@@ -32,6 +32,7 @@ return new class extends Migration
             $table->foreign('oleh')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('kondisi_id')->references('id')->on('kondisi')->onDelete('cascade');
             $table->foreign('jenisproduk_id')->references('id')->on('jenis_produk')->onDelete('cascade');
+            $table->foreign('kodeproduk')->references('kodeproduk')->on('produk')->onDelete('cascade');
         });
     }
 

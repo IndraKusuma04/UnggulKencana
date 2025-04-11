@@ -518,22 +518,22 @@ $(document).ready(function () {
     });
 
     // ketika button hapus di tekan
-    $(document).on("click", ".confirm-text", function () {
+    $(document).on("click", ".btn-delete-produk", function () {
         const deleteID = $(this).data("id");
 
         // SweetAlert2 untuk konfirmasi
         Swal.fire({
             title: "Apakah Anda yakin?",
-            text: "Data ini akan dihapus secara permanen!",
+            text: "Produk ini akan dibatalkan",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Ya, hapus!",
+            confirmButtonText: "Ya, Batal!",
             cancelButtonText: "Batal",
             reverseButtons: true,
         }).then((result) => {
             if (result.isConfirmed) {
                 // Kirim permintaan hapus (gunakan itemId)
-                fetch(`/admin/kondisi/deleteKondisi/${deleteID}`, {
+                fetch(`/admin/pembelian/deletePembelianProduk/${deleteID}`, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
@@ -545,15 +545,18 @@ $(document).ready(function () {
                     .then((response) => {
                         if (response.ok) {
                             Swal.fire(
-                                "Dihapus!",
-                                "Data berhasil dihapus.",
+                                "Dibatalkan!",
+                                "Produk berhasil dibatalkan.",
                                 "success"
                             );
-                            tableKondisi.ajax.reload(null, false); // Reload data dari server
+                            // Reload DataTable pembelian_produk (pastikan sudah diinisialisasi sebelumnya)
+                            if ($.fn.DataTable.isDataTable('#keranjangPembelianProduk')) {
+                                $('#keranjangPembelianProduk').DataTable().ajax.reload();
+                            }
                         } else {
                             Swal.fire(
                                 "Gagal!",
-                                "Terjadi kesalahan saat menghapus data.",
+                                "Terjadi kesalahan saat membatalkan produk.",
                                 "error"
                             );
                         }
@@ -561,13 +564,13 @@ $(document).ready(function () {
                     .catch((error) => {
                         Swal.fire(
                             "Gagal!",
-                            "Terjadi kesalahan dalam penghapusan data.",
+                            "Terjadi kesalahan dalam pembatalan produk.",
                             "error"
                         );
                     });
             } else {
                 // Jika batal, beri tahu pengguna
-                Swal.fire("Dibatalkan", "Data tidak dihapus.", "info");
+                Swal.fire("Dibatalkan", "Produk tidak dibatalkan.", "info");
             }
         });
     });

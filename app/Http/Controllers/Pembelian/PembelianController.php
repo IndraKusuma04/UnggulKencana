@@ -33,7 +33,7 @@ class PembelianController extends Controller
 
         $transaksi = Transaksi::with(['keranjang' => function ($query) {
             $query->where('status', '!=', 0);
-        }, 'keranjang.produk', 'pelanggan', 'user', 'user.pegawai', 'diskon'])->where('kodetransaksi', $request->kodetransaksi)->get();
+        }, 'keranjang.produk', 'pelanggan', 'user', 'user.pegawai', 'diskon'])->where('kodetransaksi', $request->kodetransaksi)->where('status', 2)->get();
 
         // Cek apakah data transaksi ditemukan
         if ($transaksi->isEmpty()) {
@@ -93,7 +93,7 @@ class PembelianController extends Controller
         $produk = Produk::findOrFail($keranjang->produk_id);
 
         // Cek apakah kodeproduk sudah ada di pembelian_produk
-        $existing = PembelianProduk::where('kodeproduk', $produk->kodeproduk)->first();
+        $existing = PembelianProduk::where('kodeproduk', $produk->kodeproduk)->where('status', 1)->first();
 
         if ($existing) {
             return response()->json([
