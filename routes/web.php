@@ -185,6 +185,7 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::post('/admin/pembelian/getTransaksiByKodeTransaksi', [PembelianController::class, 'getTransaksiByKodeTransaksi']);
     Route::get('/admin/pembelian/getPembelianProduk', [PembelianController::class, 'getPembelianProduk']);
     Route::post('/admin/pembelian/storeProdukToPembelianProduk', [PembelianController::class, 'storeProdukToPembelianProduk']);
+    Route::delete('/admin/pembelian/deletePembelianProduk/{id}', [PembelianController::class, 'deletePembelianProduk']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', function () {
         return view('Reports.cetakbarcode');

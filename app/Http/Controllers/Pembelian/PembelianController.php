@@ -124,4 +124,22 @@ class PembelianController extends Controller
             'message' => 'Produk berhasil ditambahkan ke pembelian.',
         ]);
     }
+
+    public function deletePembelianProduk($id)
+    {
+        // Cari data pelanggan berdasarkan ID
+        $produk = PembelianProduk::find($id);
+
+        // Periksa apakah data ditemukan
+        if (!$produk) {
+            return response()->json(['success' => false, 'message' => 'Produk tidak ditemukan.'], 404);
+        }
+
+        // Update status menjadi 0 (soft delete manual)
+        $produk->update([
+            'status' => 0,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Produk Berhasil Dibatalkan.']);
+    }
 }
