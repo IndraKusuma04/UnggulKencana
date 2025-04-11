@@ -56,7 +56,7 @@
     </div>
 
     <div class="toast-container position-fixed top-0 end-0 p-3">
-        <div id="successToast" class="toast colored-toast bg-secondary-transparent" role="alert" aria-live="assertive"
+        <div id="successToast" class="toast colored-toast bg-secondary" role="alert" aria-live="assertive"
             aria-atomic="true">
             <div class="toast-header bg-secondary text-fixed-white">
                 <strong class="me-auto">Peringatan !</strong>
@@ -65,7 +65,7 @@
             <div class="toast-body">
             </div>
         </div>
-        <div id="dangerToast" class="toast colored-toast bg-danger-transparent" role="alert" aria-live="assertive"
+        <div id="dangerToast" class="toast colored-toast bg-danger" role="alert" aria-live="assertive"
             aria-atomic="true">
             <div class="toast-header bg-danger text-fixed-white">
                 <strong class="me-auto">Peringatan !</strong>

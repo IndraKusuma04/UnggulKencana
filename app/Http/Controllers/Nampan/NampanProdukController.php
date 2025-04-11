@@ -64,8 +64,9 @@ class NampanProdukController extends Controller
             'items' => 'required|array',
         ]);
 
-        // Ambil daftar produk_id yang sudah ada di NampanProduk
-        $existingProducts = NampanProduk::whereIn('produk_id', $request->items)
+        // Ambil daftar produk_id yang sudah ada di NampanProduk dan aktif (status = 1)
+        $existingProducts = NampanProduk::where('status', 1)
+            ->whereIn('produk_id', $request->items)
             ->pluck('produk_id')
             ->toArray();
 

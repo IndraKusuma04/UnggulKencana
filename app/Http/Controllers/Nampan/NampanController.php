@@ -13,7 +13,11 @@ class NampanController extends Controller
     {
         $nampan = Nampan::where('status', 1)
             ->with(['jenisProduk'])
-            ->withCount('produk') // <--- hitung total produk per nampan
+            ->withCount([
+                'produk' => function ($query) {
+                    $query->where('status', 1); // hanya hitung produk dengan status = 1
+                }
+            ])
             ->get();
 
         $totalProdukAll = NampanProduk::where('status', 1)->count();

@@ -13,7 +13,8 @@ $(document).ready(function () {
     //function refresh
     $(document).on("click", "#refreshButton", function () {
         getKeranjang();
-        getNampanProduk();
+        getNampanProduk('all');
+        getNampan();
         const successtoastExample = document.getElementById("successToast");
         const toast = new bootstrap.Toast(successtoastExample);
         $(".toast-body").text("Data Keranjang Berhasil Direfresh");
@@ -399,6 +400,7 @@ $(document).ready(function () {
                                 "success"
                             );
                             getKeranjang();
+                            getNampan();
                         } else {
                             Swal.fire(
                                 "Gagal!",
@@ -454,6 +456,7 @@ $(document).ready(function () {
                                 "success"
                             );
                             getKeranjang();
+                            getNampan();
                         } else {
                             Swal.fire(
                                 "Gagal!",
@@ -599,7 +602,8 @@ $(document).ready(function () {
                             if (res.success) {
                                 showToast("success", res.message);
                                 getKeranjang(); 
-                                getNampanProduk();
+                                getNampanProduk('all');
+                                getNampan();
 
                                 $("#grandTotal").text("Rp0");
                                 $("#total").text("Rp0");
