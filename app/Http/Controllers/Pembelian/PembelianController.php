@@ -48,9 +48,13 @@ class PembelianController extends Controller
 
     public function generateKodePembelianProduk()
     {
-        // Cek apakah ada kode keranjang terakhir dengan status 1
+        // Ambil ID user yang sedang login
+        $userId = Auth::id();
+
+        // Cek apakah ada kode keranjang terakhir dengan status 1 untuk user tersebut
         $lastKeranjangWithStatusOne = DB::table('pembelian_produk')
             ->where('status', 1)
+            ->where('oleh', $userId) // Pastikan hanya mengambil milik user ini
             ->orderBy('kodepembelianproduk', 'desc')
             ->first();
 
@@ -59,8 +63,9 @@ class PembelianController extends Controller
             return $lastKeranjangWithStatusOne->kodepembelianproduk;
         }
 
-        // Jika tidak ada keranjang dengan status 1, ambil kode keranjang terakhir secara umum
+        // Jika tidak ada keranjang dengan status 1, ambil kode keranjang terakhir untuk user ini
         $lastKeranjang = DB::table('pembelian_produk')
+            ->where('oleh', $userId) // Pastikan hanya mengambil milik user ini
             ->orderBy('kodepembelianproduk', 'desc')
             ->first();
 
@@ -70,15 +75,16 @@ class PembelianController extends Controller
         // Tambahkan 1 pada nomor terakhir
         $newNumber = $lastNumber + 1;
 
-        // Format kode keranjang baru
-        $newKodeKeranjang = '#PO-' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+        // Format kode keranjang baru dengan menambahkan ID user sebagai prefix
+        $newKodeKeranjang = '#PO-' . $userId . '-' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
 
         return $newKodeKeranjang;
     }
 
+
     public function getPembelianProduk()
     {
-        $pembelianProduk = PembelianProduk::where('status', 1)->get();
+        $pembelianProduk = PembelianProduk::with(['produk'])->where('status', 1)->where('oleh', Auth::user()->id)->get();
 
         return response()->json(['success' => true, 'message' => 'Data Pembelian Produk Berhasil Ditemukan', 'Data' => $pembelianProduk]);
     }
@@ -102,7 +108,13 @@ class PembelianController extends Controller
             ]);
         }
 
-        $kodepembelianproduk = $this->generateKodePembelianProduk();
+        // Cek apakah sudah ada kodepembelianproduk di session
+        $kodepembelianproduk = session('kodepembelianproduk');
+
+        if (!$kodepembelianproduk) {
+            $kodepembelianproduk = $this->generateKodePembelianProduk();
+            session(['kodepembelianproduk' => $kodepembelianproduk]);
+        }
 
         PembelianProduk::create([
             'kodepembelianproduk'   => $kodepembelianproduk,
@@ -122,6 +134,7 @@ class PembelianController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Produk berhasil ditambahkan ke pembelian.',
+            'kode'    => $kodepembelianproduk
         ]);
     }
 
@@ -141,5 +154,48 @@ class PembelianController extends Controller
         ]);
 
         return response()->json(['success' => true, 'message' => 'Produk Berhasil Dibatalkan.']);
+    }
+
+    public function storePembelian(Request $request)
+    {
+        $request->validate([
+            'hargabeli' => 'required|numeric',
+            'kondisi' => 'required|integer|exists:kondisi,id',
+            'pelanggan' => 'required|exists:pelanggan,id',
+        ]);
+
+        $kodePembelianProduk = session('kodepembelianproduk');
+
+        if (!$kodePembelianProduk) {
+            return back()->with('error', 'Kode pembelian produk tidak ditemukan. Silakan ulangi proses.');
+        }
+
+        // Cek apakah masih ada data pembelian_produk dengan kode ini dan status 1
+        $produkDipilih = PembelianProduk::where('kodepembelianproduk', $kodePembelianProduk)
+            ->where('status', 1)
+            ->get();
+
+        if ($produkDipilih->isEmpty()) {
+            return back()->with('error', 'Tidak ada produk yang dipilih untuk disimpan.');
+        }
+
+        // Simpan data ke tabel pembelian
+        $pembelian = Pembelian::create([
+            'kodepembelianproduk' => $kodePembelianProduk,
+            'user_id' => Auth::id(),
+            'pelanggan_id' => $request->pelanggan,
+            'total_harga' => $request->hargabeli,
+            'kondisi_id' => $request->kondisi,
+            'tanggal' => now(),
+        ]);
+
+        // Update status di pembelian_produk
+        PembelianProduk::where('kodepembelianproduk', $kodePembelianProduk)
+            ->update(['status' => 2]);
+
+        // Hapus session agar tidak terpakai lagi
+        session()->forget('kodepembelianproduk');
+
+        return redirect()->route('pembelian.index')->with('success', 'Transaksi berhasil disimpan.');
     }
 }

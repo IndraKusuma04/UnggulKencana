@@ -142,8 +142,8 @@
                                         <table id="keranjangPembelianProduk" class="table table-hover" style="width: 100%">
                                             <thead>
                                                 <tr>
-                                                    <th>NO.</th>
                                                     <th>KODE PRODUK</th>
+                                                    <th>NAMA</th>
                                                     <th>BERAT </th>
                                                     <th>ACTION</th>
                                                 </tr>
@@ -155,20 +155,26 @@
                                 </div>
                                 <form method="POST" enctype="multipart/form-data" id="storePembelian">
                                     @csrf
-                                    <div class="mb-3">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">KODE PEMBELIAN PRODUK<span
+                                                    class="text-danger ms-1">*</span></label>
+                                            <input type="text" name="kodepembelianproduk" id="kodepembelianproduk"
+                                                value="{{ session('kodepembelianproduk') }}" class="form-control"
+                                                readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">PELANGGAN<span
+                                                    class="text-danger ms-1">*</span></label>
+                                            <input type="text" id="detailpelanggan" class="form-control" readonly>
+                                            <input type="hidden" name="pelanggan" id="idpelanggan"
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class=" mb-3">
                                         <label class="form-label">KONDISI</label>
                                         <select class="select" name="kondisi" id="kondisi">
                                         </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">HARGA BELI<span
-                                                class="text-danger ms-1">*</span></label>
-                                        <input type="text" name="hargabeli" class="form-control">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">PELANGGAN<span class="text-danger ms-1">*</span></label>
-                                        <input type="text" id="detailpelanggan" class="form-control" readonly>
-                                        <input type="hidden" name="pelanggan" id="idpelanggan" class="form-control">
                                     </div>
                                 </form>
                             </div>

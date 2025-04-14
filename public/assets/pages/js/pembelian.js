@@ -350,12 +350,8 @@ $(document).ready(function () {
                     dataSrc: 'Data'
                 },
                 columns: [
-                    {
-                        data: null,
-                        render: (data, type, row, meta) => meta.row + 1,
-                        orderable: false,
-                    },
                     { data: "kodeproduk" },
+                    { data: "nama" },
                     {
                         data: "berat",
                         render: data => `${parseFloat(data).toFixed(1)} gram`
@@ -366,10 +362,10 @@ $(document).ready(function () {
                         className: "action-table-data",
                         render: (data, type, row) => `
                             <div class="edit-delete-action">
-                                <a class="me-2 p-2 btn-edit-produk" data-id="${row.id}" title="Edit Produk">
-                                    <i data-feather="edit"></i>
+                                <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Masukan Harga Beli">
+                                    <i data-feather="edit" class="feather-edit"></i>
                                 </a>
-                                <a class="p-2 btn-delete-produk" data-id="${row.id}" title="Hapus Produk">
+                                <a class="p-2 btn-delete-produk" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Batalkan Produk">
                                     <i data-feather="trash-2"></i>
                                 </a>
                             </div>
@@ -413,6 +409,8 @@ $(document).ready(function () {
                                 title: "Berhasil!",
                                 text: response.message
                             });
+
+                            $('#kodepembelianproduk').val(response.kode); // <-- tambahkan ini
 
                             // Reload DataTable pembelian_produk (pastikan sudah diinisialisasi sebelumnya)
                             if ($.fn.DataTable.isDataTable('#keranjangPembelianProduk')) {

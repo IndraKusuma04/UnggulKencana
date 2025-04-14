@@ -12,7 +12,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Unggul Kencana | @yield('title')</title>
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/img/logo.png">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/img/favicon.png">
 
     <link rel="stylesheet" href="{{ asset('assets') }}/css/bootstrap.min.css">
 
