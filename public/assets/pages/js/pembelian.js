@@ -362,7 +362,7 @@ $(document).ready(function () {
                         className: "action-table-data",
                         render: (data, type, row) => `
                             <div class="edit-delete-action">
-                                <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Masukan Harga Beli">
+                                <a class="me-2 p-2 btn-edit-harga" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Masukan Harga Beli">
                                     <i data-feather="edit" class="feather-edit"></i>
                                 </a>
                                 <a class="p-2 btn-delete-produk" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Batalkan Produk">
@@ -439,27 +439,27 @@ $(document).ready(function () {
 
 
     //ketika button edit di tekan
-    $(document).on("click", ".btn-edit", function () {
-        const kondisiID = $(this).data("id");
+    $(document).on("click", ".btn-edit-harga", function () {
+        const produkID = $(this).data("id");
 
         $.ajax({
-            url: `/admin/kondisi/getKondisiByID/${kondisiID}`, // Endpoint untuk mendapatkan data pegawai
+            url: `/admin/pembelian/showPembelianProduk/${produkID}`, // Endpoint untuk mendapatkan data pegawai
             type: "GET",
             success: function (response) {
                 // Ambil data pertama
-                let data = response.Data[0];
+                let data = response.Data;
 
-                // Isi modal dengan data pegawai
+                // Isi modal dengan data
                 $("#editid").val(data.id);
-                $("#editkondisi").val(data.kondisi);
+                $("#editharga").val(data.harga_beli);
 
                 // Tampilkan modal edit
-                $("#mdEditKondisi").modal("show");
+                $("#mdEditHargaBeli").modal("show");
             },
             error: function () {
                 Swal.fire(
                     "Gagal!",
-                    "Tidak dapat mengambil data kondisi.",
+                    "Tidak dapat mengambil data harga.",
                     "error"
                 );
             },

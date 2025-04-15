@@ -189,7 +189,40 @@
         </div>
     </div>
 
-    <!-- /Add Jenis -->
+    <!-- md Tambah Pembelian -->
+    <div class="modal fade" id="mdEditHargaBeli">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="page-title">
+                        <h4>FORM EDIT HARGA BELI</h4>
+                    </div>
+                    <button type="button" class="close bg-danger text-white fs-16" data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" enctype="multipart/form-data" id="storePembelian">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label">ID<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="id" id="editid" class="form-control" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">HARGA BELI<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="hargabeli" id="editharga" class="form-control">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
+                    <button type="submit" class="btn btn-primary">SIMPAN</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ asset('assets') }}/js/jquery-3.7.1.min.js" type="text/javascript"></script>
     <script src="{{ asset('assets') }}/pages/js/pembelian.js"></script>
 @endsection
