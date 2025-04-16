@@ -26,6 +26,81 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-xl-6 d-flex">
+                    <div class="card flex-fill">
+                        <div class="card-header">
+                            <h5 class="card-title">KODE TRANSAKSI #<b id="titlekodetransaksi" class="text-primary"></b></h5>
+                        </div>
+                        <div class="card-body">
+                            <table id="pembelianProdukTable" class="table table-hover" style="width: 100%">
+                                <thead>
+                                    <tr>
+                                        <th>KODE PRODUK</th>
+                                        <th>NAMA</th>
+                                        <th>BERAT </th>
+                                        <th>HARGA</th>
+                                        <th>ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 d-flex">
+                    <div class="card flex-fill">
+                        <div class="card-header">
+                            <h5 class="card-title">Address Form</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="#">
+                                <div class="row mb-3">
+                                    <label class="col-lg-3 col-form-label">Address 1</label>
+                                    <div class="col-lg-9">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-lg-3 col-form-label">Address 2</label>
+                                    <div class="col-lg-9">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-lg-3 col-form-label">City</label>
+                                    <div class="col-lg-9">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-lg-3 col-form-label">State</label>
+                                    <div class="col-lg-9">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-lg-3 col-form-label">Country</label>
+                                    <div class="col-lg-9">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-lg-3 col-form-label">Postal Code</label>
+                                    <div class="col-lg-9">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card table-list-card">
                 <div class="card-body">
                     <div class="table-top">
@@ -139,7 +214,8 @@
                                 </div>
                                 <div class="card table-list-card">
                                     <div class="table-responsive product-list">
-                                        <table id="keranjangPembelianProduk" class="table table-hover" style="width: 100%">
+                                        <table id="keranjangPembelianProduk" class="table table-hover"
+                                            style="width: 100%">
                                             <thead>
                                                 <tr>
                                                     <th>KODE PRODUK</th>
@@ -203,7 +279,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" enctype="multipart/form-data" id="storePembelian">
+                    <form method="POST" enctype="multipart/form-data" id="formUpdateHargaBeli">
                         @csrf
                         <div class="mb-3">
                             <label class="form-label">ID<span class="text-danger ms-1">*</span></label>

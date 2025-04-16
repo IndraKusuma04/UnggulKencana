@@ -467,13 +467,13 @@ $(document).ready(function () {
     });
 
     // Ketika modal ditutup, reset semua field
-    $("#mdEditKondisi").on("hidden.bs.modal", function () {
+    $("#mdEditHargaBeli").on("hidden.bs.modal", function () {
         // Reset form input (termasuk gambar dan status)
-        $("#formEditKondisi")[0].reset();
+        $("#formUpdateHargaBeli")[0].reset();
     });
 
     // // Kirim data ke server saat form disubmit
-    $(document).on("submit", "#formEditKondisi", function (e) {
+    $(document).on("submit", "#formUpdateHargaBeli", function (e) {
         e.preventDefault(); // Mencegah form submit secara default
 
         // Buat objek FormData
@@ -483,7 +483,7 @@ $(document).ready(function () {
 
         // Kirim data ke server menggunakan AJAX
         $.ajax({
-            url: `/admin/kondisi/updateKondisi/${idKondisi}`, // URL untuk mengupdate data pegawai
+            url: `/admin/pembelian/updateHargaPembelianProduk/${idKondisi}`, // URL untuk mengupdate data pegawai
             type: "POST", // Gunakan metode POST (atau PATCH jika route mendukung)
             data: formData, // Gunakan FormData
             processData: false, // Jangan proses FormData sebagai query string
