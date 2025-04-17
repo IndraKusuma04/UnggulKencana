@@ -1,75 +1,208 @@
 @extends('Layouts.app')
 @section('title', 'Pembelian')
 @section('content')
-    <div class="page-wrapper">
+    <div class="page-wrapper notes-page-wrapper">
         <div class="content">
             <div class="page-header">
                 <div class="add-item d-flex">
                     <div class="page-title">
-                        <h4>PEMBELIAN BARANG DARI TOKO</h4>
+                        <h4>PEMBELIAN DARI TOKO</h4>
                     </div>
                 </div>
-                <ul class="table-top-head">
-                    </li>
-                    <li>
-                        <a data-bs-toggle="tooltip" id="refreshButton" data-bs-placement="top" title="Refresh"><i
-                                data-feather="rotate-ccw" class="feather-rotate-ccw"></i></a>
-                    </li>
-                    <li>
-                        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Collapse" id="collapse-header"><i
-                                data-feather="chevron-up" class="feather-chevron-up"></i></a>
-                    </li>
-                </ul>
+                <div class="d-flex align-items-center">
+                    <ul class="table-top-head">
+                        <li>
+                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Refresh"><i data-feather="rotate-ccw"
+                                    class="feather-rotate-ccw"></i></a>
+                        </li>
+                        <li>
+                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Collapse" id="collapse-header"><i
+                                    data-feather="chevron-up" class="feather-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-
-            <div class="row">
-                <div class="col-xl-6 d-flex">
-                    <div class="card flex-fill">
-                        <div class="card-header">
-                            <h5 class="card-title">Address Form</h5>
+            <div class="barcode-content-list">
+                <form>
+                    <div class="row">
+                        <div class="col-lg-6 col-12">
+                            <div class="row seacrh-barcode-item">
+                                <div class="col-sm-6 mb-3 seacrh-barcode-item-one">
+                                    <label class="form-label">Warehouse</label>
+                                    <select class="select">
+                                        <option>Choose</option>
+                                        <option>Manufacture</option>
+                                        <option>Transport</option>
+                                        <option>Customs</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6 mb-3 seacrh-barcode-item-one">
+                                    <label class="form-label">Select Store</label>
+                                    <select class="select">
+                                        <option>Choose</option>
+                                        <option>Online</option>
+                                        <option>Offline</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <form action="#">
-                                <div class="mb-3">
-                                    <label class="form-label">CARI DENGAN KODE TRANSAKSI<span
-                                            class="text-danger ms-1">*</span></label>
-                                    <input type="text" name="kodetransaksi" class="form-control">
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="input-blocks search-form seacrh-barcode-item">
+                                <div class="searchInput">
+                                    <label class="form-label">Product</label>
+                                    <input type="text" class="form-control" placeholder="Search Product by Codename">
+                                    <div class="resultBox">
+                                    </div>
+                                    <div class="icon"><i class="fas fa-search"></i></div>
                                 </div>
-                                <div class="text-end d-flex justify-content-between">
-                                    <button type="button" class="btn me-2 btn-secondary"
-                                        data-bs-dismiss="modal">BATAL</button>
-                                    <button type="submit" class="btn btn-primary">CARI</button>
-                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="col-lg-12">
+                    <div class="modal-body-table search-modal-header">
+                        <div class="table-responsive">
+                            <table class="table  datanew">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>SKU</th>
+                                        <th>Code</th>
+                                        <th>Qty</th>
+                                        <th class="text-center no-sort">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="productimgname">
+                                                <a href="javascript:void(0);" class="product-img stock-img">
+                                                    <img src="assets/img/products/stock-img-02.png" alt="product">
+                                                </a>
+                                                <a href="javascript:void(0);">Nike Jordan</a>
+                                            </div>
+                                        </td>
+                                        <td>PT002</td>
+                                        <td>HG3FK</td>
+                                        <td>
+                                            <div class="product-quantity">
+                                                <span class="quantity-btn"><i data-feather="minus-circle"
+                                                        class="feather-search"></i></span>
+                                                <input type="text" class="quntity-input" value="4">
+                                                <span class="quantity-btn">+<i data-feather="plus-circle"
+                                                        class="plus-circle"></i></span>
+                                            </div>
+                                        </td>
+                                        <td class="action-table-data justify-content-center">
+                                            <div class="edit-delete-action">
+                                                <a class="confirm-text barcode-delete-icon" href="javascript:void(0);">
+                                                    <i data-feather="trash-2" class="feather-trash-2"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="productimgname">
+                                                <a href="javascript:void(0);" class="product-img stock-img">
+                                                    <img src="assets/img/products/stock-img-03.png" alt="product">
+                                                </a>
+                                                <a href="javascript:void(0);">Apple Series 5 Watch</a>
+                                            </div>
+                                        </td>
+                                        <td>PT003</td>
+                                        <td>TEUIU7</td>
+                                        <td>
+                                            <div class="product-quantity">
+                                                <span class="quantity-btn"><i data-feather="minus-circle"
+                                                        class="feather-search"></i></span>
+                                                <input type="text" class="quntity-input" value="4">
+                                                <span class="quantity-btn">+<i data-feather="plus-circle"
+                                                        class="plus-circle"></i></span>
+                                            </div>
+                                        </td>
+                                        <td class="action-table-data justify-content-center">
+                                            <div class="edit-delete-action">
+                                                <a class="barcode-delete-icon confirm-text" href="javascript:void(0);">
+                                                    <i data-feather="trash-2" class="feather-trash-2"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="paper-search-size">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <form class="mb-0">
+                                <label class="form-label">Paper Size</label>
+                                <select class="select">
+                                    <option>Choose</option>
+                                    <option>Recent1</option>
+                                    <option>Recent2</option>
+                                </select>
                             </form>
                         </div>
-                    </div>
-                </div>
-                <div class="col-xl-6 d-flex">
-                    <div class="card flex-fill">
-                        <div class="card-header">
-                            <h5 class="card-title">Address Form</h5>
-                        </div>
-                        <div class="card-body">
-                            <form id="formCariByKodeTransaksi" method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label class="form-label">CARI DENGAN KODE TRANSAKSI<span
-                                                class="text-danger ms-1">*</span></label>
-                                        <input type="text" name="kodetransaksi" class="form-control">
+                        <div class="col-lg-6 pt-3">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="search-toggle-list">
+                                        <p>Show Store Name</p>
+                                        <div class="input-blocks m-0">
+                                            <div
+                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
+                                                <input type="checkbox" id="user7" class="check" checked>
+                                                <label for="user7" class="checktoggle mb-0"> </label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="modal-footer d-flex justify-content-between">
-                                    <button type="button" class="btn me-2 btn-secondary"
-                                        data-bs-dismiss="modal">BATAL</button>
-                                    <button type="submit" class="btn btn-primary">CARI</button>
+                                <div class="col-sm-4">
+                                    <div class="search-toggle-list">
+                                        <p>Show Product Name</p>
+                                        <div class="input-blocks m-0">
+                                            <div
+                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
+                                                <input type="checkbox" id="user8" class="check" checked>
+                                                <label for="user8" class="checktoggle mb-0"> </label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </form>
+                                <div class="col-sm-4">
+                                    <div class="search-toggle-list">
+                                        <p>Show Price</p>
+                                        <div class="input-blocks m-0">
+                                            <div
+                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
+                                                <input type="checkbox" id="user9" class="check" checked>
+                                                <label for="user9" class="checktoggle mb-0"> </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="search-barcode-button">
+                    <a href="javascript:void(0);" class="btn btn-submit me-2" data-bs-toggle="modal"
+                        data-bs-target="#prints-barcode">
+                        <span><i class="fas fa-eye me-2"></i></span>
+                        Generate Barcode</a>
+                    <a href="javascript:void(0);" class="btn btn-cancel me-2">
+                        <span><i class="fas fa-power-off me-2"></i></span>
+                        Reset Barcode</a>
+                    <a href="javascript:void(0);" class="btn btn-cancel close-btn">
+                        <span><i class="fas fa-print me-2"></i></span>
+                        Print Barcode</a>
+                </div>
             </div>
-
         </div>
     </div>
 
