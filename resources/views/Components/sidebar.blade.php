@@ -59,8 +59,9 @@
                                 <i data-feather="layers"></i><span>Pembelian</span><span class="menu-arrow"></span>
                             </a>
                             <ul>
-                                <li><a href="ui-alerts.html">Pembelian Dari Toko</a></li>
-                                <li><a href="ui-accordion.html">Pembelian Diluar Toko</a></li>
+                                <li><a href="/admin/pembelian">Transaksi Pembelian</a></li>
+                                <li><a href="/admin/pembeliantoko">Pembelian Dari Toko</a></li>
+                                <li><a href="/admin/pembelian/luar">Pembelian Diluar Toko</a></li>
                             </ul>
                         </li>
                     </ul>

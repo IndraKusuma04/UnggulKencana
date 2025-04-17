@@ -182,6 +182,10 @@ Route::middleware(['checkRole:admin'])->group(function () {
         return view('Admin.pembelian');
     });
     Route::get('/admin/pembelian/getPembelian', [PembelianController::class, 'getPembelian']);
+
+    Route::get('/admin/pembeliantoko', function () {
+        return view('Admin.pembeliandaritoko');
+    });
     Route::post('/admin/pembelian/getTransaksiByKodeTransaksi', [PembelianController::class, 'getTransaksiByKodeTransaksi']);
     Route::get('/admin/pembelian/getPembelianProduk', [PembelianController::class, 'getPembelianProduk']);
     Route::post('/admin/pembelian/storeProdukToPembelianProduk', [PembelianController::class, 'storeProdukToPembelianProduk']);

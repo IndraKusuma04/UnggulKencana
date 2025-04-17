@@ -6,7 +6,7 @@
             <div class="page-header">
                 <div class="add-item d-flex">
                     <div class="page-title">
-                        <h4>PEMBELIAN BARANG</h4>
+                        <h4>PEMBELIAN BARANG DARI TOKO</h4>
                     </div>
                 </div>
                 <ul class="table-top-head">
@@ -22,33 +22,50 @@
                 </ul>
             </div>
 
-            <div class="card table-list-card">
-                <div class="card-body">
-                    <div class="table-top">
-                        <div class="search-set">
-                            <div class="search-input">
-                                <a href="javascript:void(0);" class="btn btn-searchset"><i data-feather="search"
-                                        class="feather-search"></i></a>
-                            </div>
+            <div class="row">
+                <div class="col-xl-6 d-flex">
+                    <div class="card flex-fill">
+                        <div class="card-header">
+                            <h5 class="card-title">Address Form</h5>
+                        </div>
+                        <div class="card-body">
+                            <form action="#">
+                                <div class="mb-3">
+                                    <label class="form-label">CARI DENGAN KODE TRANSAKSI<span
+                                            class="text-danger ms-1">*</span></label>
+                                    <input type="text" name="kodetransaksi" class="form-control">
+                                </div>
+                                <div class="text-end d-flex justify-content-between">
+                                    <button type="button" class="btn me-2 btn-secondary"
+                                        data-bs-dismiss="modal">BATAL</button>
+                                    <button type="submit" class="btn btn-primary">CARI</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
-
-                    <div class="table-responsive product-list">
-                        <table id="pembelianTable" class="table table-hover" style="width: 100%">
-                            <thead>
-                                <tr>
-                                    <th>NO.</th>
-                                    <th>KODE PEMBELIAN</th>
-                                    <th>TANGGAL</th>
-                                    <th>PENJUAL</th>
-                                    <th>TOTAL</th>
-                                    <th>STATUS</th>
-                                    <th class="no-sort">ACTION</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+                </div>
+                <div class="col-xl-6 d-flex">
+                    <div class="card flex-fill">
+                        <div class="card-header">
+                            <h5 class="card-title">Address Form</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="formCariByKodeTransaksi" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">CARI DENGAN KODE TRANSAKSI<span
+                                                class="text-danger ms-1">*</span></label>
+                                        <input type="text" name="kodetransaksi" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="modal-footer d-flex justify-content-between">
+                                    <button type="button" class="btn me-2 btn-secondary"
+                                        data-bs-dismiss="modal">BATAL</button>
+                                    <button type="submit" class="btn btn-primary">CARI</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -135,7 +152,8 @@
                                 </div>
                                 <div class="card table-list-card">
                                     <div class="table-responsive product-list">
-                                        <table id="keranjangPembelianProduk" class="table table-hover" style="width: 100%">
+                                        <table id="keranjangPembelianProduk" class="table table-hover"
+                                            style="width: 100%">
                                             <thead>
                                                 <tr>
                                                     <th>KODE PRODUK</th>
