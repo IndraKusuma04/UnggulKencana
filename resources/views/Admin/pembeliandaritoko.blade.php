@@ -12,8 +12,8 @@
                 <div class="d-flex align-items-center">
                     <ul class="table-top-head">
                         <li>
-                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Refresh"><i data-feather="rotate-ccw"
-                                    class="feather-rotate-ccw"></i></a>
+                            <a data-bs-toggle="tooltip" id="refreshButton" data-bs-placement="top" title="Refresh"><i
+                                    data-feather="rotate-ccw" class="feather-rotate-ccw"></i></a>
                         </li>
                         <li>
                             <a data-bs-toggle="tooltip" data-bs-placement="top" title="Collapse" id="collapse-header"><i
@@ -23,39 +23,22 @@
                 </div>
             </div>
             <div class="barcode-content-list">
-                <form>
+                <form id="formCariByKodeTransaksi" method="POST" enctype="multipart/form-data">
+                    @csrf
                     <div class="row">
-                        <div class="col-lg-6 col-12">
-                            <div class="row seacrh-barcode-item">
-                                <div class="col-sm-6 mb-3 seacrh-barcode-item-one">
-                                    <label class="form-label">Warehouse</label>
-                                    <select class="select">
-                                        <option>Choose</option>
-                                        <option>Manufacture</option>
-                                        <option>Transport</option>
-                                        <option>Customs</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-6 mb-3 seacrh-barcode-item-one">
-                                    <label class="form-label">Select Store</label>
-                                    <select class="select">
-                                        <option>Choose</option>
-                                        <option>Online</option>
-                                        <option>Offline</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="input-blocks search-form seacrh-barcode-item">
-                                <div class="searchInput">
-                                    <label class="form-label">Product</label>
-                                    <input type="text" class="form-control" placeholder="Search Product by Codename">
-                                    <div class="resultBox">
+                        <div class="col-lg-6 col-sm-6 col-12">
+                            <div class="input-blocks">
+                                <label>KODE TRANSAKSI</label>
+                                <div class="row">
+                                    <div class="col-lg-10 col-sm-10 col-10">
+                                        <input type="text" class="form-control" placeholder="CARI KODE TRANSAKSI">
                                     </div>
-                                    <div class="icon"><i class="fas fa-search"></i></div>
+                                    <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                                        <div class="add-icon">
+                                            <button type="submit" class="choose-add"><i data-feather="search"
+                                                    class="plus"></i></button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -64,143 +47,21 @@
                 <div class="col-lg-12">
                     <div class="modal-body-table search-modal-header">
                         <div class="table-responsive">
-                            <table class="table  datanew">
+                            <table id="produkTransaksiTable" class="table table-hover" style="width: 100%">
                                 <thead>
                                     <tr>
-                                        <th>Product</th>
-                                        <th>SKU</th>
-                                        <th>Code</th>
-                                        <th>Qty</th>
-                                        <th class="text-center no-sort">Action</th>
+                                        <th>KODE PRODUK</th>
+                                        <th>NAMA</th>
+                                        <th>BERAT</th>
+                                        <th>KARAT</th>
+                                        <th class="text-center no-sort">ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="productimgname">
-                                                <a href="javascript:void(0);" class="product-img stock-img">
-                                                    <img src="assets/img/products/stock-img-02.png" alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Nike Jordan</a>
-                                            </div>
-                                        </td>
-                                        <td>PT002</td>
-                                        <td>HG3FK</td>
-                                        <td>
-                                            <div class="product-quantity">
-                                                <span class="quantity-btn"><i data-feather="minus-circle"
-                                                        class="feather-search"></i></span>
-                                                <input type="text" class="quntity-input" value="4">
-                                                <span class="quantity-btn">+<i data-feather="plus-circle"
-                                                        class="plus-circle"></i></span>
-                                            </div>
-                                        </td>
-                                        <td class="action-table-data justify-content-center">
-                                            <div class="edit-delete-action">
-                                                <a class="confirm-text barcode-delete-icon" href="javascript:void(0);">
-                                                    <i data-feather="trash-2" class="feather-trash-2"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="productimgname">
-                                                <a href="javascript:void(0);" class="product-img stock-img">
-                                                    <img src="assets/img/products/stock-img-03.png" alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Apple Series 5 Watch</a>
-                                            </div>
-                                        </td>
-                                        <td>PT003</td>
-                                        <td>TEUIU7</td>
-                                        <td>
-                                            <div class="product-quantity">
-                                                <span class="quantity-btn"><i data-feather="minus-circle"
-                                                        class="feather-search"></i></span>
-                                                <input type="text" class="quntity-input" value="4">
-                                                <span class="quantity-btn">+<i data-feather="plus-circle"
-                                                        class="plus-circle"></i></span>
-                                            </div>
-                                        </td>
-                                        <td class="action-table-data justify-content-center">
-                                            <div class="edit-delete-action">
-                                                <a class="barcode-delete-icon confirm-text" href="javascript:void(0);">
-                                                    <i data-feather="trash-2" class="feather-trash-2"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                </div>
-                <div class="paper-search-size">
-                    <div class="row align-items-center">
-                        <div class="col-lg-6">
-                            <form class="mb-0">
-                                <label class="form-label">Paper Size</label>
-                                <select class="select">
-                                    <option>Choose</option>
-                                    <option>Recent1</option>
-                                    <option>Recent2</option>
-                                </select>
-                            </form>
-                        </div>
-                        <div class="col-lg-6 pt-3">
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <div class="search-toggle-list">
-                                        <p>Show Store Name</p>
-                                        <div class="input-blocks m-0">
-                                            <div
-                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                <input type="checkbox" id="user7" class="check" checked>
-                                                <label for="user7" class="checktoggle mb-0"> </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="search-toggle-list">
-                                        <p>Show Product Name</p>
-                                        <div class="input-blocks m-0">
-                                            <div
-                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                <input type="checkbox" id="user8" class="check" checked>
-                                                <label for="user8" class="checktoggle mb-0"> </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="search-toggle-list">
-                                        <p>Show Price</p>
-                                        <div class="input-blocks m-0">
-                                            <div
-                                                class="status-toggle modal-status d-flex justify-content-between align-items-center">
-                                                <input type="checkbox" id="user9" class="check" checked>
-                                                <label for="user9" class="checktoggle mb-0"> </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="search-barcode-button">
-                    <a href="javascript:void(0);" class="btn btn-submit me-2" data-bs-toggle="modal"
-                        data-bs-target="#prints-barcode">
-                        <span><i class="fas fa-eye me-2"></i></span>
-                        Generate Barcode</a>
-                    <a href="javascript:void(0);" class="btn btn-cancel me-2">
-                        <span><i class="fas fa-power-off me-2"></i></span>
-                        Reset Barcode</a>
-                    <a href="javascript:void(0);" class="btn btn-cancel close-btn">
-                        <span><i class="fas fa-print me-2"></i></span>
-                        Print Barcode</a>
                 </div>
             </div>
         </div>
@@ -371,5 +232,5 @@
     </div>
 
     <script src="{{ asset('assets') }}/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-    <script src="{{ asset('assets') }}/pages/js/pembelian.js"></script>
+    <script src="{{ asset('assets') }}/pages/js/pembeliantoko.js"></script>
 @endsection
