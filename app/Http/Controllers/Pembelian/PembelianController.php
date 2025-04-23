@@ -21,30 +21,7 @@ class PembelianController extends Controller
         return response()->json(['success' => true, 'message' => 'Data Pembelian Berhasil Ditemukan', 'Data' => $pembelian]);
     }
 
-    public function getTransaksiByKodeTransaksi(Request $request)
-    {
-        $messages = [
-            'required' => ':attribute wajib di isi !!!',
-        ];
 
-        $credentials = $request->validate([
-            'kodetransaksi'       => 'required',
-        ], $messages);
-
-        $transaksi = Transaksi::with(['keranjang' => function ($query) {
-            $query->where('status', '!=', 0);
-        }, 'keranjang.produk', 'pelanggan', 'user', 'user.pegawai', 'diskon'])->where('kodetransaksi', $request->kodetransaksi)->where('status', 2)->get();
-
-        // Cek apakah data transaksi ditemukan
-        if ($transaksi->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Transaksi tidak ditemukan',
-            ]);
-        }
-
-        return response()->json(['success' => true, 'message' => 'Transaksi Berhasil Ditemukan', 'Data' => $transaksi]);
-    }
 
     public function generateKodePembelianProduk()
     {

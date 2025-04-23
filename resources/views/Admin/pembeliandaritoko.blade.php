@@ -22,52 +22,30 @@
                     </ul>
                 </div>
             </div>
-            <div class="barcode-content-list">
-                <form id="formCariByKodeTransaksi" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="row">
-                        <div class="col-lg-6 col-sm-6 col-12">
-                            <div class="input-blocks">
-                                <label>KODE TRANSAKSI</label>
-                                <div class="row">
-                                    <div class="col-lg-10 col-sm-10 col-10">
-                                        <input type="text" class="form-control" placeholder="CARI KODE TRANSAKSI">
-                                    </div>
-                                    <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                                        <div class="add-icon">
-                                            <button type="submit" class="choose-add"><i data-feather="search"
-                                                    class="plus"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-                <div class="col-lg-12">
-                    <div class="modal-body-table search-modal-header">
-                        <div class="table-responsive">
-                            <table id="produkTransaksiTable" class="table table-hover" style="width: 100%">
-                                <thead>
-                                    <tr>
-                                        <th>KODE PRODUK</th>
-                                        <th>NAMA</th>
-                                        <th>BERAT</th>
-                                        <th>KARAT</th>
-                                        <th class="text-center no-sort">ACTION</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
+
+            <div class="card table-list-card">
+                <div class="card-body">
+                    <div class="table-responsive product-list">
+                        <table id="produkTransaksiTable" class="table table-hover" style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th>KODE PRODUK</th>
+                                    <th>NAMA</th>
+                                    <th>BERAT</th>
+                                    <th>HARGA</th>
+                                    <th class="text-center no-sort">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- md Pembelian Dari Toko -->
+    {{-- <!-- md Pembelian Dari Toko -->
     <div class="modal fade" id="mdPembelianDariToko">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -229,7 +207,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <script src="{{ asset('assets') }}/js/jquery-3.7.1.min.js" type="text/javascript"></script>
     <script src="{{ asset('assets') }}/pages/js/pembeliantoko.js"></script>

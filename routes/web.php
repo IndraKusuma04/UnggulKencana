@@ -13,6 +13,7 @@ use App\Http\Controllers\Nampan\NampanProdukController;
 use App\Http\Controllers\Pegawai\PegawaiController;
 use App\Http\Controllers\Pelanggan\PelangganController;
 use App\Http\Controllers\Pembelian\PembelianController;
+use App\Http\Controllers\Pembelian\PembelianTokoController;
 use App\Http\Controllers\Produk\JenisProdukController;
 use App\Http\Controllers\Produk\ProdukController;
 use App\Http\Controllers\Report\ReportController;
@@ -186,7 +187,7 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/pembeliantoko', function () {
         return view('Admin.pembeliandaritoko');
     });
-    Route::post('/admin/pembelian/getTransaksiByKodeTransaksi', [PembelianController::class, 'getTransaksiByKodeTransaksi']);
+    Route::post('/admin/pembelian/pembeliantoko/getTransaksiByKodeTransaksi', [PembelianTokoController::class, 'getTransaksiByKodeTransaksi']);
     Route::get('/admin/pembelian/getPembelianProduk', [PembelianController::class, 'getPembelianProduk']);
     Route::post('/admin/pembelian/storeProdukToPembelianProduk', [PembelianController::class, 'storeProdukToPembelianProduk']);
     Route::get('/admin/pembelian/showPembelianProduk/{id}', [PembelianController::class, 'showPembelianProduk']);
