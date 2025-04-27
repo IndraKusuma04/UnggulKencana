@@ -21,6 +21,10 @@
                         </li>
                     </ul>
                 </div>
+                <div class="page-btn">
+                    <a class="btn btn-added" id="btnTambahPembelian"><i data-feather="plus-circle" class="me-2"></i>TAMBAH
+                        PEMBELIAN</a>
+                </div>
             </div>
 
             <div class="card table-list-card">
@@ -45,7 +49,7 @@
         </div>
     </div>
 
-    {{-- <!-- md Pembelian Dari Toko -->
+    <!-- md Pembelian Dari Toko -->
     <div class="modal fade" id="mdPembelianDariToko">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -75,6 +79,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- md Tambah Pembelian -->
     <div class="modal fade" id="mdFormPembelianDariToko">
@@ -124,8 +129,7 @@
                                 </div>
                                 <div class="card table-list-card">
                                     <div class="table-responsive product-list">
-                                        <table id="keranjangPembelianProduk" class="table table-hover"
-                                            style="width: 100%">
+                                        <table id="keranjangPembelianProduk" class="table table-hover" style="width: 100%">
                                             <thead>
                                                 <tr>
                                                     <th>KODE PRODUK</th>
@@ -207,7 +211,7 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
     <script src="{{ asset('assets') }}/js/jquery-3.7.1.min.js" type="text/javascript"></script>
     <script src="{{ asset('assets') }}/pages/js/pembeliantoko.js"></script>

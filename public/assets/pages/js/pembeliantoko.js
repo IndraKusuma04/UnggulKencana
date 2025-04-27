@@ -6,8 +6,8 @@ $(document).ready(function () {
 
     //function refresh
     $(document).on("click", "#refreshButton", function () {
-        if (tableProduk) {
-            tableProduk.ajax.reload(null, false); // Reload data dari server
+        if (tableProdukPembelianCustomer) {
+            tableProdukPembelianCustomer.ajax.reload(null, false); // Reload data dari server
         }
         const successtoastExample = document.getElementById("successToast");
         const toast = new bootstrap.Toast(successtoastExample);
@@ -15,76 +15,113 @@ $(document).ready(function () {
         toast.show();
     });
 
-    //load data transaksi
-    function getransaksi() {
-        // Datatable
-        if ($('#produkTransaksiTable').length > 0) {
-            tableCustomer = $('#produkTransaksiTable').DataTable({
-                "scrollX": false, // Jangan aktifkan scroll horizontal secara paksa
-                "bFilter": true,
-                "sDom": 'fBtlpi',
-                "ordering": true,
-                "language": {
-                    search: ' ',
-                    sLengthMenu: '_MENU_',
-                    searchPlaceholder: "Search",
-                    info: "_START_ - _END_ of _TOTAL_ items",
-                    paginate: {
-                        next: ' <i class=" fa fa-angle-right"></i>',
-                        previous: '<i class="fa fa-angle-left"></i> '
-                    },
+    let tableProdukPembelianCustomer;
+
+    if ($('#produkTransaksiTable').length > 0) {
+        tableProdukPembelianCustomer = $('#produkTransaksiTable').DataTable({
+            "scrollX": false,
+            "bFilter": true,
+            "sDom": 'fBtlpi',
+            "ordering": true,
+            "language": {
+                search: ' ',
+                sLengthMenu: '_MENU_',
+                searchPlaceholder: "Cari Produk",
+                info: "_START_ - _END_ dari _TOTAL_ produk",
+                paginate: {
+                    next: '<i class="fa fa-angle-right"></i>',
+                    previous: '<i class="fa fa-angle-left"></i>'
                 },
-                ajax: {
-                    url: `/admin/pembelian/pembeliantoko/getTransaksiByKodeTransaksi`, // Ganti dengan URL endpoint server Anda
-                    type: 'POST', // Metode HTTP (GET/POST)
-                    dataSrc: 'Data' // Jalur data di response JSON
+                emptyTable: "Belum ada data transaksi."
+            },
+            ajax: {
+                url: `/admin/pembelian/pembeliantoko/getTransaksiByKodeTransaksi`,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                columns: [
-                    { data: "kodeproduk" },
-                    { data: "nama" },
-                    {
-                        data: "berat",
-                        render: function (data, type, row) {
-                            return parseFloat(data).toFixed(1) + " gram"; // Menampilkan 1 angka desimal
-                        }
+                data: function (d) {
+                    d.kodetransaksi = $('input[name="kodetransaksi"]').val(); // ambil dari input modal
+                },
+                dataSrc: function (json) {
+                    if (json.success) {
+                        return json.Data;
+                    } else {
+                        return [];
+                    }
+                }
+            },
+            columns: [
+                { 
+                    data: "keranjang[0].produk.kodeproduk",
+                    defaultContent: "-"
+                },
+                { 
+                    data: "keranjang[0].produk.nama",
+                    defaultContent: "-"
+                },
+                { 
+                    data: "keranjang[0].produk.berat",
+                    render: function (data) {
+                        return data ? parseFloat(data).toFixed(1) + " gram" : "-";
                     },
-                    {
-                        data: "harga",
-                        render: function (data) {
+                    defaultContent: "-"
+                },
+                { 
+                    data: "keranjang[0].produk.harga_jual",
+                    render: function (data) {
+                        if (data != null) {
                             return new Intl.NumberFormat('id-ID', {
                                 style: 'currency',
                                 currency: 'IDR',
-                                minimumFractionDigits: 0, // Menentukan jumlah angka di belakang koma
-                                maximumFractionDigits: 0  // Menentukan jumlah angka di belakang koma
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0
                             }).format(data);
+                        } else {
+                            return "-";
                         }
                     },
-                    {
-                        data: null,
-                        orderable: false,
-                        className: "action-table-data justify-content-center",
-                        render: function (data, type, row, meta) {
-                            return `
-                                <div class="edit-delete-action">
-                                    <a class="me-2 p-2 btn-pilihproduk" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="PILIH PRODUK">
-                                        <i data-feather="plus-circle" class="feather-edit"></i>
-                                    </a>
-                                </div>
-                            `;
-                        }
+                    defaultContent: "-"
+                },
+                {
+                    data: null,
+                    orderable: false,
+                    className: "text-center",
+                    render: function (data, type, row) {
+                        return `
+                            <div class="edit-delete-action">
+                                <a class="me-2 p-2 btn-pilihproduk" data-id="${row.keranjang[0]?.produk?.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Pilih Produk">
+                                    <i data-feather="edit" class="feather-edit"></i>
+                                </a>
+                            </div>
+                        `;
                     }
-                ],
-                drawCallback: function () {
-                    // Re-inisialisasi Feather Icons setelah render ulang DataTable
-                    feather.replace();
-                    // Re-inisialisasi tooltip Bootstrap setelah render ulang DataTable
-                    initializeTooltip();
                 }
-            });
-        }
+            ],
+            
+            drawCallback: function () {
+                feather.replace();
+                initializeTooltip();
+            }
+        });
     }
 
-    getransaksi();
+    //ketika button tambah di tekan
+    $("#btnTambahPembelian").on("click", function () {
+        $("#mdPembelianDariToko").modal("show");
+    });
+
+    // Handle submit form cari
+    $('#formCariByKodeTransaksi').on('submit', function (e) {
+        e.preventDefault();
+        let kode = $('input[name="kodetransaksi"]').val().trim();
+        if (kode !== '') {
+            tableProdukPembelianCustomer.ajax.reload();
+            $('#mdPembelianDariToko').modal('hide');
+        } else {
+            alert('Masukkan Kode Transaksi terlebih dahulu!');
+        }
+    });
 
 
 
