@@ -21,8 +21,6 @@ class PembelianController extends Controller
         return response()->json(['success' => true, 'message' => 'Data Pembelian Berhasil Ditemukan', 'Data' => $pembelian]);
     }
 
-
-
     public function generateKodePembelianProduk()
     {
         // Ambil ID user yang sedang login

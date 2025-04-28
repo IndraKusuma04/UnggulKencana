@@ -28,21 +28,79 @@
             </div>
 
             <div class="card table-list-card">
+                <div class="card-header">
+                    <h4 class="card-title">PRODUK TRANSAKSI PELANGGAN</h4>
+                </div>
                 <div class="card-body">
+                    <div class="table-top">
+                        <div class="search-set">
+                            <div class="search-input">
+                                <a href="javascript:void(0);" class="btn btn-searchset"><i data-feather="search"
+                                        class="feather-search"></i></a>
+                            </div>
+                        </div>
+                    </div>
                     <div class="table-responsive product-list">
                         <table id="produkTransaksiTable" class="table table-hover" style="width: 100%">
-                            <thead>
+                            <thead class="thead-secondary">
                                 <tr>
                                     <th>KODE PRODUK</th>
                                     <th>NAMA</th>
                                     <th>BERAT</th>
-                                    <th>HARGA</th>
+                                    <th>HARGA JUAL</th>
                                     <th class="text-center no-sort">ACTION</th>
                                 </tr>
                             </thead>
                             <tbody>
                             </tbody>
                         </table>
+
+                        <div class="card table-list-card">
+                            <div class="card-header">
+                                <h4 class="card-title text-secondary">PRODUK DIBELI / DIPILIH</h4>
+                            </div>
+                            <div class="table-responsive product-list">
+                                <table id="produkPembelianTable" class="table table-hover" style="width: 100%">
+                                    <thead class="thead-secondary">
+                                        <tr>
+                                            <th>KODE PRODUK</th>
+                                            <th>NAMA</th>
+                                            <th>BERAT </th>
+                                            <th>HARGA BELI</th>
+                                            <th class="text-center no-sort">ACTION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+
+                                <form method="POST" enctype="multipart/form-data" id="storePembelian">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label class="form-label">KODE PEMBELIAN PRODUK<span
+                                                class="text-danger ms-1">*</span></label>
+                                        <input type="text" name="kodepembelianproduk" id="kodepembelianproduk"
+                                            value="{{ session('kodepembelianproduk') }}" class="form-control" readonly>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">PELANGGAN<span
+                                                    class="text-danger ms-1">*</span></label>
+                                            <input type="text" id="detailpelanggan" class="form-control" readonly>
+                                            <input type="hidden" name="pelanggan" id="idpelanggan" class="form-control">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">KONDISI PRODUK<span
+                                                    class="text-danger ms-1">*</span></label>
+                                            <select class="select" name="kondisi" id="kondisi"></select>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <button type="submit" class="btn btn-primary">SIMPAN</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -80,105 +138,6 @@
         </div>
     </div>
 
-
-    <!-- md Tambah Pembelian -->
-    <div class="modal fade" id="mdFormPembelianDariToko">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="page-title">
-                        <h4>PEMBELIAN DARI TOKO</h4>
-                    </div>
-                    <button type="button" class="close bg-danger text-white fs-16" data-bs-dismiss="modal"
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-7">
-                            <div class="card" id="formContainer">
-                                <div class="card-header">
-                                    <h5 class="card-title">KODE TRANSAKSI #<b id="titlekodetransaksi"
-                                            class="text-primary"></b></h5>
-                                </div>
-                                <div class="card table-list-card">
-                                    <div class="table-responsive product-list">
-                                        <table id="pembelianProdukTable" class="table table-hover" style="width: 100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>KODE PRODUK</th>
-                                                    <th>NAMA</th>
-                                                    <th>BERAT </th>
-                                                    <th>HARGA</th>
-                                                    <th>ACTION</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-5">
-                            <div class="card" id="tabelProdukPembelian">
-                                <div class="card-header">
-                                    <h5 class="card-title">FORM PEMBELIAN </h5>
-                                </div>
-                                <div class="card table-list-card">
-                                    <div class="table-responsive product-list">
-                                        <table id="keranjangPembelianProduk" class="table table-hover" style="width: 100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>KODE PRODUK</th>
-                                                    <th>NAMA</th>
-                                                    <th>BERAT </th>
-                                                    <th>ACTION</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <form method="POST" enctype="multipart/form-data" id="storePembelian">
-                                    @csrf
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">KODE PEMBELIAN PRODUK<span
-                                                    class="text-danger ms-1">*</span></label>
-                                            <input type="text" name="kodepembelianproduk" id="kodepembelianproduk"
-                                                value="{{ session('kodepembelianproduk') }}" class="form-control"
-                                                readonly>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">PELANGGAN<span
-                                                    class="text-danger ms-1">*</span></label>
-                                            <input type="text" id="detailpelanggan" class="form-control" readonly>
-                                            <input type="hidden" name="pelanggan" id="idpelanggan"
-                                                class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class=" mb-3">
-                                        <label class="form-label">KONDISI</label>
-                                        <select class="select" name="kondisi" id="kondisi">
-                                        </select>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer d-flex justify-content-between">
-                    <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
-                    <button type="submit" class="btn btn-primary">SIMPAN</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- md Tambah Pembelian -->
     <div class="modal fade" id="mdEditHargaBeli">
         <div class="modal-dialog modal-dialog-centered">
@@ -192,8 +151,8 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <form method="POST" enctype="multipart/form-data" id="formUpdateHargaBeli">
+                <form method="POST" enctype="multipart/form-data" id="formUpdateHargaBeli">
+                    <div class="modal-body">
                         @csrf
                         <div class="mb-3">
                             <label class="form-label">ID<span class="text-danger ms-1">*</span></label>
@@ -203,12 +162,12 @@
                             <label class="form-label">HARGA BELI<span class="text-danger ms-1">*</span></label>
                             <input type="text" name="hargabeli" id="editharga" class="form-control">
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer d-flex justify-content-between">
-                    <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
-                    <button type="submit" class="btn btn-primary">SIMPAN</button>
-                </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
+                        <button type="submit" class="btn btn-primary">SIMPAN</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

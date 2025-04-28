@@ -39,7 +39,7 @@
 
                     <div class="table-responsive product-list">
                         <table id="suplierTable" class="table table-hover" style="width: 100%">
-                            <thead>
+                            <thead class="thead-secondary">
                                 <tr>
                                     <th>NO.</th>
                                     <th>KODE SUPLIER</th>

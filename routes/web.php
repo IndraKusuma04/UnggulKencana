@@ -190,6 +190,7 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::post('/admin/pembelian/pembeliantoko/getTransaksiByKodeTransaksi', [PembelianTokoController::class, 'getTransaksiByKodeTransaksi']);
     Route::get('/admin/pembelian/getPembelianProduk', [PembelianController::class, 'getPembelianProduk']);
     Route::post('/admin/pembelian/storeProdukToPembelianProduk', [PembelianController::class, 'storeProdukToPembelianProduk']);
+    Route::post('/admin/pembelian/pembeliantoko/updatehargaPembelianProduk/{id}', [PembelianTokoController::class, 'updatehargaPembelianProduk']);
     Route::get('/admin/pembelian/showPembelianProduk/{id}', [PembelianController::class, 'showPembelianProduk']);
     Route::delete('/admin/pembelian/deletePembelianProduk/{id}', [PembelianController::class, 'deletePembelianProduk']);
 

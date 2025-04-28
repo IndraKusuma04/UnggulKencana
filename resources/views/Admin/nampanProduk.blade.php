@@ -45,7 +45,7 @@
 
                     <div class="table-responsive product-list">
                         <table id="nampanProdukTable" class="table table-hover" style="width: 100%">
-                            <thead>
+                            <thead class="thead-secondary">
                                 <tr>
                                     <th>No.</th>
                                     <th>KODE PRODUK</th>
@@ -83,7 +83,7 @@
                     <div class="modal-body">
                         <div class="table-responsive product-list">
                             <table id="produkTable" class="table table-hover" style="width: 100%">
-                                <thead>
+                                <thead class="thead-secondary">
                                     <tr>
                                         <th class="no-sort">
                                             <label class="checkboxs">

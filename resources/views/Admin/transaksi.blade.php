@@ -35,7 +35,7 @@
 
                     <div class="table-responsive product-list">
                         <table id="transaksiTable" class="table table-hover" style="width: 100%">
-                            <thead>
+                            <thead class="thead-secondary">
                                 <tr>
                                     <th>NO.</th>
                                     <th>KODE TRANSAKSI</th>

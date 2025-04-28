@@ -111,7 +111,7 @@
                                 <div class="card table-list-card">
                                     <div class="table-responsive product-list">
                                         <table id="pembelianProdukTable" class="table table-hover" style="width: 100%">
-                                            <thead>
+                                            <thead class="thead-secondary">
                                                 <tr>
                                                     <th>KODE PRODUK</th>
                                                     <th>NAMA</th>
