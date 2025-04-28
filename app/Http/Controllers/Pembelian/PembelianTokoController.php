@@ -229,4 +229,13 @@ class PembelianTokoController extends Controller
 
         return redirect()->route('pembelian.index')->with('success', 'Transaksi berhasil disimpan.');
     }
+
+    public function storePembelianPelanggan(Request $request)
+    {
+        $request->validate([
+            'kodepembelianproduk'   => 'required',
+            'kondisi'               => 'required',
+            'pelanggan'             => 'required|exists:pelanggan,id',
+        ]);
+    }
 }

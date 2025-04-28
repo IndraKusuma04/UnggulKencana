@@ -188,11 +188,11 @@ Route::middleware(['checkRole:admin'])->group(function () {
         return view('Admin.pembeliandaritoko');
     });
     Route::post('/admin/pembelian/pembeliantoko/getTransaksiByKodeTransaksi', [PembelianTokoController::class, 'getTransaksiByKodeTransaksi']);
-    Route::get('/admin/pembelian/getPembelianProduk', [PembelianController::class, 'getPembelianProduk']);
-    Route::post('/admin/pembelian/storeProdukToPembelianProduk', [PembelianController::class, 'storeProdukToPembelianProduk']);
+    Route::get('/admin/pembelian/pembeliantoko/getPembelianProduk', [PembelianTokoController::class, 'getPembelianProduk']);
+    Route::post('/admin/pembelian/pembeliantoko/storeProdukToPembelianProduk', [PembelianTokoController::class, 'storeProdukToPembelianProduk']);
     Route::post('/admin/pembelian/pembeliantoko/updatehargaPembelianProduk/{id}', [PembelianTokoController::class, 'updatehargaPembelianProduk']);
-    Route::get('/admin/pembelian/showPembelianProduk/{id}', [PembelianController::class, 'showPembelianProduk']);
-    Route::delete('/admin/pembelian/deletePembelianProduk/{id}', [PembelianController::class, 'deletePembelianProduk']);
+    Route::get('/admin/pembelian/pembeliantoko/showPembelianProduk/{id}', [PembelianTokoController::class, 'showPembelianProduk']);
+    Route::delete('/admin/pembelian/pembeliantoko/deletePembelianProduk/{id}', [PembelianTokoController::class, 'deletePembelianProduk']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', function () {
         return view('Reports.cetakbarcode');

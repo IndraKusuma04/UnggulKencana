@@ -213,7 +213,7 @@ $(document).ready(function () {
                     },
                 },
                 ajax: {
-                    url: `/admin/pembelian/getPembelianProduk`,
+                    url: `/admin/pembelian/pembeliantoko/getPembelianProduk`,
                     type: 'GET',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content')
@@ -248,10 +248,10 @@ $(document).ready(function () {
                         className: "action-table-data justify-content-center",
                         render: (data, type, row) => `
                             <div class="edit-delete-action">
-                                <a class="me-2 p-2 btn-edit-harga" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Masukan Harga Beli">
+                                <a class="me-2 p-2 btn-edit-harga" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="MASUKAN HARGA BELI">
                                     <i data-feather="edit" class="feather-edit"></i>
                                 </a>
-                                <a class="p-2 btn-delete-produk" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Batalkan Produk">
+                                <a class="p-2 btn-delete-produk" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="BATALKAN PRODUK">
                                     <i data-feather="trash-2"></i>
                                 </a>
                             </div>
@@ -283,7 +283,7 @@ $(document).ready(function () {
             if (result.isConfirmed) {
                 // Kirim data via AJAX ke Laravel
                 $.ajax({
-                    url: "/admin/pembelian/storeProdukToPembelianProduk",
+                    url: "/admin/pembelian/pembeliantoko/storeProdukToPembelianProduk",
                     type: "POST",
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content'),
@@ -328,7 +328,7 @@ $(document).ready(function () {
         const produkID = $(this).data("id");
 
         $.ajax({
-            url: `/admin/pembelian/showPembelianProduk/${produkID}`, // Endpoint untuk mendapatkan data pegawai
+            url: `/admin/pembelian/pembeliantoko/showPembelianProduk/${produkID}`, // Endpoint untuk mendapatkan data pegawai
             type: "GET",
             success: function (response) {
                 // Ambil data pertama
@@ -419,7 +419,7 @@ $(document).ready(function () {
         }).then((result) => {
             if (result.isConfirmed) {
                 // Kirim permintaan hapus (gunakan itemId)
-                fetch(`/admin/pembelian/deletePembelianProduk/${deleteID}`, {
+                fetch(`/admin/pembelian/pembeliantoko/deletePembelianProduk/${deleteID}`, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
@@ -458,6 +458,45 @@ $(document).ready(function () {
                 // Jika batal, beri tahu pengguna
                 Swal.fire("Dibatalkan", "Produk tidak dibatalkan.", "info");
             }
+        });
+    });
+
+    // // Kirim data ke server saat form disubmit
+    $(document).on("submit", "#storePembelianPelanggan", function (e) {
+        e.preventDefault(); // Mencegah form submit secara default
+
+        // Buat objek FormData
+        const formData = new FormData(this);
+
+        // Kirim data ke server menggunakan AJAX
+        $.ajax({
+            url: `/admin/pembelian/pembeliantoko/storePembelianPelanggan/`, // URL untuk mengupdate data pegawai
+            type: "POST", // Gunakan metode POST (atau PATCH jika route mendukung)
+            data: formData, // Gunakan FormData
+            processData: false, // Jangan proses FormData sebagai query string
+            contentType: false, // Jangan set Content-Type secara manual
+            success: function (response) {
+                // Tampilkan toast sukses
+                const successtoastExample =
+                    document.getElementById("successToast");
+                const toast = new bootstrap.Toast(successtoastExample);
+                $(".toast-body").text(response.message);
+                toast.show();
+            },
+            error: function (xhr) {
+                const errors = xhr.responseJSON.errors;
+                if (errors) {
+                    let errorMessage = "";
+                    for (let key in errors) {
+                        errorMessage += `${errors[key][0]}\n`;
+                    }
+                    const dangertoastExamplee =
+                        document.getElementById("dangerToast");
+                    const toast = new bootstrap.Toast(dangertoastExamplee);
+                    $(".toast-body").text(errorMessage);
+                    toast.show();
+                }
+            },
         });
     });
 })
