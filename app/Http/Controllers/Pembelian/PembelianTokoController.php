@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Pembelian;
 
+use Carbon\Carbon;
 use App\Models\Produk;
 use App\Models\Keranjang;
 use App\Models\Pembelian;
@@ -238,12 +239,38 @@ class PembelianTokoController extends Controller
             'pelanggan'             => 'required|exists:pelanggan,id',
         ]);
 
-        // Ambil semua produk_id dari keranjang aktif user tersebut
-        $produkIDs = PembelianProduk::where('status', 1)
+        // Panggil method dari controller lain
+        $kodePembelian = (new PembelianController)->generateKodeTransaksiPembelian();
+        $tanggal = $request['tanggal']  = Carbon::today()->format('Y-m-d');
+        $kodepembelianproduk = $request['kodepembelianproduk'];
+        $pelanggan = $request['pelanggan'];
+        $kondisi = $request['kondisi'];
+        $catatan = $request['catatan'];
+
+        // Step 1: Ambil semua kodeproduk dari pembelian_produk
+        $kodeProdukList = PembelianProduk::where('status', 1)
             ->where('oleh', Auth::id())
             ->where('kodepembelianproduk', $request->kodepembelianproduk)
             ->pluck('kodeproduk');
 
-        return response()->json(['success' => true, 'message' => 'Data Berhasil Disimpan', 'Data' => $produkIDs]);
+        // Step 2: Ambil harga_beli dari produk berdasarkan kodeproduk
+        $totalHargaBeli = PembelianProduk::whereIn('kodeproduk', $kodeProdukList)->where('status', 1)
+            ->sum('harga_beli');
+
+        // Bisa juga ambil data lengkap jika diperlukan:
+        $produkList = PembelianProduk::whereIn('kodeproduk', $kodeProdukList)->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Berhasil Disimpan',
+            'kodepembelian' => $kodePembelian,
+            'kodepembelianproduk' => $kodepembelianproduk,
+            'pelanggan' => $pelanggan,
+            'kondisi'   =>  $kondisi,
+            'catatan'   =>  $catatan,
+            'tanggal'   => $tanggal,
+            'total_harga_beli' => $totalHargaBeli,
+            'Data' => $kodeProdukList
+        ]);
     }
 }

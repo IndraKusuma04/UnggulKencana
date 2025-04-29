@@ -95,8 +95,12 @@
                                             <select class="select" name="kondisi" id="kondisi"></select>
                                         </div>
                                     </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">CATATAN<span class="text-danger ms-1">*</span></label>
+                                        <textarea name="catatan" class="form-control" cols="5" rows="4"></textarea>
+                                    </div>
                                     <div class="text-end">
-                                        <button type="submit" class="btn btn-primary">SIMPAN / PROSES</button>
+                                        <button type="submit" class="btn btn-primary">SIMPAN</button>
                                     </div>
                                 </form>
                             </div>
