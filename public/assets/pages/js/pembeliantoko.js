@@ -470,7 +470,7 @@ $(document).ready(function () {
 
         // Kirim data ke server menggunakan AJAX
         $.ajax({
-            url: `/admin/pembelian/pembeliantoko/storePembelianPelanggan/`, // URL untuk mengupdate data pegawai
+            url: `/admin/pembelian/pembeliantoko/storePembelianPelanggan`, // URL untuk mengupdate data pegawai
             type: "POST", // Gunakan metode POST (atau PATCH jika route mendukung)
             data: formData, // Gunakan FormData
             processData: false, // Jangan proses FormData sebagai query string

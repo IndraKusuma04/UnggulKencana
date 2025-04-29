@@ -237,5 +237,13 @@ class PembelianTokoController extends Controller
             'kondisi'               => 'required',
             'pelanggan'             => 'required|exists:pelanggan,id',
         ]);
+
+        // Ambil semua produk_id dari keranjang aktif user tersebut
+        $produkIDs = PembelianProduk::where('status', 1)
+            ->where('oleh', Auth::id())
+            ->where('kodepembelianproduk', $request->kodepembelianproduk)
+            ->pluck('kodeproduk');
+
+        return response()->json(['success' => true, 'message' => 'Data Berhasil Disimpan', 'Data' => $produkIDs]);
     }
 }

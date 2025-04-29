@@ -74,7 +74,7 @@
                                     </tbody>
                                 </table>
 
-                                <form method="POST" enctype="multipart/form-data" id="storePembelian">
+                                <form method="POST" enctype="multipart/form-data" id="storePembelianPelanggan">
                                     @csrf
                                     <div class="mb-3">
                                         <label class="form-label">KODE PEMBELIAN PRODUK<span
@@ -96,7 +96,7 @@
                                         </div>
                                     </div>
                                     <div class="text-end">
-                                        <button type="submit" class="btn btn-primary">SIMPAN</button>
+                                        <button type="submit" class="btn btn-primary">SIMPAN / PROSES</button>
                                     </div>
                                 </form>
                             </div>
