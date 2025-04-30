@@ -123,6 +123,9 @@ $(document).ready(function () {
                         },
                     },
                     {
+                        data: "keranjang[0].produk.kondisi.kondisi",
+                    },
+                    {
                         data: "keranjang[0].produk.harga_jual",
                         render: function (data) {
                             if (data != null) {
@@ -227,6 +230,7 @@ $(document).ready(function () {
                         data: "berat",
                         render: data => `${parseFloat(data).toFixed(1)} gram`
                     },
+                    { data: "kondisi.kondisi" },
                     {
                         data: "harga_beli",
                         render: function (data) {
@@ -248,7 +252,7 @@ $(document).ready(function () {
                         className: "action-table-data justify-content-center",
                         render: (data, type, row) => `
                             <div class="edit-delete-action">
-                                <a class="me-2 p-2 btn-edit-harga" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="MASUKAN HARGA BELI">
+                                <a class="me-2 p-2 btn-edit-harga" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="EDIT PRODUK YANG DIBELI">
                                     <i data-feather="edit" class="feather-edit"></i>
                                 </a>
                                 <a class="p-2 btn-delete-produk" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="BATALKAN PRODUK">
@@ -337,6 +341,23 @@ $(document).ready(function () {
                 // Isi modal dengan data
                 $("#editid").val(data.id);
                 $("#editharga").val(data.harga_beli);
+
+                // Muat opsi kondisi
+                $.ajax({
+                    url: "/admin/kondisi/getKondisi",
+                    type: "GET",
+                    success: function (kondisiResponse) {
+                        let options
+                        kondisiResponse.Data.forEach((item) => {
+                            const selected =
+                                item.id === data.kondisi_id
+                                    ? "selected"
+                                    : "";
+                            options += `<option value="${item.id}" ${selected}>${item.kondisi}</option>`;
+                        });
+                        $("#editkondisi").html(options);
+                    },
+                });
 
                 // Tampilkan modal edit
                 $("#mdEditHargaBeli").modal("show");

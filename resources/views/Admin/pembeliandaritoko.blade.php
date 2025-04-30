@@ -47,6 +47,7 @@
                                     <th>KODE PRODUK</th>
                                     <th>NAMA</th>
                                     <th>BERAT</th>
+                                    <th>KONDISI</th>
                                     <th>HARGA JUAL</th>
                                     <th class="text-center no-sort">ACTION</th>
                                 </tr>
@@ -66,6 +67,7 @@
                                             <th>KODE PRODUK</th>
                                             <th>NAMA</th>
                                             <th>BERAT </th>
+                                            <th>KONDISI</th>
                                             <th>HARGA BELI</th>
                                             <th class="text-center no-sort">ACTION</th>
                                         </tr>
@@ -76,23 +78,18 @@
 
                                 <form method="POST" enctype="multipart/form-data" id="storePembelianPelanggan">
                                     @csrf
-                                    <div class="mb-3">
-                                        <label class="form-label">KODE PEMBELIAN PRODUK<span
-                                                class="text-danger ms-1">*</span></label>
-                                        <input type="text" name="kodepembelianproduk" id="kodepembelianproduk"
-                                            value="{{ session('kodepembelianproduk') }}" class="form-control" readonly>
-                                    </div>
                                     <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">KODE PEMBELIAN PRODUK<span
+                                                    class="text-danger ms-1">*</span></label>
+                                            <input type="text" name="kodepembelianproduk" id="kodepembelianproduk"
+                                                value="{{ session('kodepembelianproduk') }}" class="form-control" readonly>
+                                        </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">PELANGGAN<span
                                                     class="text-danger ms-1">*</span></label>
                                             <input type="text" id="detailpelanggan" class="form-control" readonly>
                                             <input type="hidden" name="pelanggan" id="idpelanggan" class="form-control">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">KONDISI PRODUK<span
-                                                    class="text-danger ms-1">*</span></label>
-                                            <select class="select" name="kondisi" id="kondisi"></select>
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -165,6 +162,10 @@
                         <div class="mb-3">
                             <label class="form-label">HARGA BELI<span class="text-danger ms-1">*</span></label>
                             <input type="text" name="hargabeli" id="editharga" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">KONDISI<span class="text-danger ms-1">*</span></label>
+                            <select class="select" name="kondisi" id="editkondisi"></select>
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-between">

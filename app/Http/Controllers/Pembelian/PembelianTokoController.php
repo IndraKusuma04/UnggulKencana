@@ -64,7 +64,7 @@ class PembelianTokoController extends Controller
 
             $transaksi = Transaksi::with(['keranjang' => function ($query) {
                 $query->where('status', '!=', 0);
-            }, 'keranjang.produk', 'pelanggan', 'user', 'user.pegawai', 'diskon'])->where('kodetransaksi', $request->kodetransaksi)->where('status', 2)->get();
+            }, 'keranjang.produk', 'keranjang.produk.kondisi', 'pelanggan', 'user', 'user.pegawai', 'diskon'])->where('kodetransaksi', $request->kodetransaksi)->where('status', 2)->get();
 
             // Cek apakah data transaksi ditemukan
             if ($transaksi->isEmpty()) {
@@ -82,7 +82,7 @@ class PembelianTokoController extends Controller
 
     public function getPembelianProduk()
     {
-        $pembelianProduk = PembelianProduk::with(['produk'])->where('status', 1)->where('oleh', Auth::user()->id)->get();
+        $pembelianProduk = PembelianProduk::with(['jenisproduk', 'produk', 'kondisi'])->where('status', 1)->where('oleh', Auth::user()->id)->get();
 
         return response()->json(['success' => true, 'message' => 'Data Pembelian Produk Berhasil Ditemukan', 'Data' => $pembelianProduk]);
     }
@@ -118,6 +118,7 @@ class PembelianTokoController extends Controller
             'kodepembelianproduk'   => $kodepembelianproduk,
             'kodeproduk'            => $produk->kodeproduk,
             'jenisproduk_id'        => $produk->jenisproduk_id,
+            'kondisi_id'            => $produk->kondisi_id,
             'nama'                  => $produk->nama,
             'keterangan'            => $produk->keterangan,
             'harga_jual'            => $keranjang->harga_jual,
@@ -164,7 +165,8 @@ class PembelianTokoController extends Controller
 
         $updateProduk = PembelianProduk::where('id', $id)
             ->update([
-                'harga_beli'        =>  $request->hargabeli,
+                'harga_beli'    =>  $request->hargabeli,
+                'kondisi_id'    =>  $request->kondisi
             ]);
 
         return response()->json(['success' => true, 'message' => 'Data Produk Berhasil Disimpan']);
@@ -244,7 +246,6 @@ class PembelianTokoController extends Controller
         $tanggal = $request['tanggal']  = Carbon::today()->format('Y-m-d');
         $kodepembelianproduk = $request['kodepembelianproduk'];
         $pelanggan = $request['pelanggan'];
-        $kondisi = $request['kondisi'];
         $catatan = $request['catatan'];
 
         // Step 1: Ambil semua kodeproduk dari pembelian_produk
@@ -260,13 +261,22 @@ class PembelianTokoController extends Controller
         // Bisa juga ambil data lengkap jika diperlukan:
         $produkList = PembelianProduk::whereIn('kodeproduk', $kodeProdukList)->get();
 
+        $pembelianproduk = Pembelian::create([
+            'kodepembelian' =>  $kodePembelian,
+            'kodepembelianproduk'   =>  $kodepembelianproduk,
+            'pelanggan_id' =>   $pelanggan,
+            'tanggal'   =>  $tanggal,
+            'total_harga'   =>  $totalHargaBeli,
+            'catatan'   =>  $catatan,
+            'oleh'      => Auth::user()->id,
+        ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Disimpan',
             'kodepembelian' => $kodePembelian,
             'kodepembelianproduk' => $kodepembelianproduk,
             'pelanggan' => $pelanggan,
-            'kondisi'   =>  $kondisi,
             'catatan'   =>  $catatan,
             'tanggal'   => $tanggal,
             'total_harga_beli' => $totalHargaBeli,
