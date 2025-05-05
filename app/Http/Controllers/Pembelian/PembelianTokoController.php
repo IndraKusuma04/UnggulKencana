@@ -97,14 +97,21 @@ class PembelianTokoController extends Controller
         $produk = Produk::findOrFail($keranjang->produk_id);
 
         // Cek apakah kodeproduk sudah ada di pembelian_produk
-        $existing = PembelianProduk::where('kodeproduk', $produk->kodeproduk)->where('status', 1)->first();
+        $existing = PembelianProduk::where('kodeproduk', $produk->kodeproduk)
+            ->whereIn('status', [1, 2])
+            ->first();
 
         if ($existing) {
+            $message = $existing->status == 1
+                ? 'Produk sudah ada di keranjang pembelian.'
+                : 'Produk sudah masuk dalam transaksi pembelian.';
+
             return response()->json([
                 'success' => false,
-                'message' => 'Produk sudah ada di keranjang pembelian.',
+                'message' => $message,
             ]);
         }
+
 
         // Cek apakah sudah ada kodepembelianproduk di session
         $kodepembelianproduk = session('kodepembelianproduk');
@@ -237,7 +244,6 @@ class PembelianTokoController extends Controller
     {
         $request->validate([
             'kodepembelianproduk'   => 'required',
-            'kondisi'               => 'required',
             'pelanggan'             => 'required|exists:pelanggan,id',
         ]);
 
@@ -247,6 +253,10 @@ class PembelianTokoController extends Controller
         $kodepembelianproduk = $request['kodepembelianproduk'];
         $pelanggan = $request['pelanggan'];
         $catatan = $request['catatan'];
+
+        if (!$kodepembelianproduk) {
+            return back()->with('error', 'Kode pembelian produk tidak ditemukan. Silakan ulangi proses.');
+        }
 
         // Step 1: Ambil semua kodeproduk dari pembelian_produk
         $kodeProdukList = PembelianProduk::where('status', 1)
@@ -262,25 +272,28 @@ class PembelianTokoController extends Controller
         $produkList = PembelianProduk::whereIn('kodeproduk', $kodeProdukList)->get();
 
         $pembelianproduk = Pembelian::create([
-            'kodepembelian' =>  $kodePembelian,
-            'kodepembelianproduk'   =>  $kodepembelianproduk,
-            'pelanggan_id' =>   $pelanggan,
-            'tanggal'   =>  $tanggal,
-            'total_harga'   =>  $totalHargaBeli,
-            'catatan'   =>  $catatan,
-            'oleh'      => Auth::user()->id,
+            'kodepembelian'          =>  $kodePembelian,
+            'kodepembelianproduk'    =>  $kodepembelianproduk,
+            'pelanggan_id'           =>  $pelanggan,
+            'tanggal'                =>  $tanggal,
+            'total_harga'            =>  $totalHargaBeli,
+            'catatan'                =>  $catatan,
+            'oleh'                   =>  Auth::user()->id,
+            'status'                 =>  1,
         ]);
+
+        if ($pembelianproduk) {
+            PembelianProduk::where('kodepembelianproduk', $kodepembelianproduk)
+                ->update([
+                    'status'    => 2,
+                ]);
+
+            session()->forget('kodepembelianproduk');
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Berhasil Disimpan',
-            'kodepembelian' => $kodePembelian,
-            'kodepembelianproduk' => $kodepembelianproduk,
-            'pelanggan' => $pelanggan,
-            'catatan'   =>  $catatan,
-            'tanggal'   => $tanggal,
-            'total_harga_beli' => $totalHargaBeli,
-            'Data' => $kodeProdukList
+            'message' => 'Data Berhasil Disimpan'
         ]);
     }
 }

@@ -35,7 +35,7 @@
 
                     <div class="table-responsive product-list">
                         <table id="pembelianTable" class="table table-hover" style="width: 100%">
-                            <thead>
+                            <thead class="thead-secondary">
                                 <tr>
                                     <th>NO.</th>
                                     <th>KODE PEMBELIAN</th>
@@ -43,7 +43,7 @@
                                     <th>PENJUAL</th>
                                     <th>TOTAL</th>
                                     <th>STATUS</th>
-                                    <th class="no-sort">ACTION</th>
+                                    <th class="no-sort text-center">ACTION</th>
                                 </tr>
                             </thead>
                             <tbody>

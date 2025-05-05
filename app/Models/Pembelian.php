@@ -56,4 +56,14 @@ class Pembelian extends Model
     {
         return $this->hasMany(PembelianProduk::class, 'kodepembelianproduk', 'kodepembelianproduk');
     }
+
+    /**
+     * Get the user that owns the Pembelian
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'oleh', 'id');
+    }
 }

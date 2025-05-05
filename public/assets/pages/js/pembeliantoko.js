@@ -503,6 +503,12 @@ $(document).ready(function () {
                 const toast = new bootstrap.Toast(successtoastExample);
                 $(".toast-body").text(response.message);
                 toast.show();
+
+                if ($.fn.DataTable.isDataTable('#produkPembelianTable')) {
+                    $('#produkPembelianTable').DataTable().ajax.reload();
+                }
+
+                $("#storePembelianPelanggan")[0].reset();
             },
             error: function (xhr) {
                 const errors = xhr.responseJSON.errors;

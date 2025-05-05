@@ -32,4 +32,11 @@ class PembelianController extends Controller
 
         return $newKodePembelian;
     }
+
+    public function getPembelian()
+    {
+        $pembelian = Pembelian::with(['suplier', 'pelanggan', 'pembelianproduk', 'user.pegawai'])->get();
+
+        return response()->json(['success' => true, 'message' => 'Data Pembelian Berhasil Ditemukan', 'Data' => $pembelian]);
+    }
 }
