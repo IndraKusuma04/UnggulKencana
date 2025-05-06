@@ -140,10 +140,10 @@ $(document).ready(function () {
         const produkID = $(this).data("id");
 
         $.ajax({
-            url: `/admin/transaksi/getTransaksiByID/${produkID}`, // Endpoint untuk mendapatkan data pegawai
+            url: `/admin/pembelian/getPembelianByID/${produkID}`, // Endpoint untuk mendapatkan data pegawai
             type: "GET",
             success: function (response) {
-                // Ambil data pertama
+                //Ambil data pertama
                 let data = response.Data[0];
 
                 $("#namapelanggan").text(data.pelanggan.nama);

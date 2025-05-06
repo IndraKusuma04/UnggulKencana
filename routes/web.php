@@ -183,6 +183,7 @@ Route::middleware(['checkRole:admin'])->group(function () {
         return view('Admin.pembelian');
     });
     Route::get('/admin/pembelian/getPembelian', [PembelianController::class, 'getPembelian']);
+    Route::get('/admin/pembelian/getPembelianByID/{id}', [PembelianController::class, 'getPembelianByID']);
 
     Route::get('/admin/pembeliantoko', function () {
         return view('Admin.pembeliandaritoko');

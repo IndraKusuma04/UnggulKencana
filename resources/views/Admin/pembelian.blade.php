@@ -56,168 +56,105 @@
         </div>
     </div>
 
-    <!-- md Pembelian Dari Toko -->
-    <div class="modal fade" id="mdPembelianDariToko">
-        <div class="modal-dialog modal-dialog-centered">
+    <!-- details popup -->
+    <div class="modal fade" id="detailTransaksi">
+        <div class="modal-dialog sales-details-modal">
             <div class="modal-content">
-                <div class="modal-header">
-                    <div class="page-title">
-                        <h4>PEMBELIAN DARI TOKO</h4>
-                    </div>
-                    <button type="button" class="close bg-danger text-white fs-16" data-bs-dismiss="modal"
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form id="formCariByKodeTransaksi" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">CARI DENGAN KODE TRANSAKSI<span
-                                    class="text-danger ms-1">*</span></label>
-                            <input type="text" name="kodetransaksi" class="form-control">
+                <div class="page-header p-4 border-bottom mb-0 d-print-none">
+                    <div class="add-item d-flex align-items-center">
+                        <div class="page-title modal-datail">
+                            <h4 class="mb-0 me-2">DETAIL TRANSAKSI</h4>
                         </div>
                     </div>
-                    <div class="modal-footer d-flex justify-content-between">
-                        <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
-                        <button type="submit" class="btn btn-primary">CARI</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- md Tambah Pembelian -->
-    <div class="modal fade" id="mdFormPembelianDariToko">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="page-title">
-                        <h4>PEMBELIAN DARI TOKO</h4>
-                    </div>
-                    <button type="button" class="close bg-danger text-white fs-16" data-bs-dismiss="modal"
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <ul class="table-top-head">
+                        <li>
+                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Pdf"><img
+                                    src="{{ asset('assets') }}/img/icons/product-print.svg" alt="img"></a>
+                        </li>
+                        <li>
+                            <a data-bs-toggle="tooltip" id="btnPrintModal" data-bs-placement="top" title="Pdf"><img
+                                    src="{{ asset('assets') }}/img/icons/printer.svg" alt="img"></a>
+                        </li>
+                    </ul>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-7">
-                            <div class="card" id="formContainer">
-                                <div class="card-header">
-                                    <h5 class="card-title">KODE TRANSAKSI #<b id="titlekodetransaksi"
-                                            class="text-primary"></b></h5>
+
+                <div class="card border-0">
+                    <div class="card-body pb-0">
+                        <div class="invoice-box table-height"
+                            style="max-width: 1600px;width:100%;padding: 0;font-size: 14px;line-height: 24px;color: #555;">
+                            <div class="row sales-details-items d-flex">
+                                <div class="col-md-4 details-item">
+                                    <h6>PELANGGAN</h6>
+                                    <h4 class="mb-1"> <span id="namapelanggan"></span></h4>
+                                    <p class="mb-0"> <span id="alamatpelanggan"></span></p>
+                                    <p class="mb-0"> <span id="kontakpelanggan"></span></p>
                                 </div>
-                                <div class="card table-list-card">
-                                    <div class="table-responsive product-list">
-                                        <table id="pembelianProdukTable" class="table table-hover" style="width: 100%">
-                                            <thead class="thead-secondary">
-                                                <tr>
-                                                    <th>KODE PRODUK</th>
-                                                    <th>NAMA</th>
-                                                    <th>BERAT </th>
-                                                    <th>HARGA</th>
-                                                    <th>ACTION</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
+                                <div class="col-md-4 details-item">
+                                    <h6>TOKO</h6>
+                                    <h4 class="mb-1">UNGGUL KENCANA</h4>
+                                    <p class="mb-0">Ruko No. 8, Jl. Patimura, Karang Lewas, Purwokerto, Banyumas, Jawa
+                                        Tengah</p>
+                                    <p class="mb-0">Telp <span>0822 2537 7888</span></p>
+                                </div>
+                                <div class="col-md-4 details-item">
+                                    <h6>FAKTUR</h6>
+                                    <p class="mb-0">No. Transaksi: <span class="fs-16 text-primary ms-2">#<span
+                                                id="kodetransaksi"></span></span>
+                                    </p>
+                                    <p class="mb-0">Tanggal: <span class="ms-2 text-gray-9" id="tanggaltransaksi"></span>
+                                    </p>
+                                    <p class="mb-0">Status: <span id="statustransaksi"></span>
+                                    </p>
+                                    <p class="mb-0">Sales: <span class="ms-2 text-gray-9" id="oleh">
+                                            ></span></p>
+                                </div>
+                            </div>
+                            <h5 class="order-text">DETAIL PESANAN</h5>
+                            <div class="table-responsive no-pagination mb-3">
+                                <table class="table" id="transaksiProduk">
+                                    <thead>
+                                        <tr>
+                                            <th>KODE PRODUK</th>
+                                            <th>NAMA PRODUK</th>
+                                            <th>BERAT</th>
+                                            <th>HARGA</th>
+                                            <th>TOTAL</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-lg-6 ms-auto">
+                                    <div class="total-order w-100 max-widthauto m-auto mb-4">
+                                        <ul class="border-1 rounded-1">
+                                            <li class="border-bottom">
+                                                <h4 class="border-end" id="subtotal">Sub Total</h4>
+                                                <h5 class="text-danger"></h5>
+                                            </li>
+                                            <li class="border-bottom">
+                                                <h4 class="border-end" id="diskon">Diskon</h4>
+                                                <h5 class="text-secondary"></h5>
+                                            </li>
+                                            <li class="border-bottom">
+                                                <h4 class="border-end" id="totalharga">Total</h4>
+                                                <h5 class="text-success"></h5>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-md-5">
-                            <div class="card" id="tabelProdukPembelian">
-                                <div class="card-header">
-                                    <h5 class="card-title">FORM PEMBELIAN </h5>
-                                </div>
-                                <div class="card table-list-card">
-                                    <div class="table-responsive product-list">
-                                        <table id="keranjangPembelianProduk" class="table table-hover" style="width: 100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>KODE PRODUK</th>
-                                                    <th>NAMA</th>
-                                                    <th>BERAT </th>
-                                                    <th>ACTION</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <form method="POST" enctype="multipart/form-data" id="storePembelian">
-                                    @csrf
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">KODE PEMBELIAN PRODUK<span
-                                                    class="text-danger ms-1">*</span></label>
-                                            <input type="text" name="kodepembelianproduk" id="kodepembelianproduk"
-                                                value="{{ session('kodepembelianproduk') }}" class="form-control"
-                                                readonly>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">PELANGGAN<span
-                                                    class="text-danger ms-1">*</span></label>
-                                            <input type="text" id="detailpelanggan" class="form-control" readonly>
-                                            <input type="hidden" name="pelanggan" id="idpelanggan"
-                                                class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class=" mb-3">
-                                        <label class="form-label">KONDISI</label>
-                                        <select class="select" name="kondisi" id="kondisi">
-                                        </select>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                     </div>
-                </div>
-                <div class="modal-footer d-flex justify-content-between">
-                    <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
-                    <button type="submit" class="btn btn-primary">SIMPAN</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- md Tambah Pembelian -->
-    <div class="modal fade" id="mdEditHargaBeli">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="page-title">
-                        <h4>FORM EDIT HARGA BELI</h4>
-                    </div>
-                    <button type="button" class="close bg-danger text-white fs-16" data-bs-dismiss="modal"
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form method="POST" enctype="multipart/form-data" id="formUpdateHargaBeli">
-                        @csrf
-                        <div class="mb-3">
-                            <label class="form-label">ID<span class="text-danger ms-1">*</span></label>
-                            <input type="text" name="id" id="editid" class="form-control" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">HARGA BELI<span class="text-danger ms-1">*</span></label>
-                            <input type="text" name="hargabeli" id="editharga" class="form-control">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer d-flex justify-content-between">
-                    <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
-                    <button type="submit" class="btn btn-primary">SIMPAN</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- /details popup -->
 
     <script src="{{ asset('assets') }}/js/jquery-3.7.1.min.js" type="text/javascript"></script>
     <script src="{{ asset('assets') }}/pages/js/pembelian.js"></script>
