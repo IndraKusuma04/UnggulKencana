@@ -134,4 +134,99 @@ $(document).ready(function () {
 
     //panggil function getPembelian
     getPembelian();
+
+    //ketika button edit di tekan
+    $(document).on("click", ".btn-detail", function () {
+        const produkID = $(this).data("id");
+
+        $.ajax({
+            url: `/admin/transaksi/getTransaksiByID/${produkID}`, // Endpoint untuk mendapatkan data pegawai
+            type: "GET",
+            success: function (response) {
+                // Ambil data pertama
+                let data = response.Data[0];
+
+                $("#namapelanggan").text(data.pelanggan.nama);
+                $("#alamatpelanggan").text(data.pelanggan.alamat);
+                $("#kontakpelanggan").text(data.pelanggan.kontak);
+                $("#kodetransaksi").text(data.kodetransaksi);
+                let tanggalAsli = data.tanggal; // misalnya "2025-04-07"
+                let tanggalBaru = new Date(tanggalAsli);
+
+                // Format: 7 April 2025
+                let tanggalFormatted = new Intl.DateTimeFormat('id-ID', {
+                    day: 'numeric', 
+                    month: 'long',
+                    year: 'numeric'
+                }).format(tanggalBaru);
+
+                $("#tanggaltransaksi").text(tanggalFormatted);
+
+                let statusHTML = "";
+
+                if (data.status == 1) {
+                    statusHTML = `<span class="badge bg-warning fw-medium fs-10"><b>BELUM DIBAYAR</b></span>`;
+                } else if (data.status == 2) {
+                    statusHTML = `<span class="badge bg-success fw-medium fs-10"><b>DIBAYAR</b></span>`;
+                } else {
+                    statusHTML = `<span class="badge bg-danger fw-medium fs-10"><b>BATAL</b></span>`;
+                }
+
+                $("#statustransaksi").html(statusHTML);
+                $("#oleh").text(data.user.pegawai.nama);
+
+                // Kosongkan isi tbody dulu
+                $("#transaksiProduk tbody").empty();
+
+                // Loop setiap item dalam keranjang
+                data.keranjang.forEach(function (item) {
+                    let produk = item.produk;
+
+                    let row = `
+                        <tr>
+                            <td>${produk.kodeproduk}</td>
+                            <td>${produk.nama}</td>
+                            <td>${parseFloat(item.berat).toFixed(1)} gram</td>
+                            <td>Rp ${Number(item.harga_jual).toLocaleString('id-ID')}</td>
+                            <td>Rp ${Number(item.total).toLocaleString('id-ID')}</td>
+                        </tr>
+                    `;
+
+                    $("#transaksiProduk tbody").append(row);
+                });
+
+                let subtotal = 0;
+                data.keranjang.forEach(function (item) {
+                    subtotal += parseFloat(item.total);
+                });
+
+                // Ambil nilai diskon dari objek
+                let diskonPersen = data.diskon ? parseFloat(data.diskon.nilai) : 0;
+
+                // Hitung nilai diskon dalam rupiah
+                let diskonRupiah = subtotal * (diskonPersen / 100);
+
+                // Total harga setelah diskon
+                let totalHarga = subtotal - diskonRupiah;
+
+                // Format ke mata uang rupiah
+                let formatRupiah = angka => "Rp " + angka.toLocaleString('id-ID');
+
+                // Tampilkan ke elemen HTML
+                $("#subtotal").next("h5").text(formatRupiah(subtotal));
+                $("#diskon").next("h5").text(`${diskonPersen}% (-${formatRupiah(diskonRupiah)})`);
+                $("#totalharga").next("h5").text(formatRupiah(totalHarga));
+
+                // Tampilkan modal edit
+                $("#detailTransaksi").modal("show");
+            },
+            error: function () {
+                Swal.fire(
+                    "Gagal!",
+                    "Tidak dapat mengambil data role.",
+                    "error"
+                );
+            },
+        });
+    });
 })

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Pembelian;
 
+use Carbon\Carbon;
 use App\Models\Produk;
 use App\Models\Keranjang;
 use App\Models\Pembelian;
@@ -17,20 +18,20 @@ class PembelianController extends Controller
     public function generateKodeTransaksiPembelian()
     {
         // Ambil kode customer terakhir dari database
-        $lastCode = DB::table('pembelian')
+        $lastCustomer = DB::table('pembelian')
             ->orderBy('kodepembelian', 'desc')
             ->first();
 
         // Jika tidak ada customer, mulai dari 1
-        $lastNumber = $lastCode ? (int) substr($lastCode->kodepembelian, -5) : 0;
+        $lastNumber = $lastCustomer ? (int) substr($lastCustomer->kodepembelian, -5) : 0;
 
         // Tambahkan 1 pada nomor terakhir
         $newNumber = $lastNumber + 1;
 
         // Format kode customer baru
-        $newKodePembelian = '#P-' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+        $newKodeCustomer = Carbon::now()->format('YmdHis') . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
 
-        return $newKodePembelian;
+        return $newKodeCustomer;
     }
 
     public function getPembelian()

@@ -53,7 +53,7 @@
                     <h6 class="submenu-hdr">Transaksi</h6>
                     <ul>
                         <li><a href="/admin/pos"><i data-feather="hard-drive"></i><span> POS</span></a></li>
-                        <li><a href="/admin/transaksi"><i data-feather="file-minus"></i><span> Transaksi</span></a></li>
+                        <li><a href="/admin/transaksi"><i data-feather="file-minus"></i><span> Penjualan</span></a></li>
                         <li class="submenu">
                             <a href="javascript:void(0);">
                                 <i data-feather="layers"></i><span>Pembelian</span><span class="menu-arrow"></span>
