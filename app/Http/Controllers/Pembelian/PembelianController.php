@@ -47,4 +47,14 @@ class PembelianController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Data Pembelian Berhasil Ditemukan', 'Data' => $pembelian]);
     }
+
+    public function konfirmasiPembelian($id)
+    {
+        $pembelian  = Pembelian::where('id', $id)
+            ->update([
+                'status' => 2,
+            ]);
+
+        return response()->json(['success' => true, 'message' => 'Pembelian Berhasil Dikonfirmasi']);
+    }
 }

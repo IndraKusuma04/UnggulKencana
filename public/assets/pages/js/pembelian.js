@@ -79,11 +79,11 @@ $(document).ready(function () {
                         render: function (data, type, row) {
                             // Menampilkan badge sesuai dengan status
                             if (data == 1) {
-                                return `<span class="badge bg-success fw-medium fs-10">Active</span>`;
+                                return `<span class="badge bg-warning fw-medium fs-10"><b>BELUM DIBAYAR</b></span>`;
                             } else if (data == 2) {
-                                return `<span class="badge bg-danger fw-medium fs-10">In Active</span>`;
+                                return `<span class="badge bg-success fw-medium fs-10"><b>DIBAYAR</b></span>`;
                             } else {
-                                return `<span class="badge bg-secondary fw-medium fs-10">Unknown</span>`;
+                                return `<span class="badge bg-danger fw-medium fs-10"><b>BATAL</b></span>`;
                             }
                         }
                     },
@@ -135,6 +135,64 @@ $(document).ready(function () {
     //panggil function getPembelian
     getPembelian();
 
+    // ketika button hapus di tekan
+    $(document).on("click", ".confirm-payment", function () {
+        const deleteID = $(this).data("id");
+
+        // SweetAlert2 untuk konfirmasi
+        Swal.fire({
+            title: "Konfirmasi Pembelian",
+            text: "Pembelian Sudah Dilakukan ?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Sudah!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Kirim permintaan hapus (gunakan itemId)
+                fetch(`/admin/pembelian/konfirmasiPembelian/${deleteID}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            Swal.fire(
+                                "Dikonfirmasi!",
+                                "Pembelian berhasil dikonfirmasi.",
+                                "success"
+                            );
+                            // Reload DataTable pembelian_produk (pastikan sudah diinisialisasi sebelumnya)
+                            if ($.fn.DataTable.isDataTable('#pembelianTable')) {
+                                $('#pembelianTable').DataTable().ajax.reload();
+                            }
+                        } else {
+                            Swal.fire(
+                                "Gagal!",
+                                "Terjadi kesalahan saat konfirmasi pembelian.",
+                                "error"
+                            );
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire(
+                            "Gagal!",
+                            "Terjadi kesalahan dalam konfirmasi pembelian.",
+                            "error"
+                        );
+                    });
+            } else {
+                // Jika batal, beri tahu pengguna
+                Swal.fire("Dibatalkan", "Pembelian tidak dikonfirmasi.", "info");
+            }
+        });
+    });
+
     //ketika button edit di tekan
     $(document).on("click", ".btn-detail", function () {
         const produkID = $(this).data("id");
@@ -149,13 +207,13 @@ $(document).ready(function () {
                 $("#namapelanggan").text(data.pelanggan.nama);
                 $("#alamatpelanggan").text(data.pelanggan.alamat);
                 $("#kontakpelanggan").text(data.pelanggan.kontak);
-                $("#kodetransaksi").text(data.kodetransaksi);
+                $("#kodetransaksi").text(data.kodepembelian);
                 let tanggalAsli = data.tanggal; // misalnya "2025-04-07"
                 let tanggalBaru = new Date(tanggalAsli);
 
                 // Format: 7 April 2025
                 let tanggalFormatted = new Intl.DateTimeFormat('id-ID', {
-                    day: 'numeric', 
+                    day: 'numeric',
                     month: 'long',
                     year: 'numeric'
                 }).format(tanggalBaru);
@@ -176,49 +234,37 @@ $(document).ready(function () {
                 $("#oleh").text(data.user.pegawai.nama);
 
                 // Kosongkan isi tbody dulu
-                $("#transaksiProduk tbody").empty();
+                $("#pembelianProduk tbody").empty();
+
+                let totalHargaBeli = 0;
 
                 // Loop setiap item dalam keranjang
-                data.keranjang.forEach(function (item) {
-                    let produk = item.produk;
+                data.pembelianproduk.forEach(function (item) {
+                    let hargaBeli = Number(item.harga_beli);
+                    totalHargaBeli += hargaBeli;
 
                     let row = `
                         <tr>
-                            <td>${produk.kodeproduk}</td>
-                            <td>${produk.nama}</td>
+                            <td>${item.kodeproduk}</td>
+                            <td>${item.nama}</td>
                             <td>${parseFloat(item.berat).toFixed(1)} gram</td>
-                            <td>Rp ${Number(item.harga_jual).toLocaleString('id-ID')}</td>
-                            <td>Rp ${Number(item.total).toLocaleString('id-ID')}</td>
+                            <td>Rp ${Number(hargaBeli).toLocaleString('id-ID')}</td>
                         </tr>
                     `;
 
-                    $("#transaksiProduk tbody").append(row);
+                    $("#pembelianProduk tbody").append(row);
                 });
-
-                let subtotal = 0;
-                data.keranjang.forEach(function (item) {
-                    subtotal += parseFloat(item.total);
-                });
-
-                // Ambil nilai diskon dari objek
-                let diskonPersen = data.diskon ? parseFloat(data.diskon.nilai) : 0;
-
-                // Hitung nilai diskon dalam rupiah
-                let diskonRupiah = subtotal * (diskonPersen / 100);
-
-                // Total harga setelah diskon
-                let totalHarga = subtotal - diskonRupiah;
 
                 // Format ke mata uang rupiah
                 let formatRupiah = angka => "Rp " + angka.toLocaleString('id-ID');
 
                 // Tampilkan ke elemen HTML
-                $("#subtotal").next("h5").text(formatRupiah(subtotal));
-                $("#diskon").next("h5").text(`${diskonPersen}% (-${formatRupiah(diskonRupiah)})`);
-                $("#totalharga").next("h5").text(formatRupiah(totalHarga));
+                $("#subtotal").next("h5").text(formatRupiah(totalHargaBeli));
+                $("#diskon").next("h5").text(`0 %`);
+                $("#totalharga").next("h5").text(formatRupiah(data.total_harga));
 
                 // Tampilkan modal edit
-                $("#detailTransaksi").modal("show");
+                $("#detailPembelian").modal("show");
             },
             error: function () {
                 Swal.fire(

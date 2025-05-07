@@ -32,14 +32,6 @@
                     <h4 class="card-title">PRODUK TRANSAKSI PELANGGAN</h4>
                 </div>
                 <div class="card-body">
-                    <div class="table-top">
-                        <div class="search-set">
-                            <div class="search-input">
-                                <a href="javascript:void(0);" class="btn btn-searchset"><i data-feather="search"
-                                        class="feather-search"></i></a>
-                            </div>
-                        </div>
-                    </div>
                     <div class="table-responsive product-list">
                         <table id="produkTransaksiTable" class="table table-hover" style="width: 100%">
                             <thead class="thead-secondary">

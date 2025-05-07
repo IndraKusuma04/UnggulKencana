@@ -57,7 +57,7 @@
     </div>
 
     <!-- details popup -->
-    <div class="modal fade" id="detailTransaksi">
+    <div class="modal fade" id="detailPembelian">
         <div class="modal-dialog sales-details-modal">
             <div class="modal-content">
                 <div class="page-header p-4 border-bottom mb-0 d-print-none">
@@ -111,14 +111,13 @@
                             </div>
                             <h5 class="order-text">DETAIL PESANAN</h5>
                             <div class="table-responsive no-pagination mb-3">
-                                <table class="table" id="transaksiProduk">
+                                <table class="table" id="pembelianProduk">
                                     <thead>
                                         <tr>
                                             <th>KODE PRODUK</th>
                                             <th>NAMA PRODUK</th>
                                             <th>BERAT</th>
-                                            <th>HARGA</th>
-                                            <th>TOTAL</th>
+                                            <th>HARGA BELI</th>
                                         </tr>
                                     </thead>
                                     <tbody>
