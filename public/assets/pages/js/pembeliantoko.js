@@ -17,13 +17,12 @@ $(document).ready(function () {
 
     let tableProdukPembelianCustomer;
 
-    //load data pembelian
+    // Load data pembelian
     function getProdukPembelianTransaksiPelanggan() {
-        // Datatable
         if ($('#produkTransaksiTable').length > 0) {
             tableProdukPembelianCustomer = $('#produkTransaksiTable').DataTable({
-                "scrollX": false, // Jangan aktifkan scroll horizontal secara paksa
-                "bFilter": true,
+                "scrollX": false,
+                "bFilter": false,
                 "sDom": 'fBtlpi',
                 "ordering": true,
                 "language": {
@@ -43,131 +42,101 @@ $(document).ready(function () {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: function (d) {
-                        d.kodetransaksi = $('input[name="kodetransaksi"]').val(); // ambil dari input modal
+                        d.kodetransaksi = $('input[name="kodetransaksi"]').val();
                     },
                     dataSrc: function (json) {
-                        if (json.success) {
+                        if (json.success && json.Data.length > 0) {
+                            const transaksi = json.Data[0];
+
+                            // Tampilkan toast sukses
                             const successtoastExample = document.getElementById("successToast");
                             const toast = new bootstrap.Toast(successtoastExample);
                             $(".toast-body").text(json.message);
                             toast.show();
 
                             // Set nilai input pelanggan
-                            if (json.Data.length > 0) {
-                                $("#detailpelanggan").val(json.Data[0].pelanggan.nama);
-                                $("#idpelanggan").val(json.Data[0].pelanggan.id);
-                            }
+                            $("#detailpelanggan").val(transaksi.pelanggan.nama);
+                            $("#idpelanggan").val(transaksi.pelanggan.id);
 
-                            // loadKondisi
+                            // Load kondisi
                             $.ajax({
-                                url: "/admin/kondisi/getKondisi", // Endpoint untuk mendapatkan data jabatan
+                                url: "/admin/kondisi/getKondisi",
                                 type: "GET",
                                 success: function (response) {
-                                    let options
+                                    let options = "";
                                     response.Data.forEach((item) => {
                                         options += `<option value="${item.id}">${item.kondisi}</option>`;
                                     });
-                                    $("#kondisi").html(options); // Masukkan data ke select
+                                    $("#kondisi").html(options);
                                 },
                                 error: function () {
-                                    Swal.fire(
-                                        "Gagal!",
-                                        "Tidak dapat mengambil data kondisi.",
-                                        "error"
-                                    );
-                                },
+                                    Swal.fire("Gagal!", "Tidak dapat mengambil data kondisi.", "error");
+                                }
                             });
 
-                            return json.Data;
+                            // Kembalikan data keranjang
+                            return transaksi.keranjang;
                         } else {
+                            // Tampilkan toast gagal
                             const dangertoastExample = document.getElementById("dangerToast");
                             const toast = new bootstrap.Toast(dangertoastExample);
                             $(".toast-body").text(json.message);
                             toast.show();
-
-                            // loadKondisi
-                            $.ajax({
-                                url: "/admin/kondisi/getKondisi", // Endpoint untuk mendapatkan data jabatan
-                                type: "GET",
-                                success: function (response) {
-                                    let options
-                                    response.Data.forEach((item) => {
-                                        options += `<option value="${item.id}">${item.kondisi}</option>`;
-                                    });
-                                    $("#kondisi").html(options); // Masukkan data ke select
-                                },
-                                error: function () {
-                                    Swal.fire(
-                                        "Gagal!",
-                                        "Tidak dapat mengambil data kondisi.",
-                                        "error"
-                                    );
-                                },
-                            });
 
                             return [];
                         }
                     }
                 },
                 columns: [
+                    { data: "produk.kodeproduk" },
+                    { data: "produk.nama" },
                     {
-                        data: "keranjang[0].produk.kodeproduk",
-                    },
-                    {
-                        data: "keranjang[0].produk.nama",
-                    },
-                    {
-                        data: "keranjang[0].produk.berat",
+                        data: "produk.berat",
                         render: function (data) {
                             return data ? parseFloat(data).toFixed(1) + " gram" : "-";
-                        },
+                        }
                     },
+                    { data: "produk.kondisi.kondisi" },
                     {
-                        data: "keranjang[0].produk.kondisi.kondisi",
-                    },
-                    {
-                        data: "keranjang[0].produk.harga_jual",
+                        data: "produk.harga_jual",
                         render: function (data) {
-                            if (data != null) {
-                                return new Intl.NumberFormat('id-ID', {
+                            return data != null
+                                ? new Intl.NumberFormat('id-ID', {
                                     style: 'currency',
                                     currency: 'IDR',
                                     minimumFractionDigits: 0,
                                     maximumFractionDigits: 0
-                                }).format(data);
-                            } else {
-                                return "-";
-                            }
-                        },
+                                }).format(data)
+                                : "-";
+                        }
                     },
                     {
                         data: null,
                         orderable: false,
                         className: "action-table-data justify-content-center",
-                        render: function (data, type, row, meta) {
+                        render: function (data, type, row) {
                             return `
-                                <div class="edit-delete-action">
-                                    <a class="me-2 p-2 btn-pilihproduk" data-id="${row.keranjang[0]?.produk_id}" data-bs-toggle="tooltip" data-bs-placement="top" title="PILIH PRODUK">
-                                        <i data-feather="plus-circle" class="feather-edit"></i>
-                                    </a>
-                                </div>
-                            `;
+                            <div class="edit-delete-action">
+                                <a class="me-2 p-2 btn-pilihproduk" data-id="${row.produk_id}" data-bs-toggle="tooltip" data-bs-placement="top" title="PILIH PRODUK">
+                                    <i data-feather="plus-circle" class="feather-edit"></i>
+                                </a>
+                            </div>
+                        `;
                         }
                     }
                 ],
-                initComplete: (settings, json) => {
+                initComplete: function () {
                     $('.dataTables_filter').appendTo('#tableSearch');
                     $('.dataTables_filter').appendTo('.search-input');
                 },
                 drawCallback: function () {
-                    // Re-inisialisasi Feather Icons setelah render ulang DataTable
                     feather.replace();
-                    // Re-inisialisasi tooltip Bootstrap setelah render ulang DataTable
                     initializeTooltip();
                 }
             });
         }
     }
+
 
     getProdukPembelianTransaksiPelanggan();
 

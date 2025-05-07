@@ -49,7 +49,7 @@ class NampanProdukController extends Controller
             return response()->json(['success' => false, 'message' => 'Data Nampan Tidak Ditemukan'], 404);
         }
 
-        $produk = Produk::with('jenisproduk')->where('jenisproduk_id', $nampan->jenisproduk_id)->get();
+        $produk = Produk::with('jenisproduk')->where('jenisproduk_id', $nampan->jenisproduk_id)->where('status', 1)->get();
 
         return response()->json([
             'success' => true,
