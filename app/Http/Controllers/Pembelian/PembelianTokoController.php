@@ -208,27 +208,36 @@ class PembelianTokoController extends Controller
         $kodePembelianProduk = session('kodepembelianproduk');
 
         if (!$kodePembelianProduk) {
-            return back()->with('error', 'Kode pembelian produk tidak ditemukan. Silakan ulangi proses.');
+            return response()->json(['success' => false, 'message' => 'Kode pembelian produk tidak ditemukan. Silakan ulangi proses.']);
         }
 
         // Cek apakah masih ada data pembelian_produk dengan kode ini dan status 1
         $produkDipilih = PembelianProduk::where('kodepembelianproduk', $kodePembelianProduk)
             ->where('status', 1)
+            ->where('oleh', Auth::user()->id)
             ->get();
 
         if ($produkDipilih->isEmpty()) {
-            return back()->with('error', 'Tidak ada produk yang dipilih untuk disimpan.');
+            return response()->json(['success' => false, 'message' => 'Tidak ada produk yang dipilih untuk disimpan']);
         }
 
-        // Simpan data ke tabel pembelian
-        $pembelian = Pembelian::create([
-            'kodepembelianproduk' => $kodePembelianProduk,
-            'user_id' => Auth::id(),
-            'pelanggan_id' => $request->pelanggan,
-            'total_harga' => $request->hargabeli,
-            'kondisi_id' => $request->kondisi,
-            'tanggal' => now(),
-        ]);
+        foreach ($produkDipilih as $item) {
+            $totalPerProduk = $item->berat * $item->harga_beli;
+
+            // Contoh: Simpan ke kolom total_harga jika kolomnya ada
+            $item->total_harga = $totalPerProduk;
+            $item->save();
+
+            // Simpan data ke tabel pembelian
+            $pembelian = Pembelian::create([
+                'kodepembelianproduk' => $kodePembelianProduk,
+                'user_id' => Auth::id(),
+                'pelanggan_id' => $request->pelanggan,
+                // 'total_harga' => $request->hargabeli,
+                'kondisi_id' => $request->kondisi,
+                'tanggal' => now(),
+            ]);
+        }
 
         // Update status di pembelian_produk
         PembelianProduk::where('kodepembelianproduk', $kodePembelianProduk)

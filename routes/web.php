@@ -185,6 +185,7 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/pembelian/getPembelian', [PembelianController::class, 'getPembelian']);
     Route::get('/admin/pembelian/getPembelianByID/{id}', [PembelianController::class, 'getPembelianByID']);
     Route::get('/admin/pembelian/konfirmasiPembelian/{id}', [PembelianController::class, 'konfirmasiPembelian']);
+    Route::get('/admin/pembelian/konfirmasiPembatalanPembelian/{id}', [PembelianController::class, 'konfirmasiPembatalanPembelian']);
 
     Route::get('/admin/pembeliantoko', function () {
         return view('Admin.pembeliandaritoko');
