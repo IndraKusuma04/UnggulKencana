@@ -198,6 +198,10 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::delete('/admin/pembelian/pembeliantoko/deletePembelianProduk/{id}', [PembelianTokoController::class, 'deletePembelianProduk']);
     Route::post('/admin/pembelian/pembeliantoko/storePembelianPelanggan', [PembelianTokoController::class, 'storePembelianPelanggan']);
 
+    Route::get('/admin/pembelianluartoko', function () {
+        return view('Admin.pembelianluartoko');
+    });
+
     Route::get('/admin/report/cetakBarcodeProduk/{id}', function () {
         return view('Reports.cetakbarcode');
     });

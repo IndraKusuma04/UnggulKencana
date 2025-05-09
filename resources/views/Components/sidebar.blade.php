@@ -61,7 +61,7 @@
                             <ul>
                                 <li><a href="/admin/pembelian">Transaksi Pembelian</a></li>
                                 <li><a href="/admin/pembeliantoko">Pembelian Dari Toko</a></li>
-                                <li><a href="/admin/pembelian/luar">Pembelian Diluar Toko</a></li>
+                                <li><a href="/admin/pembelianluartoko">Pembelian Diluar Toko</a></li>
                             </ul>
                         </li>
                     </ul>
