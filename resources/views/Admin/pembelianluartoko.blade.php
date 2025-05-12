@@ -110,6 +110,12 @@
                             </div>
                             <form method="POST" enctype="multipart/form-data" id="storePembelian">
                                 @csrf
+                                <div class="mb-3">
+                                    <label class="form-label">KODE PEMBELIAN PRODUK<span
+                                            class="text-danger ms-1">*</span></label>
+                                    <input type="text" name="kodepembelianproduk" id="kodepembelianproduk"
+                                        value="{{ session('kodepembelianproduk') }}" class="form-control" readonly>
+                                </div>
                                 <div class="input-blocks add-products">
                                     <label class="d-block">Pembelian Dari</label>
                                     <div class="single-pill-product mb-3">
@@ -191,16 +197,56 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="formTambahDiskon" method="POST" enctype="multipart/form-data">
+                <form id="formEditPembelianProduk" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">NAMA DISKON / PROMO<span class="text-danger ms-1">*</span></label>
-                            <input type="text" name="diskon" class="form-control">
+                            <label class="form-label">KODE PRODUK<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="kodeproduk" id="editkodeproduk" class="form-control">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">NILAI<span class="text-danger ms-1">*</span></label>
-                            <input type="text" name="nilai" class="form-control">
+                            <label class="form-label">NAMA<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="nama" id="editnama" class="form-control">
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label">JENIS</label>
+                                <select class="select" name="jenis" id="editjenis">
+                                </select>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">KONDISI</label>
+                                <select class="select" name="kondisi" id="editkondisi">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label">BERAT</label>
+                                <input type="text" name="berat" id="editberat" class="form-control">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">KARAT</label>
+                                <input type="text" name="karat" id="editkarat" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label">LINGKAR</label>
+                                <input type="text" name="lingkar" id="editlingkar" class="form-control">
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label">PANJANG</label>
+                                <input type="text" name="panjang" id="editpanjang" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">HARGA BELI</label>
+                            <input type="text" name="hargabeli" id="edithargabeli" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">KETERANGAN</label>
+                            <textarea class="form-control" rows="4" name="keterangan" id="editketerangan"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-between">

@@ -205,58 +205,6 @@ class PembelianTokoController extends Controller
         return response()->json(['success' => true, 'message' => 'Produk Berhasil Dibatalkan.']);
     }
 
-    public function storePembelian(Request $request)
-    {
-        $request->validate([
-            'hargabeli' => 'required|numeric',
-            'kondisi' => 'required|integer|exists:kondisi,id',
-            'pelanggan' => 'required|exists:pelanggan,id',
-        ]);
-
-        $kodePembelianProduk = session('kodepembelianproduk');
-
-        if (!$kodePembelianProduk) {
-            return response()->json(['success' => false, 'message' => 'Kode pembelian produk tidak ditemukan. Silakan ulangi proses.']);
-        }
-
-        // Cek apakah masih ada data pembelian_produk dengan kode ini dan status 1
-        $produkDipilih = PembelianProduk::where('kodepembelianproduk', $kodePembelianProduk)
-            ->where('status', 1)
-            ->where('oleh', Auth::user()->id)
-            ->get();
-
-        if ($produkDipilih->isEmpty()) {
-            return response()->json(['success' => false, 'message' => 'Tidak ada produk yang dipilih untuk disimpan']);
-        }
-
-        foreach ($produkDipilih as $item) {
-            $totalPerProduk = $item->berat * $item->harga_beli;
-
-            // Contoh: Simpan ke kolom total_harga jika kolomnya ada
-            $item->total_harga = $totalPerProduk;
-            $item->save();
-
-            // Simpan data ke tabel pembelian
-            $pembelian = Pembelian::create([
-                'kodepembelianproduk'   => $kodePembelianProduk,
-                'user_id'               => Auth::id(),
-                'pelanggan_id'          => $request->pelanggan,
-                'jenispembelian'        =>  1,
-                'kondisi_id'            => $request->kondisi,
-                'tanggal'               => now(),
-            ]);
-        }
-
-        // Update status di pembelian_produk
-        PembelianProduk::where('kodepembelianproduk', $kodePembelianProduk)
-            ->update(['status' => 2]);
-
-        // Hapus session agar tidak terpakai lagi
-        session()->forget('kodepembelianproduk');
-
-        return redirect()->route('pembelian.index')->with('success', 'Transaksi berhasil disimpan.');
-    }
-
     public function storePembelianPelanggan(Request $request)
     {
         $request->validate([
@@ -272,7 +220,7 @@ class PembelianTokoController extends Controller
         $catatan = $request['catatan'];
 
         if (!$kodepembelianproduk) {
-            return back()->with('error', 'Kode pembelian produk tidak ditemukan. Silakan ulangi proses.');
+            return response()->json(['success' => false, 'message' => 'Kode pembelian produk tidak ditemukan. Silakan ulangi proses.']);
         }
 
         // Step 1: Ambil semua kodeproduk dari pembelian_produk

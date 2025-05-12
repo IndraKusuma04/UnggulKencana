@@ -63,8 +63,16 @@ class PembelianLuarController extends Controller
         // Simpan file ke dalam storage/public/barcode/
         Storage::put($fileName, $content);
 
+        // Cek apakah sudah ada kodepembelianproduk di session
+        $kodepembelianproduk = session('kodepembelianproduk');
+
+        if (!$kodepembelianproduk) {
+            $kodepembelianproduk = $kode;
+            session(['kodepembelianproduk' => $kodepembelianproduk]);
+        }
+
         $createProduk = Produk::create([
-            'kodeproduk'    =>  $newkodeproduk,
+            'kodeproduk'        =>  $newkodeproduk,
             'jenisproduk_id'    =>  $request->jenis,
             'nama'              =>  $request->nama,
             'harga_jual'        =>  0,
@@ -97,6 +105,19 @@ class PembelianLuarController extends Controller
             ]);
         }
 
-        return response()->json(['success' => true, 'message' => 'Data Berhasil Disimpan']);
+        return response()->json(['success' => true, 'message' => 'Data Berhasil Disimpan', 'kode' => $kodepembelianproduk]);
+    }
+
+    public function getPembelianByID($id)
+    {
+        // Cari data pelanggan berdasarkan ID
+        $produk = PembelianProduk::find($id);
+
+        // Periksa apakah data ditemukan
+        if (!$produk) {
+            return response()->json(['success' => false, 'message' => 'Produk tidak ditemukan.'], 404);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Produk Berhasil Dibatalkan.', 'Data' => $produk]);
     }
 }

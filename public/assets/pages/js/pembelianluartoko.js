@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function () {
 
     // Inisialisasi tooltip Bootstrap
     function initializeTooltip() {
@@ -136,39 +136,34 @@ $(document).ready(function(){
             processData: false, // Agar data tidak diubah menjadi string
             contentType: false, // Agar header Content-Type otomatis disesuaikan
             success: function (response) {
-                const successtoastExample =
-                    document.getElementById("successToast");
-                const toast = new bootstrap.Toast(successtoastExample);
-                $(".toast-body").text(response.message);
-                toast.show();
+                if (response.success) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Berhasil!",
+                        text: response.message
+                    });
 
-                $("#storePembelianProduk")[0].reset();
+                    $('#kodepembelianproduk').val(response.kode); // <-- tambahkan ini
 
-                if ($.fn.DataTable.isDataTable('#pembelianProdukTable')) {
-                    $('#pembelianProdukTable').DataTable().ajax.reload();
-                }
-            },
-            error: function (xhr) {
-                // Tampilkan pesan error dari server
-                const errors = xhr.responseJSON.errors;
-                if (errors) {
-                    let errorMessage = "";
-                    for (let key in errors) {
-                        errorMessage += `${errors[key][0]}\n`;
+                    // Reload DataTable pembelian_produk (pastikan sudah diinisialisasi sebelumnya)
+                    if ($.fn.DataTable.isDataTable('#pembelianProdukTable')) {
+                        $('#pembelianProdukTable').DataTable().ajax.reload();
                     }
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage);
-                    toast.show();
                 } else {
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(response.message);
-                    toast.show();
+                    Swal.fire({
+                        icon: "info",
+                        title: "Wait!",
+                        text: response.message
+                    });
                 }
             },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Terjadi Kesalahan!",
+                    text: "Tidak dapat menambahkan produk."
+                });
+            }
         });
     });
 
@@ -181,7 +176,50 @@ $(document).ready(function(){
             type: "GET",
             success: function (response) {
                 // Ambil data pertama
-                let data = response.Data[0];
+                let data = response.Data;
+
+                $("#editkodeproduk").val(data.kodeproduk);
+                $("#editnama").val(data.nama);
+                $("#editberat").val(data.berat);
+                $("#editkarat").val(data.karat);
+                $("#editlingkar").val(data.lingkar);
+                $("#editpanjang").val(data.panjang);
+                $("#edithargabeli").val(data.harga_beli);
+                $("#editketerangan").val(data.keterangan);
+
+                // Muat opsi jenis produk
+                $.ajax({
+                    url: "/admin/jenisproduk/getJenisProduk",
+                    type: "GET",
+                    success: function (jenisProdukResponse) {
+                        let options
+                        jenisProdukResponse.Data.forEach((item) => {
+                            const selected =
+                                item.id === data.jenisproduk_id
+                                    ? "selected"
+                                    : "";
+                            options += `<option value="${item.id}" ${selected}>${item.jenis_produk}</option>`;
+                        });
+                        $("#editjenis").html(options);
+                    },
+                });
+
+                // Muat opsi kondisi
+                $.ajax({
+                    url: "/admin/kondisi/getKondisi",
+                    type: "GET",
+                    success: function (kondisiResponse) {
+                        let options
+                        kondisiResponse.Data.forEach((item) => {
+                            const selected =
+                                item.id === data.kondisi_id
+                                    ? "selected"
+                                    : "";
+                            options += `<option value="${item.id}" ${selected}>${item.kondisi}</option>`;
+                        });
+                        $("#editkondisi").html(options);
+                    },
+                });
 
                 // Tampilkan modal edit
                 $("#mdEditProduk").modal("show");
