@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('total_harga')->default(0);
             $table->unsignedBigInteger('oleh'); // user yang menginput
             $table->text('catatan')->nullable(); // opsional
+            $table->integer('jenispembelian');
             $table->integer('status')->default(1); // misal: 1 = selesai, 0 = draft, dll
             $table->timestamps();
 

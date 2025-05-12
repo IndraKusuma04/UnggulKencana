@@ -24,6 +24,7 @@ class Pembelian extends Model
         'grand_total',
         'oleh',
         'catatan',
+        'jenispembelian',
         'status',
     ];
 

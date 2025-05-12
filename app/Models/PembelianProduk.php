@@ -28,6 +28,7 @@ class PembelianProduk extends Model
         'image_produk',
         'total',
         'oleh',
+        'jenispembelian',
         'status'
     ];
 

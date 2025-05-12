@@ -64,7 +64,10 @@ class PembelianTokoController extends Controller
 
             $transaksi = Transaksi::with(['keranjang' => function ($query) {
                 $query->where('status', '!=', 0);
-            }, 'keranjang.produk', 'keranjang.produk.kondisi', 'pelanggan', 'user', 'user.pegawai', 'diskon'])->where('kodetransaksi', $request->kodetransaksi)->where('status', 2)->get();
+            }, 'keranjang.produk', 'keranjang.produk.kondisi', 'pelanggan', 'user', 'user.pegawai', 'diskon'])
+                ->where('kodetransaksi', $request->kodetransaksi)
+                ->where('status', 2)
+                ->get();
 
             // Cek apakah data transaksi ditemukan
             if ($transaksi->isEmpty()) {
@@ -82,7 +85,11 @@ class PembelianTokoController extends Controller
 
     public function getPembelianProduk()
     {
-        $pembelianProduk = PembelianProduk::with(['jenisproduk', 'produk', 'kondisi'])->where('status', 1)->where('oleh', Auth::user()->id)->get();
+        $pembelianProduk = PembelianProduk::with(['jenisproduk', 'produk', 'kondisi'])
+            ->where('status', 1)
+            ->where('oleh', Auth::user()->id)
+            ->where('jenispembelian', 1)
+            ->get();
 
         return response()->json(['success' => true, 'message' => 'Data Pembelian Produk Berhasil Ditemukan', 'Data' => $pembelianProduk]);
     }
@@ -134,6 +141,7 @@ class PembelianTokoController extends Controller
             'lingkar'               => $keranjang->lingkar,
             'panjang'               => $keranjang->panjang,
             'oleh'                  => Auth::user()->id,
+            'jenispembelian'        => 1,
             'status'                => 1,
         ]);
 
@@ -230,12 +238,12 @@ class PembelianTokoController extends Controller
 
             // Simpan data ke tabel pembelian
             $pembelian = Pembelian::create([
-                'kodepembelianproduk' => $kodePembelianProduk,
-                'user_id' => Auth::id(),
-                'pelanggan_id' => $request->pelanggan,
-                // 'total_harga' => $request->hargabeli,
-                'kondisi_id' => $request->kondisi,
-                'tanggal' => now(),
+                'kodepembelianproduk'   => $kodePembelianProduk,
+                'user_id'               => Auth::id(),
+                'pelanggan_id'          => $request->pelanggan,
+                'jenispembelian'        =>  1,
+                'kondisi_id'            => $request->kondisi,
+                'tanggal'               => now(),
             ]);
         }
 
@@ -288,6 +296,7 @@ class PembelianTokoController extends Controller
             'total_harga'            =>  $totalHargaBeli,
             'catatan'                =>  $catatan,
             'oleh'                   =>  Auth::user()->id,
+            'jenispembelian'         =>  1,
             'status'                 =>  1,
         ]);
 
