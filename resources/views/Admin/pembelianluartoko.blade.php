@@ -20,11 +20,6 @@
                                 data-feather="chevron-up" class="feather-chevron-up"></i></a>
                     </li>
                 </ul>
-                <div class="page-btn">
-                    <a class="btn btn-added btn-formTambahPembelian" id="toggleFormBtn"><i data-feather="plus-circle"
-                            class="me-2"></i>TAMBAH
-                        PEMBELIAN</a>
-                </div>
             </div>
 
             <div class="row">
@@ -180,6 +175,40 @@
                 </div>
             </div>
             <!-- /product list -->
+        </div>
+    </div>
+
+    <!-- md Tambah Diskon -->
+    <div class="modal fade" id="mdEditProduk">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="page-title">
+                        <h4>TAMBAH DISKON / PROMO</h4>
+                    </div>
+                    <button type="button" class="close bg-danger text-white fs-16" data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formTambahDiskon" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">NAMA DISKON / PROMO<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="diskon" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">NILAI<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="nilai" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
+                        <button type="submit" class="btn btn-primary">SIMPAN</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 

@@ -66,7 +66,7 @@ $(document).ready(function(){
                     },
                 },
                 ajax: {
-                    url: `/admin/pembelian/pembeliantoko/getPembelianProduk`,
+                    url: `/admin/pembelianluartoko/getPembelianProduk`,
                     type: 'GET',
                     data: {
                         _token: $('meta[name="csrf-token"]').attr('content')
@@ -102,7 +102,7 @@ $(document).ready(function(){
                         className: "action-table-data justify-content-center",
                         render: (data, type, row) => `
                             <div class="edit-delete-action">
-                                <a class="me-2 p-2 btn-edit-harga" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="EDIT PRODUK YANG DIBELI">
+                                <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="EDIT PRODUK YANG DIBELI">
                                     <i data-feather="edit" class="feather-edit"></i>
                                 </a>
                                 <a class="p-2 btn-delete-produk" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="BATALKAN PRODUK">
@@ -141,8 +141,12 @@ $(document).ready(function(){
                 const toast = new bootstrap.Toast(successtoastExample);
                 $(".toast-body").text(response.message);
                 toast.show();
-                $("#mdTambahPelanggan").modal("hide"); // Tutup modal
-                tableCustomer.ajax.reload(null, false); // Reload data dari server
+
+                $("#storePembelianProduk")[0].reset();
+
+                if ($.fn.DataTable.isDataTable('#pembelianProdukTable')) {
+                    $('#pembelianProdukTable').DataTable().ajax.reload();
+                }
             },
             error: function (xhr) {
                 // Tampilkan pesan error dari server
@@ -164,6 +168,30 @@ $(document).ready(function(){
                     $(".toast-body").text(response.message);
                     toast.show();
                 }
+            },
+        });
+    });
+
+    //ketika button edit di tekan
+    $(document).on("click", ".btn-edit", function () {
+        const idPembelian = $(this).data("id");
+
+        $.ajax({
+            url: `/admin/pembelianluartoko/getPembelianByID/${idPembelian}`, // Endpoint untuk mendapatkan data pegawai
+            type: "GET",
+            success: function (response) {
+                // Ambil data pertama
+                let data = response.Data[0];
+
+                // Tampilkan modal edit
+                $("#mdEditProduk").modal("show");
+            },
+            error: function () {
+                Swal.fire(
+                    "Gagal!",
+                    "Tidak dapat mengambil data kondisi.",
+                    "error"
+                );
             },
         });
     });

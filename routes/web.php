@@ -13,6 +13,7 @@ use App\Http\Controllers\Nampan\NampanProdukController;
 use App\Http\Controllers\Pegawai\PegawaiController;
 use App\Http\Controllers\Pelanggan\PelangganController;
 use App\Http\Controllers\Pembelian\PembelianController;
+use App\Http\Controllers\Pembelian\PembelianLuarController;
 use App\Http\Controllers\Pembelian\PembelianTokoController;
 use App\Http\Controllers\Produk\JenisProdukController;
 use App\Http\Controllers\Produk\ProdukController;
@@ -201,6 +202,8 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/pembelianluartoko', function () {
         return view('Admin.pembelianluartoko');
     });
+    Route::get('/admin/pembelianluartoko/getPembelianProduk', [PembelianLuarController::class, 'getPembelianProduk']);
+    Route::post('/admin/pembelianluartoko/storePembelianProduk', [PembelianLuarController::class, 'storePembelianProduk']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', function () {
         return view('Reports.cetakbarcode');
