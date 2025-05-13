@@ -9,10 +9,13 @@ $(document).ready(function () {
         if (tableProdukPembelianCustomer) {
             tableProdukPembelianCustomer.ajax.reload(null, false); // Reload data dari server
         }
-        const successtoastExample = document.getElementById("successToast");
-        const toast = new bootstrap.Toast(successtoastExample);
-        $(".toast-body").text("Data Pembelian Berhasil Direfresh");
-        toast.show();
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Data Pembelian Berhasil Direfresh",
+            showConfirmButton: false,
+            timer: 1000
+        });
     });
 
     let tableProdukPembelianCustomer;
@@ -49,10 +52,13 @@ $(document).ready(function () {
                             const transaksi = json.Data[0];
 
                             // Tampilkan toast sukses
-                            const successtoastExample = document.getElementById("successToast");
-                            const toast = new bootstrap.Toast(successtoastExample);
-                            $(".toast-body").text(json.message);
-                            toast.show();
+                            Swal.fire({
+                                icon: "success",
+                                title: "Berhasil",
+                                text: json.message,
+                                showConfirmButton: false,
+                                timer: 1000
+                            });
 
                             // Set nilai input pelanggan
                             $("#detailpelanggan").val(transaksi.pelanggan.nama);
@@ -78,10 +84,13 @@ $(document).ready(function () {
                             return transaksi.keranjang;
                         } else {
                             // Tampilkan toast gagal
-                            const dangertoastExample = document.getElementById("dangerToast");
-                            const toast = new bootstrap.Toast(dangertoastExample);
-                            $(".toast-body").text(json.message);
-                            toast.show();
+                            Swal.fire({
+                                icon: "error",
+                                title: "Terjadi Kesalahan",
+                                text: json.message,
+                                showConfirmButton: false,
+                                timer: 2000
+                            });
 
                             return [];
                         }
@@ -117,7 +126,7 @@ $(document).ready(function () {
                         render: function (data, type, row) {
                             return `
                             <div class="edit-delete-action">
-                                <a class="me-2 p-2 btn-pilihproduk" data-id="${row.produk_id}" data-bs-toggle="tooltip" data-bs-placement="top" title="PILIH PRODUK">
+                                <a class="me-2 p-2 btn-pilihproduk" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="PILIH PRODUK">
                                     <i data-feather="plus-circle" class="feather-edit"></i>
                                 </a>
                             </div>
@@ -153,7 +162,13 @@ $(document).ready(function () {
             tableProdukPembelianCustomer.ajax.reload();
             $('#mdPembelianDariToko').modal('hide');
         } else {
-            alert('Masukkan Kode Transaksi terlebih dahulu!');
+            Swal.fire({
+                icon: "error",
+                title: "Terjadi Kesalahan",
+                text: "Masukkan Kode Transaksi terlebih dahulu!",
+                showConfirmButton: false,
+                timer: 1000
+            });
         }
     });
 
@@ -365,11 +380,13 @@ $(document).ready(function () {
             contentType: false, // Jangan set Content-Type secara manual
             success: function (response) {
                 // Tampilkan toast sukses
-                const successtoastExample =
-                    document.getElementById("successToast");
-                const toast = new bootstrap.Toast(successtoastExample);
-                $(".toast-body").text(response.message);
-                toast.show();
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1000
+                });
                 $("#mdEditHargaBeli").modal("hide"); // Tutup modal
                 // Reload DataTable pembelian_produk (pastikan sudah diinisialisasi sebelumnya)
                 if ($.fn.DataTable.isDataTable('#produkPembelianTable')) {
@@ -377,17 +394,43 @@ $(document).ready(function () {
                 }
             },
             error: function (xhr) {
-                const errors = xhr.responseJSON.errors;
-                if (errors) {
-                    let errorMessage = "";
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
+
                     for (let key in errors) {
-                        errorMessage += `${errors[key][0]}\n`;
+                        if (errors.hasOwnProperty(key)) {
+                            errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
+                        }
                     }
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage);
-                    toast.show();
+
+                    errorList += "</ul>";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: errorList,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi Kesalahan",
+                        text: "Tidak dapat memproses permintaan. Silakan coba lagi.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
                 }
             },
         });
@@ -467,11 +510,14 @@ $(document).ready(function () {
             contentType: false, // Jangan set Content-Type secara manual
             success: function (response) {
                 // Tampilkan toast sukses
-                const successtoastExample =
-                    document.getElementById("successToast");
-                const toast = new bootstrap.Toast(successtoastExample);
-                $(".toast-body").text(response.message);
-                toast.show();
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1000
+                });
 
                 if ($.fn.DataTable.isDataTable('#produkPembelianTable')) {
                     $('#produkPembelianTable').DataTable().ajax.reload();
@@ -480,17 +526,43 @@ $(document).ready(function () {
                 $("#storePembelianPelanggan")[0].reset();
             },
             error: function (xhr) {
-                const errors = xhr.responseJSON.errors;
-                if (errors) {
-                    let errorMessage = "";
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
+
                     for (let key in errors) {
-                        errorMessage += `${errors[key][0]}\n`;
+                        if (errors.hasOwnProperty(key)) {
+                            errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
+                        }
                     }
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage);
-                    toast.show();
+
+                    errorList += "</ul>";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: errorList,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi Kesalahan",
+                        text: "Tidak dapat memproses permintaan. Silakan coba lagi.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
                 }
             },
         });

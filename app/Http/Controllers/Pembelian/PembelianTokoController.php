@@ -79,7 +79,7 @@ class PembelianTokoController extends Controller
 
             return response()->json(['success' => true, 'message' => 'Transaksi Berhasil Ditemukan', 'Data' => $transaksi]);
         } else {
-            return response()->json(['success' => false, 'message' => 'Transaksi Belum Dicari']);
+            return response()->json(['success' => false, 'message' => 'Transaksi Belum Dicari, Silahkan Masukan Kode Transaksi']);
         }
     }
 
@@ -250,6 +250,7 @@ class PembelianTokoController extends Controller
 
         if ($pembelianproduk) {
             PembelianProduk::where('kodepembelianproduk', $kodepembelianproduk)
+                ->where('status', 1)
                 ->update([
                     'status'    => 2,
                 ]);

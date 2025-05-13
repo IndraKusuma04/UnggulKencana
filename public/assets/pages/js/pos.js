@@ -15,10 +15,13 @@ $(document).ready(function () {
         getKeranjang();
         getNampanProduk('all');
         getNampan();
-        const successtoastExample = document.getElementById("successToast");
-        const toast = new bootstrap.Toast(successtoastExample);
-        $(".toast-body").text("Data Keranjang Berhasil Direfresh");
-        toast.show();
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Data Keranjang Berhasil Direfresh",
+            showConfirmButton: false,
+            timer: 1000
+        });
     });
 
     function getNampan() {
@@ -93,9 +96,13 @@ $(document).ready(function () {
                     }
                 });
             },
-            error: function (err) {
-                console.error('Gagal mengambil data nampan:', err);
-                $("#daftarNampan").html('<li><span>Gagal memuat data nampan.</span></li>');
+            error: function (xhr) {
+                const message = xhr.responseJSON?.message || "Gagal memuat data nampan.";
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: message,
+                });
             }
         });
     }
@@ -118,8 +125,11 @@ $(document).ready(function () {
 
                     if (response.Data.length === 0) {
                         tabContent += `
-                            <div class="col-12 text-center">
-                                <p><b>Produk tidak ditemukan.</b></p>
+                            <div class="alert alert-secondary d-flex align-items-center text-center" role="alert">
+                                <i class="feather-info flex-shrink-0 me-2"></i>
+                                <div>
+                                    <b>Produk tidak ditemukan.</b>
+                                </div>
                             </div>
                         `;
                     } else {
@@ -162,11 +172,20 @@ $(document).ready(function () {
                         feather.replace();
                     }
                 } else {
-                    console.log('Data kosong atau gagal');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terjadi Kesalahan',
+                        text: "Data kosong atau gagal",
+                    });
                 }
             },
-            error: function (err) {
-                console.log('Gagal mengambil data:', err);
+            error: function (xhr) {
+                const message = xhr.responseJSON?.message || "Gagal memuat data produk dari nampan.";
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan Server',
+                    text: message
+                });
             }
         });
     }
@@ -342,29 +361,30 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.success === true) {
                     // Menampilkan notifikasi sukses menggunakan Bootstrap Toast
-                    const successtoastExample =
-                        document.getElementById("successToast");
-                    const toast = new bootstrap.Toast(successtoastExample);
-                    $(".toast-body").text(response.message);
-                    toast.show();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Berhasil",
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
 
                     getKeranjang();
                 } else if (response.status === "error") {
                     // Menampilkan notifikasi error menggunakan Bootstrap Toast
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(response.message);
-                    toast.show();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: response.message || "Terjadi kesalahan yang tidak diketahui."
+                    });
                 }
             },
             error: function () {
-                const dangertoastExample =
-                    document.getElementById("dangerToast");
-                const toast = new bootstrap.Toast(dangertoastExample);
-                document.getElementById("dangerToastMessage").innerText =
-                    "Terjadi kesalahan pada server."; // Pesan fallback
-                toast.show();
+                Swal.fire({
+                    icon: "error",
+                    title: "Kesalahan Server",
+                    text: "Terjadi kesalahan pada server." // Pesan fallback
+                });
             }
         });
     });
@@ -493,11 +513,13 @@ $(document).ready(function () {
             processData: false, // Agar data tidak diubah menjadi string
             contentType: false, // Agar header Content-Type otomatis disesuaikan
             success: function (response) {
-                const successtoastExample =
-                    document.getElementById("successToast");
-                const toast = new bootstrap.Toast(successtoastExample);
-                $(".toast-body").text(response.message);
-                toast.show();
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1000
+                });
                 $("#mdTambahPelanggan").modal("hide"); // Tutup modal
 
                 $.ajax({
@@ -520,24 +542,43 @@ $(document).ready(function () {
                 });
             },
             error: function (xhr) {
-                // Tampilkan pesan error dari server
-                const errors = xhr.responseJSON.errors;
-                if (errors) {
-                    let errorMessage = "";
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
+
                     for (let key in errors) {
-                        errorMessage += `${errors[key][0]}\n`;
+                        if (errors.hasOwnProperty(key)) {
+                            errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
+                        }
                     }
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage);
-                    toast.show();
+
+                    errorList += "</ul>";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: errorList,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
                 } else {
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(response.message);
-                    toast.show();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi Kesalahan",
+                        text: "Tidak dapat memproses permintaan. Silakan coba lagi.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
                 }
             },
         });
@@ -600,8 +641,14 @@ $(document).ready(function () {
                         },
                         success: function (res) {
                             if (res.success) {
-                                showToast("success", res.message);
-                                getKeranjang(); 
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Berhasil",
+                                    text: res.message,
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                });
+                                getKeranjang();
                                 getNampanProduk('all');
                                 getNampan();
 
@@ -614,28 +661,46 @@ $(document).ready(function () {
                                 // window.open(`/admin/transaksi/cetak/${res.transaksi_id}`, "_blank"); // optional
                             } else {
                                 showToast("danger", res.message);
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Terjadi Kesalahan",
+                                    text: res.message,
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                });
                             }
                         },
                         error: function () {
-                            showToast("danger", "Gagal memproses pembayaran.");
+                            Swal.fire({
+                                icon: "error",
+                                title: "Terjadi Kesalahan",
+                                text: "Gagal memproses pembayaran.",
+                                showConfirmButton: false,
+                                timer: 1000
+                            });
                         }
                     });
 
                 } else {
-                    showToast("danger", "Gagal mengambil kode keranjang.");
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi Kesalahan",
+                        text: "Gagal mengambil kode keranjang.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
                 }
             },
             error: function () {
-                showToast("danger", "Terjadi kesalahan saat mengambil kode keranjang.");
+                Swal.fire({
+                    icon: "error",
+                    title: "Terjadi Kesalahan",
+                    text: "Terjadi kesalahan saat mengambil kode keranjang.",
+                    showConfirmButton: false,
+                    timer: 1000
+                });
             }
         });
-    }
-
-    function showToast(type, message) {
-        const toastId = type === "success" ? "successToast" : "dangerToast";
-        const toast = new bootstrap.Toast(document.getElementById(toastId));
-        $("#" + toastId + " .toast-body").text(message);
-        toast.show();
     }
 
     //load data pelanggan
@@ -706,7 +771,7 @@ $(document).ready(function () {
         }
     }
 
-   
+
 
     //ketika button tambah di tekan
     $("#modalTransaksi").on("click", function () {

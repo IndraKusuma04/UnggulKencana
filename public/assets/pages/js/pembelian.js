@@ -9,10 +9,13 @@ $(document).ready(function () {
         if (tablePembelian) {
             tablePembelian.ajax.reload(null, false); // Reload data dari server
         }
-        const successtoastExample = document.getElementById("successToast");
-        const toast = new bootstrap.Toast(successtoastExample);
-        $(".toast-body").text("Data Pembelian Berhasil Direfresh");
-        toast.show();
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Data Transaksi Pembelian Berhasil Direfresh",
+            showConfirmButton: false,
+            timer: 1000
+        });
     });
 
     //load data pembelian

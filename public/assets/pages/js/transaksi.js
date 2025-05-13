@@ -9,10 +9,13 @@ $(document).ready(function () {
         if (tableTransaksi) {
             tableTransaksi.ajax.reload(null, false); // Reload data dari server
         }
-        const successtoastExample = document.getElementById("successToast");
-        const toast = new bootstrap.Toast(successtoastExample);
-        $(".toast-body").text("Data Kondisi Berhasil Direfresh");
-        toast.show();
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Data Transaksi Penjualan Berhasil Direfresh",
+            showConfirmButton: false,
+            timer: 1000
+        });
     });
 
     //load data transaksi

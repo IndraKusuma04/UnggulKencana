@@ -43,9 +43,20 @@ class PembelianController extends Controller
 
     public function getPembelianByID($id)
     {
-        $pembelian = Pembelian::with(['suplier', 'pelanggan', 'pembelianproduk', 'user.pegawai'])->where('id', $id)->get();
+        $pembelian = Pembelian::with([
+            'suplier',
+            'pelanggan',
+            'pembelianproduk' => function ($query) {
+                $query->where('status', '!=', 0);
+            },
+            'user.pegawai'
+        ])->where('id', $id)->get();
 
-        return response()->json(['success' => true, 'message' => 'Data Pembelian Berhasil Ditemukan', 'Data' => $pembelian]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Pembelian Berhasil Ditemukan',
+            'Data' => $pembelian
+        ]);
     }
 
     public function konfirmasiPembelian($id)
