@@ -9,10 +9,13 @@ $(document).ready(function () {
         if (tableProduk) {
             tableProduk.ajax.reload(null, false); // Reload data dari server
         }
-        const successtoastExample = document.getElementById("successToast");
-        const toast = new bootstrap.Toast(successtoastExample);
-        $(".toast-body").text("Data Produk Berhasil Direfresh");
-        toast.show();
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Data Produk Berhasil Direfresh",
+            showConfirmButton: false,
+            timer: 1000
+        });
     });
 
     //load data produk
@@ -89,11 +92,11 @@ $(document).ready(function () {
                         render: function (data, type, row) {
                             // Menampilkan badge sesuai dengan status
                             if (data == 1) {
-                                return `<span class="badge bg-success fw-medium fs-10">Active</span>`;
+                                return `<span class="badge bg-success fw-medium fs-10">ACTIVE</span>`;
                             } else if (data == 2) {
-                                return `<span class="badge bg-danger fw-medium fs-10">In Active</span>`;
+                                return `<span class="badge bg-danger fw-medium fs-10">IN ACTIVE</span>`;
                             } else {
-                                return `<span class="badge bg-secondary fw-medium fs-10">Unknown</span>`;
+                                return `<span class="badge bg-secondary fw-medium fs-10">UNKNOWN</span>`;
                             }
                         }
                     },
@@ -104,16 +107,16 @@ $(document).ready(function () {
                         render: function (data, type, row, meta) {
                             return `
                             <div class="edit-delete-action">
-                                <a class="me-2 edit-icon p-2 btn-detail" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Detail Produk">
+                                <a class="me-2 edit-icon p-2 btn-detail" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="DETAIL PRODUK">
                                     <i data-feather="eye" class="action-eye"></i>
                                 </a>
-                                <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit Produk">
+                                <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="EDIT PRODUK">
                                     <i data-feather="edit" class="feather-edit"></i>
                                 </a>
-                                <a class="me-2 print-barcode p-2 btn-print" target="_blank" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Cetak Barcode">
+                                <a class="me-2 print-barcode p-2 btn-print" target="_blank" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="CETAK BARCODE">
                                     <i data-feather="printer" class="feather-print"></i>
                                 </a>
-                                <a class="confirm-text p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Hapus Produk">
+                                <a class="confirm-text p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="HAPUS PRODUK">
                                     <i data-feather="trash-2" class="feather-trash-2"></i>
                                 </a>
                             </div>
@@ -245,33 +248,54 @@ $(document).ready(function () {
             processData: false, // Agar data tidak diubah menjadi string
             contentType: false, // Agar header Content-Type otomatis disesuaikan
             success: function (response) {
-                const successtoastExample =
-                    document.getElementById("successToast");
-                const toast = new bootstrap.Toast(successtoastExample);
-                $(".toast-body").text(response.message);
-                toast.show();
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1000
+                });
                 $("#mdTambahProduk").modal("hide"); // Tutup modal
                 tableProduk.ajax.reload(null, false); // Reload data dari server
             },
             error: function (xhr) {
-                // Tampilkan pesan error dari server
-                const errors = xhr.responseJSON.errors;
-                if (errors) {
-                    let errorMessage = "";
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
+
                     for (let key in errors) {
-                        errorMessage += `${errors[key][0]}\n`;
+                        if (errors.hasOwnProperty(key)) {
+                            errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
+                        }
                     }
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage);
-                    toast.show();
+
+                    errorList += "</ul>";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: errorList,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
                 } else {
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(response.message);
-                    toast.show();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi Kesalahan",
+                        text: "Tidak dapat memproses permintaan. Silakan coba lagi.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
                 }
             },
         });
@@ -390,26 +414,54 @@ $(document).ready(function () {
             contentType: false, // Jangan set Content-Type secara manual
             success: function (response) {
                 // Tampilkan toast sukses
-                const successtoastExample =
-                    document.getElementById("successToast");
-                const toast = new bootstrap.Toast(successtoastExample);
-                $(".toast-body").text(response.message);
-                toast.show();
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1000
+                });
                 $("#mdEditProduk").modal("hide"); // Tutup modal
                 tableProduk.ajax.reload(null, false); // Reload data dari server
             },
             error: function (xhr) {
-                const errors = xhr.responseJSON.errors;
-                if (errors) {
-                    let errorMessage = "";
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
+
                     for (let key in errors) {
-                        errorMessage += `${errors[key][0]}\n`;
+                        if (errors.hasOwnProperty(key)) {
+                            errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
+                        }
                     }
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage);
-                    toast.show();
+
+                    errorList += "</ul>";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: errorList,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi Kesalahan",
+                        text: "Tidak dapat memproses permintaan. Silakan coba lagi.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
                 }
             },
         });

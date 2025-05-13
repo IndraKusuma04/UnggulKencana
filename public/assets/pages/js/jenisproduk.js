@@ -9,10 +9,13 @@ $(document).ready(function () {
         if (tableJenis) {
             tableJenis.ajax.reload(null, false); // Reload data dari server
         }
-        const successtoastExample = document.getElementById("successToast");
-        const toast = new bootstrap.Toast(successtoastExample);
-        $(".toast-body").text("Data Jenis Produk Berhasil Direfresh");
-        toast.show();
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Data Jenis Produk Berhasil Direfresh",
+            showConfirmButton: false,
+            timer: 1000
+        });
     });
 
     //load data pegawai
@@ -68,11 +71,11 @@ $(document).ready(function () {
                         render: function (data, type, row) {
                             // Menampilkan badge sesuai dengan status
                             if (data == 1) {
-                                return `<span class="badge bg-success fw-medium fs-10">Active</span>`;
+                                return `<span class="badge bg-success fw-medium fs-10">ACTIVE</span>`;
                             } else if (data == 2) {
-                                return `<span class="badge bg-danger fw-medium fs-10">In Active</span>`;
+                                return `<span class="badge bg-danger fw-medium fs-10">IN ACTIVE</span>`;
                             } else {
-                                return `<span class="badge bg-secondary fw-medium fs-10">Unknown</span>`;
+                                return `<span class="badge bg-secondary fw-medium fs-10">UNKNOWN</span>`;
                             }
                         }
                     },
@@ -83,10 +86,10 @@ $(document).ready(function () {
                         render: function (data, type, row, meta) {
                             return `
                             <div class="edit-delete-action">
-                                <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit Data">
+                                <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="EDIT DATA">
                                     <i data-feather="edit" class="feather-edit"></i>
                                 </a>
-                                <a class="confirm-text p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Hapus Data">
+                                <a class="confirm-text p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="HAPUS DATA">
                                     <i data-feather="trash-2" class="feather-trash-2"></i>
                                 </a>
                             </div>
@@ -192,46 +195,56 @@ $(document).ready(function () {
             processData: false, // Agar data tidak diubah menjadi string
             contentType: false, // Agar header Content-Type otomatis disesuaikan
             success: function (response) {
-                const successtoastExample =
-                    document.getElementById("successToast");
-                const toast = new bootstrap.Toast(successtoastExample);
-                $(".toast-body").text(response.message);
-                toast.show();
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1000
+                });
                 $("#mdTambahJenisProduk").modal("hide"); // Tutup modal
                 tableJenis.ajax.reload(null, false);
             },
             error: function (xhr) {
                 if (xhr.responseJSON && xhr.responseJSON.errors) {
                     const errors = xhr.responseJSON.errors;
-                    let errorMessage = "";
+                    let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
 
                     for (let key in errors) {
                         if (errors.hasOwnProperty(key)) {
-                            errorMessage += `${errors[key][0]}\n`; // Ambil pesan pertama dari setiap error
+                            errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
                         }
                     }
 
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage.trim());
-                    toast.show();
+                    errorList += "</ul>";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: errorList,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
 
                 } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage.trim());
-                    toast.show();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
 
                 } else {
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage.trim());
-                    toast.show();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi Kesalahan",
+                        text: "Tidak dapat memproses permintaan. Silakan coba lagi.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
                 }
-            }
+            },
         });
     });
 
@@ -298,11 +311,13 @@ $(document).ready(function () {
             processData: false, // Agar data tidak diubah menjadi string
             contentType: false, // Agar header Content-Type otomatis disesuaikan
             success: function (response) {
-                const successtoastExample =
-                    document.getElementById("successToast");
-                const toast = new bootstrap.Toast(successtoastExample);
-                $(".toast-body").text(response.message);
-                toast.show();
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1000
+                });
 
                 $("#mdEditJenisProduk").modal("hide"); // Tutup modal
                 tableJenis.ajax.reload(null, false);
@@ -310,35 +325,43 @@ $(document).ready(function () {
             error: function (xhr) {
                 if (xhr.responseJSON && xhr.responseJSON.errors) {
                     const errors = xhr.responseJSON.errors;
-                    let errorMessage = "";
+                    let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
 
                     for (let key in errors) {
                         if (errors.hasOwnProperty(key)) {
-                            errorMessage += `${errors[key][0]}\n`; // Ambil pesan pertama dari setiap error
+                            errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
                         }
                     }
 
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage.trim());
-                    toast.show();
+                    errorList += "</ul>";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: errorList,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
 
                 } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage.trim());
-                    toast.show();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
 
                 } else {
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text("Terjadi kesalahan silahkan coba lagi");
-                    toast.show();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi Kesalahan",
+                        text: "Tidak dapat memproses permintaan. Silakan coba lagi.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
                 }
-            }
+            },
         });
     });
 

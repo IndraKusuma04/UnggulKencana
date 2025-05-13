@@ -74,10 +74,10 @@ $(document).ready(function () {
                         render: function (data, type, row, meta) {
                             return `
                             <div class="edit-delete-action">
-                                <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit Data">
+                                <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="EDIT DATA">
                                     <i data-feather="edit" class="feather-edit"></i>
                                 </a>
-                                <a class="confirm-text p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Hapus Data">
+                                <a class="confirm-text p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="HAPUS DATA">
                                     <i data-feather="trash-2" class="feather-trash-2"></i>
                                 </a>
                             </div>

@@ -31,8 +31,8 @@ $(document).ready(function () {
 
                     $('#status').html(
                         produk.status == 1
-                            ? '<span class="badge badge-success">Ready</span>'
-                            : '<span class="badge badge-danger">Non Ready</span>'
+                            ? '<span class="badge badge-success">READY</span>'
+                            : '<span class="badge badge-danger">NON READY</span>'
                     );
 
                     $('#keterangan').text(produk.keterangan);
@@ -40,18 +40,23 @@ $(document).ready(function () {
                     $('#barcode').attr('src', produk.image_produk ? `/storage/barcode/${produk.image_produk}` : '/assets/img/notfound.png');
                     $('#imageProduk').attr('src', produk.image_produk ? `/storage/produk/${produk.image_produk}` : '/assets/img/notfound.png');
 
-                    const toast = new bootstrap.Toast(document.getElementById("successToast"));
-                    $(".toast-body").text(data.message);
-                    toast.show();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Berhasil",
+                        text: data.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
 
                     setTimeout(() => {
                         lastScannedCode = null;
                     }, 3000);
                 } else {
-                    // Data tidak ditemukan dari server (success == false)
-                    const toast = new bootstrap.Toast(document.getElementById("successToast"));
-                    $(".toast-body").text(data.message || "Data tidak ditemukan.");
-                    toast.show();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: data.message || "Terjadi kesalahan saat memproses data.",
+                    });
 
                     // Reset scanner
                     setTimeout(() => {
@@ -66,9 +71,11 @@ $(document).ready(function () {
                     errorMessage = jqXHR.responseJSON.message;
                 }
 
-                const toast = new bootstrap.Toast(document.getElementById("dangerToast"));
-                $(".toast-body").text(errorMessage);
-                toast.show();
+                Swal.fire({
+                    icon: "error",
+                    title: "Gagal",
+                    text: errorMessage,
+                });
 
                 // Reset scanner
                 setTimeout(() => {

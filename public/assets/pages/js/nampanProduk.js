@@ -9,10 +9,13 @@ $(document).ready(function () {
         if (tableNamProd) {
             tableNamProd.ajax.reload(null, false); // Reload data dari server
         }
-        const successtoastExample = document.getElementById("successToast");
-        const toast = new bootstrap.Toast(successtoastExample);
-        $(".toast-body").text("Data Nampan Berhasil Direfresh");
-        toast.show();
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Data Nampan Berhasil Direfresh",
+            showConfirmButton: false,
+            timer: 1000
+        });
     });
 
     const nampanID = window.location.pathname.split("/").pop(); // Mendapatkan ID produk dari URL
@@ -80,7 +83,7 @@ $(document).ready(function () {
                         render: function (data, type, row, meta) {
                             return `
                             <div class="edit-delete-action">
-                                <a class="confirm-text p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Hapus Data">
+                                <a class="confirm-text p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="HAPUS DATA">
                                     <i data-feather="trash-2" class="feather-trash-2"></i>
                                 </a>
                             </div>
@@ -209,41 +212,61 @@ $(document).ready(function () {
             contentType: false, // Agar header Content-Type otomatis disesuaikan
             success: function (response) {
                 if (response.success == true) {
-                    const successtoastExample =
-                        document.getElementById("successToast");
-                    const toast = new bootstrap.Toast(successtoastExample);
-                    $(".toast-body").text(response.message);
-                    toast.show();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Berhasil",
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
                     $("#mdTambahProduk").modal("hide"); // Tutup modal
                     tableNamProd.ajax.reload(); // Reload data dari server
-                } else
-                {
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(response.message);
-                    toast.show();
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: response.message || "Terjadi kesalahan saat memproses data.",
+                    });
                 }
             },
             error: function (xhr) {
-                // Tampilkan pesan error dari server
-                const errors = xhr.responseJSON.errors;
-                if (errors) {
-                    let errorMessage = "";
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
+
                     for (let key in errors) {
-                        errorMessage += `${errors[key][0]}\n`;
+                        if (errors.hasOwnProperty(key)) {
+                            errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
+                        }
                     }
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage);
-                    toast.show();
+
+                    errorList += "</ul>";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: errorList,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
                 } else {
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(response.message);
-                    toast.show();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi Kesalahan",
+                        text: "Tidak dapat memproses permintaan. Silakan coba lagi.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
                 }
             },
         });
@@ -253,54 +276,54 @@ $(document).ready(function () {
     $(document).on("click", ".confirm-text", function () {
         const deleteID = $(this).data("id");
 
-            // SweetAlert2 untuk konfirmasi
-            Swal.fire({
-                title: "Apakah Anda yakin?",
-                text: "Data ini akan dihapus secara permanen!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Ya, hapus!",
-                cancelButtonText: "Batal",
-                reverseButtons: true,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Kirim permintaan hapus (gunakan itemId)
-                    fetch(`/admin/nampan/nampanproduk/deleteNampanProduk/${deleteID}`, {
-                        method: "DELETE",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                                "content"
-                            ),
-                        },
-                    })
-                        .then((response) => {
-                            if (response.ok) {
-                                Swal.fire(
-                                    "Dihapus!",
-                                    "Data berhasil dihapus.",
-                                    "success"
-                                );
-                                tableNamProd.ajax.reload(null, false); // Reload data dari server
-                            } else {
-                                Swal.fire(
-                                    "Gagal!",
-                                    "Terjadi kesalahan saat menghapus data.",
-                                    "error"
-                                );
-                            }
-                        })
-                        .catch((error) => {
+        // SweetAlert2 untuk konfirmasi
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Data ini akan dihapus secara permanen!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, hapus!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Kirim permintaan hapus (gunakan itemId)
+                fetch(`/admin/nampan/nampanproduk/deleteNampanProduk/${deleteID}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            Swal.fire(
+                                "Dihapus!",
+                                "Data berhasil dihapus.",
+                                "success"
+                            );
+                            tableNamProd.ajax.reload(null, false); // Reload data dari server
+                        } else {
                             Swal.fire(
                                 "Gagal!",
-                                "Terjadi kesalahan dalam penghapusan data.",
+                                "Terjadi kesalahan saat menghapus data.",
                                 "error"
                             );
-                        });
-                } else {
-                    // Jika batal, beri tahu pengguna
-                    Swal.fire("Dibatalkan", "Data tidak dihapus.", "info");
-                }
-            });
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire(
+                            "Gagal!",
+                            "Terjadi kesalahan dalam penghapusan data.",
+                            "error"
+                        );
+                    });
+            } else {
+                // Jika batal, beri tahu pengguna
+                Swal.fire("Dibatalkan", "Data tidak dihapus.", "info");
+            }
+        });
     });
 })

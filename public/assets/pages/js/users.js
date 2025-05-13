@@ -78,11 +78,11 @@ $(document).ready(function () {
                         render: function (data, type, row) {
                             // Menampilkan badge sesuai dengan status
                             if (data == 1) {
-                                return `<span class="badge bg-success fw-medium fs-10">Active</span>`;
+                                return `<span class="badge bg-success fw-medium fs-10">ACTIVE</span>`;
                             } else if (data == 2) {
-                                return `<span class="badge bg-danger fw-medium fs-10">In Active</span>`;
+                                return `<span class="badge bg-danger fw-medium fs-10">IN ACTIVE</span>`;
                             } else {
-                                return `<span class="badge bg-secondary fw-medium fs-10">Unknown</span>`;
+                                return `<span class="badge bg-secondary fw-medium fs-10">UNKNOWN</span>`;
                             }
                         }
                     },
@@ -93,7 +93,7 @@ $(document).ready(function () {
                         render: function (data, type, row, meta) {
                             return `
                         <div class="edit-delete-action">
-                            <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="Edit Data">
+                            <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="EDIT DATA">
                                 <i data-feather="edit" class="feather-edit"></i>
                             </a>
                         </div>
