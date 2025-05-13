@@ -22,7 +22,7 @@
                 </ul>
                 <div class="page-btn">
                     <a class="btn btn-added" id="btnTambahPegawai"><i data-feather="plus-circle" class="me-2"></i>TAMBAH
-                        ROLE</a>
+                        PEGAWAI</a>
                 </div>
             </div>
 

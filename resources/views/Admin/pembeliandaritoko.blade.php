@@ -22,8 +22,8 @@
                     </ul>
                 </div>
                 <div class="page-btn">
-                    <a class="btn btn-added" id="btnTambahPembelian"><i data-feather="plus-circle" class="me-2"></i>TAMBAH
-                        PEMBELIAN</a>
+                    <a class="btn btn-added" id="btnTambahPembelian"><i data-feather="plus-circle" class="me-2"></i>CARI
+                        KODE TRANSAKSI</a>
                 </div>
             </div>
 

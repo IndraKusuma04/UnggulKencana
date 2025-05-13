@@ -53,7 +53,7 @@ class DiskonController extends Controller
         ];
 
         $credentials = $request->validate([
-            'diskon'   =>  'required|unique:diskon',
+            'diskon'   =>  'required',
             'nilai'    =>  'required|numeric'
         ], $messages);
 

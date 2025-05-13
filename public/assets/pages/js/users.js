@@ -9,10 +9,13 @@ $(document).ready(function () {
         if (tableUsers) {
             tableUsers.ajax.reload(null, false); // Reload data dari server
         }
-        const successtoastExample = document.getElementById("successToast");
-        const toast = new bootstrap.Toast(successtoastExample);
-        $(".toast-body").text("Data Users Berhasil Direfresh");
-        toast.show();
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Data Users Berhasil Direfresh",
+            showConfirmButton: false,
+            timer: 1000
+        });
     });
 
     //load data jabatan
@@ -184,26 +187,41 @@ $(document).ready(function () {
             contentType: false, // Jangan set Content-Type secara manual
             success: function (response) {
                 // Tampilkan toast sukses
-                const successtoastExample =
-                    document.getElementById("successToast");
-                const toast = new bootstrap.Toast(successtoastExample);
-                $(".toast-body").text(response.message);
-                toast.show();
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1000
+                });
                 $("#mdEditUsers").modal("hide"); // Tutup modal
                 tableUsers.ajax.reload(null, false); // Reload data dari server
             },
             error: function (xhr) {
-                const errors = xhr.responseJSON.errors;
+                const errors = xhr.responseJSON?.errors;
                 if (errors) {
-                    let errorMessage = "";
+                    let errorList = "<ul style='text-align:left;'>"; // opsional: rata kiri
                     for (let key in errors) {
-                        errorMessage += `${errors[key][0]}\n`;
+                        errorList += `<li>${errors[key][0]}</li>`;
                     }
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage);
-                    toast.show();
+                    errorList += "</ul>";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: errorList, // gunakan html, bukan text
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else {
+                    const message = xhr.responseJSON?.message || "Terjadi kesalahan saat memproses permintaan.";
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 }
             },
         });
