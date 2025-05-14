@@ -107,6 +107,26 @@
     <!-- Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script src="{{ asset('assets') }}/js/script.js" type="text/javascript"></script>
+
+    <script>
+        $.ajaxSetup({
+            complete: function(xhr) {
+                // Jika response adalah HTML halaman login
+                if (xhr.responseText.includes('<form') && xhr.responseText.includes('login')) {
+                    Swal.fire({
+                        title: 'Session Expired',
+                        text: 'Sesi Anda telah habis. Silakan login kembali.',
+                        icon: 'warning',
+                        confirmButtonText: 'Login',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/login';
+                        }
+                    });
+                }
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -140,7 +140,9 @@ $(document).ready(function () {
                     Swal.fire({
                         icon: "success",
                         title: "Berhasil!",
-                        text: response.message
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1000
                     });
 
                     $('#kodepembelianproduk').val(response.kode); // <-- tambahkan ini
@@ -149,21 +151,57 @@ $(document).ready(function () {
                     if ($.fn.DataTable.isDataTable('#pembelianProdukTable')) {
                         $('#pembelianProdukTable').DataTable().ajax.reload();
                     }
+
+                    $("#storePembelianProduk")[0].reset();
                 } else {
                     Swal.fire({
                         icon: "info",
                         title: "Wait!",
-                        text: response.message
+                        text: response.message,
+                        timer: 1000
                     });
                 }
             },
-            error: function () {
-                Swal.fire({
-                    icon: "error",
-                    title: "Terjadi Kesalahan!",
-                    text: "Tidak dapat menambahkan produk."
-                });
-            }
+            error: function (xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
+
+                    for (let key in errors) {
+                        if (errors.hasOwnProperty(key)) {
+                            errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
+                        }
+                    }
+
+                    errorList += "</ul>";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: errorList,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi Kesalahan",
+                        text: "Tidak dapat memproses permintaan. Silakan coba lagi.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                }
+            },
         });
     });
 
@@ -178,6 +216,7 @@ $(document).ready(function () {
                 // Ambil data pertama
                 let data = response.Data;
 
+                $("#editid").val(data.id);
                 $("#editkodeproduk").val(data.kodeproduk);
                 $("#editnama").val(data.nama);
                 $("#editberat").val(data.berat);
@@ -230,6 +269,80 @@ $(document).ready(function () {
                     "Tidak dapat mengambil data kondisi.",
                     "error"
                 );
+            },
+        });
+    });
+
+    // // Kirim data ke server saat form disubmit
+    $(document).on("submit", "#formEditPembelianProduk", function (e) {
+        e.preventDefault(); // Mencegah form submit secara default
+
+        // Buat objek FormData
+        const formData = new FormData(this);
+        // Ambil ID dari form
+        const idProdukPembelian = formData.get("id"); // Mengambil nilai input dengan name="id"
+
+        // Kirim data ke server menggunakan AJAX
+        $.ajax({
+            url: `/admin/pembelianluartoko/updatePembelianByID/${idProdukPembelian}`, // URL untuk mengupdate data pegawai
+            type: "POST", // Gunakan metode POST (atau PATCH jika route mendukung)
+            data: formData, // Gunakan FormData
+            processData: false, // Jangan proses FormData sebagai query string
+            contentType: false, // Jangan set Content-Type secara manual
+            success: function (response) {
+                // Tampilkan toast sukses
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+                $("#mdEditProduk").modal("hide"); // Tutup modal
+                // Reload DataTable pembelian_produk (pastikan sudah diinisialisasi sebelumnya)
+                if ($.fn.DataTable.isDataTable('#pembelianProdukTable')) {
+                    $('#pembelianProdukTable').DataTable().ajax.reload();
+                }
+            },
+            error: function (xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
+
+                    for (let key in errors) {
+                        if (errors.hasOwnProperty(key)) {
+                            errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
+                        }
+                    }
+
+                    errorList += "</ul>";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: errorList,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi Kesalahan",
+                        text: "Tidak dapat memproses permintaan. Silakan coba lagi.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                }
             },
         });
     });

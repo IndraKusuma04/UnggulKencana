@@ -12,53 +12,68 @@ $(document).ready(function () {
             },
             success: function (response) {
                 if (response.success == true) {
-                    const successtoastExample =
-                        document.getElementById("successToast");
-                    const toast = new bootstrap.Toast(successtoastExample);
-                    $(".toast-body").text(response.message);
-                    toast.show();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Berhasil",
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
 
                     setTimeout(() => {
                         window.location.href = response.redirect;
                     }, 1500);
 
                 } else {
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(response.message);
-                    toast.show();
+                    Swal.fire({
+                        icon: "error",
+                        title: response.message,
+                        html: errorList,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
                 }
             },
             error: function (xhr) {
                 if (xhr.responseJSON && xhr.responseJSON.errors) {
                     const errors = xhr.responseJSON.errors;
-                    let errorMessage = "";
+                    let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
 
                     for (let key in errors) {
                         if (errors.hasOwnProperty(key)) {
-                            errorMessage += `${errors[key][0]}\n`; // Ambil pesan pertama dari setiap error
+                            errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
                         }
                     }
 
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(errorMessage.trim());
+                    errorList += "</ul>";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: errorList,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
 
                 } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text(xhr.responseJSON.message);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
 
                 } else {
-                    const dangertoastExamplee =
-                        document.getElementById("dangerToast");
-                    const toast = new bootstrap.Toast(dangertoastExamplee);
-                    $(".toast-body").text("Terjadi kesalahan. Silakan coba lagi!");
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi Kesalahan",
+                        text: "Tidak dapat memproses permintaan. Silakan coba lagi.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
                 }
-            }
+            },
         });
     });
 })

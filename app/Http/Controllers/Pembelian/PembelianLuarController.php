@@ -120,4 +120,60 @@ class PembelianLuarController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Produk Berhasil Dibatalkan.', 'Data' => $produk]);
     }
+
+    public function updatePembelianByID(Request $request, $id)
+    {
+        $messages = [
+            'required' => ':attribute wajib di isi !!!',
+            'integer'  => ':attribute format wajib menggunakan angka',
+            'mimes'    => ':attribute format wajib menggunakan PNG/JPG'
+        ];
+
+        $credentials = $request->validate([
+            'nama'                  =>  'required',
+            'jenis'        =>  'required|' . Rule::in(JenisProduk::where('status', 1)->pluck('id')),
+            'kondisi'            =>  'required|' . Rule::in(Kondisi::where('status', 1)->pluck('id')),
+            'berat'                 =>  [
+                'required',
+                'regex:/^\d+\.\d{1,}$/'
+            ],
+            'karat'                 =>  'required|integer',
+            'lingkar'               =>  'required|integer',
+            'panjang'               =>  'required|integer',
+            'hargabeli'             => 'required|integer',
+        ], $messages);
+
+        $kodeproduk = PembelianProduk::where('id', $id)->first()->kodeproduk;
+
+        $updateProduk = Produk::where('kodeproduk', $kodeproduk)
+            ->update([
+                'jenisproduk_id'    =>  $request->jenis,
+                'nama'              =>  $request->nama,
+                'harga_beli'        =>  $request->hargabeli,
+                'berat'             =>  $request->berat,
+                'karat'             =>  $request->karat,
+                'lingkar'           =>  $request->lingkar,
+                'panjang'           =>  $request->panjang,
+                'keterangan'        =>  $request->keterangan,
+                'kondisi_id'        =>  $request->kondisi
+            ]);
+
+        if ($updateProduk) {
+            PembelianProduk::where('kodeproduk', $kodeproduk)
+                ->where('status', 1)
+                ->update([
+                    'jenisproduk_id'    =>  $request->jenis,
+                    'nama'              =>  $request->nama,
+                    'harga_beli'        =>  $request->hargabeli,
+                    'berat'             =>  $request->berat,
+                    'karat'             =>  $request->karat,
+                    'lingkar'           =>  $request->lingkar,
+                    'panjang'           =>  $request->panjang,
+                    'keterangan'        =>  $request->keterangan,
+                    'kondisi_id'        =>  $request->kondisi
+                ]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Data Produk Berhasil Diupdate']);
+    }
 }

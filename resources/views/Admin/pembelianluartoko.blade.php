@@ -108,7 +108,7 @@
                                     </table>
                                 </div>
                             </div>
-                            <form method="POST" enctype="multipart/form-data" id="storePembelian">
+                            <form method="POST" enctype="multipart/form-data" id="storePembelianLuarToko">
                                 @csrf
                                 <div class="mb-3">
                                     <label class="form-label">KODE PEMBELIAN PRODUK<span
@@ -149,7 +149,7 @@
                                             aria-labelledby="pills-home-tab">
                                             <div class="mb-3">
                                                 <label class="form-label">Suplier</label>
-                                                <select class="select" name="suplier_id" id="suplier_id">
+                                                <select class="select" name="suplier" id="suplier_id">
                                                 </select>
                                             </div>
                                         </div>
@@ -157,7 +157,7 @@
                                             aria-labelledby="pills-profile-tab">
                                             <div class="mb-3">
                                                 <label class="form-label">Pelanggan</label>
-                                                <select class="select" name="pelanggan_id" id="pelanggan_id">
+                                                <select class="select" name="pelanggan" id="pelanggan_id">
                                                 </select>
                                             </div>
                                         </div>
@@ -203,6 +203,7 @@
                         <div class="mb-3">
                             <label class="form-label">KODE PRODUK<span class="text-danger ms-1">*</span></label>
                             <input type="text" name="kodeproduk" id="editkodeproduk" class="form-control">
+                            <input type="hidden" name="id" id="editid" class="form-control">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">NAMA<span class="text-danger ms-1">*</span></label>

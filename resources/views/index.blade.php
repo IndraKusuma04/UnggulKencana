@@ -11,7 +11,7 @@
     <meta name="robots" content="noindex, nofollow">
     <title>Unggul Kencana - Login</title>
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/img/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets') }}/img/favicon.png">
 
     <link rel="stylesheet" href="{{ asset('assets') }}/css/bootstrap.min.css">
 
@@ -99,7 +99,8 @@
     <script src="{{ asset('assets') }}/js/feather.min.js" type="text/javascript"></script>
 
     <script src="{{ asset('assets') }}/js/bootstrap.bundle.min.js" type="text/javascript"></script>
-    <script src="{{ asset('assets') }}/js/theme-script.js" type="text/javascript"></script>
+    <script src="{{ asset('assets') }}/plugins/sweetalert/sweetalert2.all.min.js" type="text/javascript"></script>
+    <script src="{{ asset('assets') }}/plugins/sweetalert/sweetalerts.min.js" type="text/javascript"></script>
     <script src="{{ asset('assets') }}/js/script.js" type="text/javascript"></script>
 </body>
 
