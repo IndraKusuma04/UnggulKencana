@@ -16,6 +16,7 @@ class AuthController extends Controller
     {
         return view('index');
     }
+
     public function login(Request $request)
     {
         $messages = [
@@ -40,9 +41,10 @@ class AuthController extends Controller
                 $role = Role::where('id', $user->role_id)->first()->role;
 
                 Session::put('nama', $pegawai->nama);
-                Session::put('image', $pegawai->image);
                 Session::put('jabatan', $jabatan);
                 Session::put('role', $role);
+                Session::put('image', $pegawai->image_pegawai);
+
 
                 // Redirect berdasarkan role user
                 if ($role === 'ADMIN') {

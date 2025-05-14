@@ -49,7 +49,7 @@ class KondisiController extends Controller
         ];
 
         $credentials = $request->validate([
-            'kondisi'       =>  'required|unique:kondisi',
+            'kondisi'       =>  'required',
         ], $messages);
 
         // Cari data kondisi berdasarkan ID

@@ -25,6 +25,10 @@ class CheckRole
         if ($request->route()->named('login')) {
             return $this->redirectToDashboard(Auth::user());
         }
+        // Jika user sudah login dan mencoba akses halaman login, redirect ke dashboard
+        if ($request->route()->named('index')) {
+            return $this->redirectToDashboard(Auth::user());
+        }
 
         // Jika parameter role diberikan, pastikan user memiliki role_id yang sesuai
         if ($role && !$this->hasRole(Auth::user()->role_id, $role)) {
