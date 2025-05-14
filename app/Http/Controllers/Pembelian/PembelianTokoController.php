@@ -227,6 +227,7 @@ class PembelianTokoController extends Controller
         $kodeProdukList = PembelianProduk::where('status', 1)
             ->where('oleh', Auth::id())
             ->where('kodepembelianproduk', $request->kodepembelianproduk)
+            ->where('jenispembelian', 1)
             ->pluck('kodeproduk');
 
         // Step 2: Ambil harga_beli dari produk berdasarkan kodeproduk

@@ -171,6 +171,10 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label">CATATAN<span class="text-danger ms-1">*</span></label>
+                                    <textarea name="catatan" id="" class="form-control" rows="4"></textarea>
+                                </div>
                                 <!-- Form Tambahan -->
                                 <div class="text-end">
                                     <button type="submit" class="btn btn-primary">SIMPAN</button>

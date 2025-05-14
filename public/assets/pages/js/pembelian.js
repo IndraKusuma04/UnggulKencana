@@ -57,19 +57,21 @@ $(document).ready(function () {
                         data: "tanggal",
                     },
                     {
-                        data: null, // Kolom yang memuat data pelanggan atau suplier
+                        data: null,
                         render: function (data, type, row) {
-                            // Cek apakah pelanggan atau suplier tersedia
-                            if (row.suplier_id === null && row.nonsuplierdanpembeli === null) {
-                                return row.pelanggan.nama; // Jika `suplier_id` null, tampilkan nama pelanggan
-                            } else if (row.pelanggan_id === null && row.nonsuplierdanpembeli === null) {
-                                return row.suplier.suplier; // Jika `pelanggan_id` null, tampilkan nama suplier
-                            } else if (row.pelanggan_id === null && row.suplier_id === null) {
-                                return row.nonsuplierdanpembeli; // Jika `pelanggan_id` null, tampilkan nama suplier
+                            if (row.suplier_id === null && row.pelanggan_id === null && row.nonsuplierdanpembeli !== null) {
+                                // Jika bukan dari suplier/pelanggan, tampilkan input bebas (nonsuplierdanpembeli)
+                                return row.nonsuplierdanpembeli;
+                            } else if (row.suplier_id !== null && row.suplier && row.suplier.suplier) {
+                                // Jika ada suplier_id dan objek suplier valid
+                                return row.suplier.suplier;
+                            } else if (row.pelanggan_id !== null && row.pelanggan && row.pelanggan.nama) {
+                                // Jika ada pelanggan_id dan objek pelanggan valid
+                                return row.pelanggan.nama;
                             } else {
-                                return "-"; // Jika keduanya tidak ada, tampilkan tanda "-"
+                                return "-";
                             }
-                        },
+                        }
                     },
                     {
                         data: "total_harga",
@@ -207,9 +209,21 @@ $(document).ready(function () {
                 //Ambil data pertama
                 let data = response.Data[0];
 
-                $("#namapelanggan").text(data.pelanggan.nama);
-                $("#alamatpelanggan").text(data.pelanggan.alamat);
-                $("#kontakpelanggan").text(data.pelanggan.kontak);
+                if (data.pelanggan !== null) {
+                    $("#namapelanggan").text(data.pelanggan.nama);
+                    $("#alamatpelanggan").text(data.pelanggan.alamat);
+                    $("#kontakpelanggan").text(data.pelanggan.kontak);
+                } else if (data.suplier !== null) {
+                    $("#namapelanggan").text(data.suplier.suplier); // jika menggunakan field "suplier"
+                    $("#alamatpelanggan").text(data.suplier.alamat ?? "-");
+                    $("#kontakpelanggan").text(data.suplier.kontak ?? "-");
+                } else {
+                    // fallback jika tidak ada pelanggan/suplier (misalnya dari luar)
+                    $("#namapelanggan").text(data.nonsuplierdanpembeli ?? "-");
+                    $("#alamatpelanggan").text("-");
+                    $("#kontakpelanggan").text("-");
+                }
+
                 $("#kodetransaksi").text(data.kodepembelian);
                 let tanggalAsli = data.tanggal; // misalnya "2025-04-07"
                 let tanggalBaru = new Date(tanggalAsli);

@@ -45,7 +45,7 @@ class Pembelian extends Model
      */
     public function pelanggan(): BelongsTo
     {
-        return $this->belongsTo(pelanggan::class, 'pelanggan_id', 'id');
+        return $this->belongsTo(Pelanggan::class, 'pelanggan_id', 'id');
     }
 
     /**

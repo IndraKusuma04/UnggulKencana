@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Pembelian;
 
+use Carbon\Carbon;
+use App\Models\Produk;
 use App\Models\Kondisi;
+use App\Models\Pembelian;
 use App\Models\JenisProduk;
 use Illuminate\Http\Request;
 use App\Models\PembelianProduk;
@@ -12,7 +15,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\Produk\ProdukController;
-use App\Models\Produk;
 
 class PembelianLuarController extends Controller
 {
@@ -175,5 +177,106 @@ class PembelianLuarController extends Controller
         }
 
         return response()->json(['success' => true, 'message' => 'Data Produk Berhasil Diupdate']);
+    }
+
+    public function deletePembelianProduk($id)
+    {
+        // Cari data pelanggan berdasarkan ID
+        $produk = PembelianProduk::find($id);
+        $kodeproduk = PembelianProduk::where('id', $id)->first()->kodeproduk;
+
+        // Periksa apakah data ditemukan
+        if (!$produk) {
+            return response()->json(['success' => false, 'message' => 'Produk tidak ditemukan.'], 404);
+        }
+
+        // Update status menjadi 0 (soft delete manual)
+        $delete = $produk->update([
+            'status' => 0,
+        ]);
+
+        if ($delete) {
+            Produk::where('kodeproduk', $kodeproduk)->update(['status' => 0]);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Produk Berhasil Dibatalkan.']);
+    }
+
+    public function storePembelianLuarToko(Request $request)
+    {
+        $request->validate(
+            [
+                'kodepembelianproduk' => 'required',
+
+                // Wajib isi salah satu
+                'suplier' => 'required_without_all:pelanggan,nonsuplierdanpembeli|nullable|exists:suplier,id',
+                'pelanggan' => 'required_without_all:suplier,nonsuplierdanpembeli|nullable|exists:pelanggan,id',
+                'nonsuplierdanpembeli' => 'required_without_all:suplier,pelanggan|nullable|string',
+            ],
+            [
+                'suplier.required_without_all' => 'Silakan pilih Suplier, Pelanggan, atau isi Non Suplier/Pelanggan.',
+                'pelanggan.required_without_all' => 'Silakan pilih Suplier, Pelanggan, atau isi Non Suplier/Pelanggan.',
+                'nonsuplierdanpembeli.required_without_all' => 'Silakan pilih Suplier, Pelanggan, atau isi Non Suplier/Pelanggan.',
+            ]
+        );
+
+        $kodePembelian = (new PembelianController)->generateKodeTransaksiPembelian();
+        $kodepembelianproduk = $request['kodepembelianproduk'];
+        $tanggal = $request['tanggal']  = Carbon::today()->format('Y-m-d');
+
+        if (!$kodepembelianproduk) {
+            return response()->json(['success' => false, 'message' => 'Kode pembelian produk tidak ditemukan. Silakan ulangi proses.']);
+        }
+
+        // Step 1: Ambil semua kodeproduk dari pembelian_produk
+        $kodeProdukList = PembelianProduk::where('status', 1)
+            ->where('oleh', Auth::id())
+            ->where('kodepembelianproduk', $request->kodepembelianproduk)
+            ->where('jenispembelian', 2)
+            ->pluck('kodeproduk');
+
+        // Step 2: Ambil harga_beli dari produk berdasarkan kodeproduk
+        $totalHargaBeli = PembelianProduk::whereIn('kodeproduk', $kodeProdukList)->where('status', 1)
+            ->sum('harga_beli');
+
+        if ($request->suplier_id != "" || $request->pelanggan_id == "") {
+            $request['pelanggan'] = null;
+        } elseif ($request->suplier_id == '' || $request->pelanggan_id != "") {
+            $request['suplier'] = null;
+        } elseif ($request->suplier_id == '' || $request->pelanggan_id == "" || $request->nonsuplierdanpembeli != "") {
+            $request['suplier'] = null;
+            $request['pelanggan'] = null;
+        }
+
+        $pembelianproduk = Pembelian::create([
+            'kodepembelian'          =>  $kodePembelian,
+            'kodepembelianproduk'    =>  $kodepembelianproduk,
+            'pelanggan_id'           =>  $request->pelanggan,
+            'suplier_id'             =>  $request->suplier,
+            'pelanggan_id'           =>  $request->pelanggan,
+            'nonsuplierdanpembeli'   =>  $request->nonsuplierdanpembeli,
+            'tanggal'                =>  $tanggal,
+            'total_harga'            =>  $totalHargaBeli,
+            'catatan'                =>  $request->catatan,
+            'oleh'                   =>  Auth::user()->id,
+            'jenispembelian'         =>  2,
+            'status'                 =>  1,
+        ]);
+
+        if ($pembelianproduk) {
+            PembelianProduk::where('kodepembelianproduk', $kodepembelianproduk)
+                ->where('status', 1)
+                ->where('jenispembelian', 2)
+                ->update([
+                    'status'    => 2,
+                ]);
+
+            session()->forget('kodepembelianproduk');
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Berhasil Disimpan'
+        ]);
     }
 }

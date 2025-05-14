@@ -5,6 +5,47 @@ $(document).ready(function () {
         $('[data-bs-toggle="tooltip"]').tooltip();
     }
 
+
+
+    // Muat opsi pelanggan
+    $.ajax({
+        url: "/admin/pelanggan/getPelanggan", // Endpoint untuk mendapatkan data jabatan
+        type: "GET",
+        success: function (response) {
+            let options
+            response.Data.forEach((item) => {
+                options += `<option value="${item.id}">${item.nama}</option>`;
+            });
+            $("#pelanggan_id").html(options); // Masukkan data ke select
+        },
+        error: function () {
+            Swal.fire(
+                "Gagal!",
+                "Tidak dapat mengambil data pelanggan.",
+                "error"
+            );
+        },
+    });
+
+    $.ajax({
+        url: "/admin/suplier/getSuplier", // Endpoint untuk mendapatkan data jabatan
+        type: "GET",
+        success: function (response) {
+            let options
+            response.Data.forEach((item) => {
+                options += `<option value="${item.id}">${item.nama}</option>`;
+            });
+            $("#suplier_id").html(options); // Masukkan data ke select
+        },
+        error: function () {
+            Swal.fire(
+                "Gagal!",
+                "Tidak dapat mengambil data suplier.",
+                "error"
+            );
+        },
+    });
+
     // Muat opsi kondisi
     $.ajax({
         url: "/admin/kondisi/getKondisi", // Endpoint untuk mendapatkan data jabatan
@@ -43,6 +84,8 @@ $(document).ready(function () {
             );
         },
     });
+
+
 
     function getProdukPembelianTable() {
         if ($('#pembelianProdukTable').length > 0) {
@@ -303,6 +346,155 @@ $(document).ready(function () {
                 if ($.fn.DataTable.isDataTable('#pembelianProdukTable')) {
                     $('#pembelianProdukTable').DataTable().ajax.reload();
                 }
+            },
+            error: function (xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    const errors = xhr.responseJSON.errors;
+                    let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
+
+                    for (let key in errors) {
+                        if (errors.hasOwnProperty(key)) {
+                            errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
+                        }
+                    }
+
+                    errorList += "</ul>";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Validasi Gagal",
+                        html: errorList,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Gagal",
+                        text: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi Kesalahan",
+                        text: "Tidak dapat memproses permintaan. Silakan coba lagi.",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                }
+            },
+        });
+    });
+
+    // ketika button hapus di tekan
+    $(document).on("click", ".btn-delete-produk", function () {
+        const deleteID = $(this).data("id");
+
+        // SweetAlert2 untuk konfirmasi
+        Swal.fire({
+            title: "Apakah Anda yakin?",
+            text: "Data ini akan dihapus secara permanen!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, hapus!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Kirim permintaan hapus (gunakan itemId)
+                fetch(`/admin/pembelianluartoko/deletePembelianProduk/${deleteID}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            Swal.fire(
+                                "Dihapus!",
+                                "Data berhasil dihapus.",
+                                "success"
+                            );
+
+                            // Reload DataTable pembelian_produk (pastikan sudah diinisialisasi sebelumnya)
+                            if ($.fn.DataTable.isDataTable('#pembelianProdukTable')) {
+                                $('#pembelianProdukTable').DataTable().ajax.reload();
+                            }
+                        } else {
+                            Swal.fire(
+                                "Gagal!",
+                                "Terjadi kesalahan saat menghapus data.",
+                                "error"
+                            );
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire(
+                            "Gagal!",
+                            "Terjadi kesalahan dalam penghapusan data.",
+                            "error"
+                        );
+                    });
+            } else {
+                // Jika batal, beri tahu pengguna
+                Swal.fire("Dibatalkan", "Data tidak dihapus.", "info");
+            }
+        });
+    });
+
+    // // Kirim data ke server saat form disubmit
+    $(document).on("submit", "#storePembelianLuarToko", function (e) {
+        e.preventDefault(); // Mencegah form submit secara default
+
+        const form = this;
+        const formData = new FormData(form);
+
+        // Dapatkan ID tab yang aktif
+        const activePaneId = $(".tab-pane.show.active").attr("id");
+
+        // Kosongkan input dari tab yang tidak aktif
+        if (activePaneId !== "pills-home") {
+            formData.set("suplier", "");
+        }
+
+        if (activePaneId !== "pills-profile") {
+            formData.set("pelanggan", "");
+        }
+
+        if (activePaneId !== "pills-pembeli") {
+            formData.set("nonsuplierdanpembeli", "");
+        }
+
+        //Kirim data ke server menggunakan AJAX
+        $.ajax({
+            url: `/admin/pembelianluartoko/storePembelianLuarToko`, // URL untuk mengupdate data pegawai
+            type: "POST", // Gunakan metode POST (atau PATCH jika route mendukung)
+            data: formData, // Gunakan FormData
+            processData: false, // Jangan proses FormData sebagai query string
+            contentType: false, // Jangan set Content-Type secara manual
+            success: function (response) {
+                // Tampilkan toast sukses
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: response.message,
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+
+                if ($.fn.DataTable.isDataTable('#pembelianProdukTable')) {
+                    $('#pembelianProdukTable').DataTable().ajax.reload();
+                }
+
+                $("#storePembelianLuarToko")[0].reset();
             },
             error: function (xhr) {
                 if (xhr.responseJSON && xhr.responseJSON.errors) {
