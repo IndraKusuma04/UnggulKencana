@@ -5,6 +5,20 @@ $(document).ready(function () {
         $('[data-bs-toggle="tooltip"]').tooltip();
     }
 
+    //function refresh
+    $(document).on("click", "#refreshButton", function () {
+        // Reload DataTable pembelian_produk (pastikan sudah diinisialisasi sebelumnya)
+        if ($.fn.DataTable.isDataTable('#pembelianProdukTable')) {
+            $('#pembelianProdukTable').DataTable().ajax.reload();
+        }
+        Swal.fire({
+            icon: "success",
+            title: "Berhasil",
+            text: "Data Transaksi Pembelian Berhasil Direfresh",
+            showConfirmButton: false,
+            timer: 1000
+        });
+    });
 
 
     // Muat opsi pelanggan
