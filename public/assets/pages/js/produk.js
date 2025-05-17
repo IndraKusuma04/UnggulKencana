@@ -113,7 +113,7 @@ $(document).ready(function () {
                                 <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="EDIT PRODUK">
                                     <i data-feather="edit" class="feather-edit"></i>
                                 </a>
-                                <a class="me-2 print-barcode p-2 btn-print" target="_blank" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="CETAK BARCODE">
+                                <a class="me-2 print-barcode p-2 btn-print" target="_blank" data-id="${row.kodeproduk}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="CETAK BARCODE">
                                     <i data-feather="printer" class="feather-print"></i>
                                 </a>
                                 <a class="confirm-text p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="HAPUS PRODUK">

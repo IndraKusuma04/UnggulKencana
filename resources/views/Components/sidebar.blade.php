@@ -119,6 +119,26 @@
                         </li>
                     </ul>
                 </li>
+                <li class="submenu-open">
+                    <ul>
+                        <li class="submenu">
+                            <a href="javascript:void(0);">
+                                <i data-feather="book"></i><span>Laporan</span><span class="menu-arrow"></span>
+                            </a>
+                            <ul>
+                                <li>
+                                    <a href="/admin/report/cetakDaftarProduk" target="_blank"
+                                        data-menu-title="Daftar Produk"></i><span>
+                                            Daftar Produk</span></a>
+                                </li>
+                                <li>
+                                    <a href="/admin/suplier" data-menu-title="Suplier"><span>
+                                            Suplier</span></a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
             </ul>
             </li>
             </ul>

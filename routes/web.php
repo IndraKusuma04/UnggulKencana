@@ -209,10 +209,9 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::delete('/admin/pembelianluartoko/deletePembelianProduk/{id}', [PembelianLuarController::class, 'deletePembelianProduk']);
     Route::post('/admin/pembelianluartoko/storePembelianLuarToko', [PembelianLuarController::class, 'storePembelianLuarToko']);
 
-    Route::get('/admin/report/cetakBarcodeProduk/{id}', function () {
-        return view('Reports.cetakbarcode');
-    });
+    Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
     Route::get('/admin/report/cetakTransaksi/{id}', [ReportController::class, 'cetakTransaksi']);
+    Route::get('/admin/report/cetakDaftarProduk', [ReportController::class, 'cetakDaftarProduk']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
 });
