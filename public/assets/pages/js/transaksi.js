@@ -257,7 +257,7 @@ $(document).ready(function () {
 
                 // Format: 7 April 2025
                 let tanggalFormatted = new Intl.DateTimeFormat('id-ID', {
-                    day: 'numeric', 
+                    day: 'numeric',
                     month: 'long',
                     year: 'numeric'
                 }).format(tanggalBaru);
@@ -291,6 +291,11 @@ $(document).ready(function () {
                             <td>${parseFloat(item.berat).toFixed(1)} gram</td>
                             <td>Rp ${Number(item.harga_jual).toLocaleString('id-ID')}</td>
                             <td>Rp ${Number(item.total).toLocaleString('id-ID')}</td>
+                            <td>
+                                <div class="hstack gap-2 fs-15">
+                                    <a href="javascript:void(0);" id="printSuratBarang" data-kodetransaksi="${data.kodetransaksi}" data-kodeproduk="${produk.kodeproduk}" class="btn btn-icon btn-sm btn-soft-secondary rounded-pill"><i class="feather-printer"></i></a>
+                                </div>
+                            </td>
                         </tr>
                     `;
 
@@ -332,59 +337,37 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on("click", "#btnPrintModal", function (e) {
+    $(document).on("click", "#printSuratBarang", function (e) {
         e.preventDefault();
-    
-        let modalContent = document.querySelector("#detailTransaksi .modal-content").innerHTML;
-    
-        let printWindow = window.open('', '', 'width=900,height=700');
-    
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Cetak Detail Transaksi</title>
-    
-                    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-                    <link rel="stylesheet" href="/assets/css/animate.css">
-                    <link rel="stylesheet" href="/assets/css/feather.css">
-                    <link rel="stylesheet" href="/assets/plugins/select2/css/select2.min.css">
-                    <link rel="stylesheet" href="/assets/plugins/summernote/summernote-bs4.min.css">
-                    <link rel="stylesheet" href="/assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.css">
-                    <link rel="stylesheet" href="/assets/css/dataTables.bootstrap5.min.css">
-                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
-                    <link rel="stylesheet" href="/assets/plugins/owlcarousel/owl.carousel.min.css">
-                    <link rel="stylesheet" href="/assets/plugins/owlcarousel/owl.theme.default.min.css">
-                    <link rel="stylesheet" href="/assets/plugins/fontawesome/css/fontawesome.min.css">
-                    <link rel="stylesheet" href="/assets/plugins/fontawesome/css/all.min.css">
-                    <link rel="stylesheet" href="/assets/css/style.css">
-                </head>
-                <body onload="window.print(); window.close();">
-                    ${modalContent}
-                </body>
-                <script src="/assets/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-                <script src="/assets/js/feather.min.js" type="text/javascript"></script>
-                <script src="/assets/js/jquery.slimscroll.min.js" type="text/javascript"></script>
-                <script src="/assets/js/jquery.dataTables.min.js" type="text/javascript"></script>
-                <script src="/assets/js/dataTables.bootstrap5.min.js" type="text/javascript"></script>
-                <script src="/assets/js/bootstrap.bundle.min.js" type="text/javascript"></script>
-                <script src="/assets/plugins/summernote/summernote-bs4.min.js" type="text/javascript"></script>
-                <script src="/assets/plugins/select2/js/select2.min.js" type="text/javascript"></script>
-                <script src="/assets/js/moment.min.js" type="text/javascript"></script>
-                <script src="/assets/plugins/bootstrap-tagsinput/bootstrap-tagsinput.js" type="text/javascript"></script>
-                <script src="/assets/plugins/owlcarousel/owl.carousel.min.js" type="text/javascript"></script>
-                <script src="/assets/plugins/sweetalert/sweetalert2.all.min.js" type="text/javascript"></script>
-                <script src="/assets/plugins/sweetalert/sweetalerts.min.js" type="text/javascript"></script>
-                <script src="/assets/plugins/theia-sticky-sidebar/ResizeSensor.js" type="text/javascript"></script>
-                <script src="/assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js" type="text/javascript">
-                </script>
-                <!-- Datepicker JS -->
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-                <script src="/assets/js/script.js" type="text/javascript"></script>
-            </html>
-        `);
-    
-        printWindow.document.close();
+
+        const kodetransaksi = $(this).data("kodetransaksi");
+        const kodeproduk = $(this).data("kodeproduk");
+
+
+        // Buat form dinamis
+        const form = $('<form>', {
+            method: 'POST',
+            action: '/admin/report/cetakSuratBarang',
+            target: '_blank' // buka di tab baru
+        });
+
+        // Tambahkan CSRF token
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+        form.append($('<input>', {
+            type: 'hidden',
+            name: '_token',
+            value: csrfToken
+        }));
+
+        // Tambahkan data
+        form.append($('<input>', { type: 'hidden', name: 'kodeproduk', value: kodeproduk }));
+        form.append($('<input>', { type: 'hidden', name: 'kodetransaksi', value: kodetransaksi }));
+
+        // Submit form
+        $('body').append(form);
+        form.submit();
+        form.remove();
     });
-    
-    
+
+
 })
