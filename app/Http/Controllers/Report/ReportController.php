@@ -96,4 +96,52 @@ class ReportController extends Controller
 
         return response()->file($pdfPath);
     }
+
+    public function cetakNotaProduk(Request $request)
+    {
+
+        $jasper = new PHPJasper();
+
+        $inputJrxml = resource_path('reports/CetakSuratProduk.jrxml');
+        $jasper->compile($inputJrxml)->execute();
+
+        $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter.exe');
+        $jasperFile = resource_path('reports/CetakSuratProduk.jasper');
+        $outputPath = public_path('storage/reports/nota');
+        $jdbcDir    = resource_path('jdbc');
+
+        // Pastikan folder output ada
+        if (!file_exists($outputPath)) {
+            mkdir($outputPath, 0755, true);
+        }
+
+        $kodetransaksi = $request->kodetransaksi;
+        $kodeproduk    = $request->kodeproduk;
+
+        // Bangun command dengan parameter
+        $cmd = sprintf(
+            '"%s" process "%s" -f pdf -o "%s" -t mysql -H 127.0.0.1 -u root -p admin -n dbunggulkencana --jdbc-dir "%s" -P kodetransaksi="%s" -P kodeproduk="%s"',
+            $jasperstarterPath,
+            $jasperFile,
+            $outputPath,
+            $jdbcDir,
+            $kodetransaksi,
+            $kodeproduk
+        );
+
+        exec($cmd, $output, $resultCode);
+
+        $pdfPath = $outputPath . '/CetakSuratProduk.pdf';
+
+        if (!file_exists($pdfPath)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'File PDF tidak ditemukan',
+                'cmd' => $cmd,
+                'output' => $output
+            ], 500);
+        }
+
+        return response()->file($pdfPath);
+    }
 }
