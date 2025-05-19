@@ -14,8 +14,12 @@ class ReportController extends Controller
 {
     public function cetakDaftarProduk()
     {
-        $jasperstarterPath = '/home/itsmee/Downloads/jasperstarter/bin/jasperstarter';
+        $jasper = new PHPJasper();
 
+        $inputJrxml = resource_path('reports/CetakDaftarProduk.jrxml');
+        $jasper->compile($inputJrxml)->execute();
+
+        $jasperstarterPath = $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter.exe');
         $jasperFile = resource_path('reports/CetakDaftarProduk.jasper');
         $outputPath = public_path('storage/reports/produk');
         $jdbcDir    = resource_path('jdbc');
@@ -27,7 +31,7 @@ class ReportController extends Controller
 
         // Bangun command (TANPA kutip satu tambahan!)
         $cmd = sprintf(
-            '%s process "%s" -f pdf -o "%s" -t mysql -H 127.0.0.1 -u root -p@Admin123 -n dbunggulkencana --jdbc-dir "%s" 2>&1',
+            '"%s" process "%s" -f pdf -o "%s" -t mysql -H 127.0.0.1 -u root -p admin -n dbunggulkencana --jdbc-dir "%s" 2>&1',
             $jasperstarterPath,
             $jasperFile,
             $outputPath,
@@ -57,7 +61,7 @@ class ReportController extends Controller
         $inputJrxml = resource_path('reports/CetakBarcodeProduk.jrxml');
         $jasper->compile($inputJrxml)->execute();
 
-        $jasperstarterPath = '/home/itsmee/Downloads/jasperstarter/bin/jasperstarter';
+        $jasperstarterPath = $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter.exe');
         $jasperFile = resource_path('reports/CetakBarcodeProduk.jasper');
         $outputPath = public_path('storage/reports/barcode');
         $jdbcDir    = resource_path('jdbc');
@@ -69,12 +73,12 @@ class ReportController extends Controller
 
         // Bangun command dengan parameter
         $cmd = sprintf(
-            '%s process "%s" -f pdf -o "%s" -t mysql -H 127.0.0.1 -u root -p@Admin123 -n dbunggulkencana --jdbc-dir "%s" -P Parameter1=%s 2>&1',
+            '"%s" process "%s" -f pdf -o "%s" -t mysql -H 127.0.0.1 -u root -p admin -n dbunggulkencana --jdbc-dir "%s" -P Parameter1="%s"',
             $jasperstarterPath,
             $jasperFile,
             $outputPath,
             $jdbcDir,
-            escapeshellarg($id)
+            $id
         );
 
         exec($cmd, $output, $resultCode);
