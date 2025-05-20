@@ -98,12 +98,6 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</rectangle>
-			<componentElement>
-				<reportElement x="158" y="12" width="59" height="44" uuid="9e02fa31-178e-4e92-999c-2286b19405c9"/>
-				<jr:QRCode xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<jr:codeExpression><![CDATA[$P{Parameter1}]]></jr:codeExpression>
-				</jr:QRCode>
-			</componentElement>
 			<staticText>
 				<reportElement x="118" y="33" width="20" height="8" uuid="e9bb39de-e4ff-4f7a-a0ff-a059171e37bd"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -188,6 +182,10 @@
 				</textElement>
 				<text><![CDATA[:]]></text>
 			</staticText>
+			<image>
+				<reportElement x="170" y="9" width="50" height="50" uuid="0f8b4e29-43b9-4738-8804-00623e53147c"/>
+				<imageExpression><![CDATA["http://127.0.0.1:8000/storage/barcode/"+$F{image_produk}]]></imageExpression>
+			</image>
 		</band>
 	</detail>
 </jasperReport>

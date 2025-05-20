@@ -19,6 +19,7 @@ class Transaksi extends Model
         'pelanggan_id',
         'diskon_id',
         'total',
+        'terbilang',
         'tanggal',
         'oleh',
         'status'

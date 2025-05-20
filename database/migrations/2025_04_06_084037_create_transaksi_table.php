@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('pelanggan_id');
             $table->unsignedBigInteger('diskon_id');
             $table->bigInteger('total');
+            $table->string('terbilang', 100);
             $table->date('tanggal');
             $table->unsignedBigInteger('oleh');
             $table->integer('status');

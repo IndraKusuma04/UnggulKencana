@@ -67,12 +67,8 @@ class ReportController extends Controller
 
     public function cetakDaftarProduk()
     {
-        $jasper = new PHPJasper();
 
-        $inputJrxml = resource_path('reports/CetakDaftarProduk.jrxml');
-        $jasper->compile($inputJrxml)->execute();
-
-        $jasperstarterPath = $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter.exe');
+        $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter.exe');
         $jasperFile = resource_path('reports/CetakDaftarProduk.jasper');
         $outputPath = public_path('storage/reports/produk');
         $jdbcDir    = resource_path('jdbc');
@@ -109,12 +105,7 @@ class ReportController extends Controller
 
     public function cetakBarcodeProduk($id)
     {
-        $jasper = new PHPJasper();
-
-        $inputJrxml = resource_path('reports/CetakBarcodeProduk.jrxml');
-        $jasper->compile($inputJrxml)->execute();
-
-        $jasperstarterPath = $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter.exe');
+        $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter');
         $jasperFile = resource_path('reports/CetakBarcodeProduk.jasper');
         $outputPath = public_path('storage/reports/barcode');
         $jdbcDir    = resource_path('jdbc');
@@ -155,7 +146,7 @@ class ReportController extends Controller
         $kodetransaksi  = $request->kodetransaksi;
         $kodeproduk     = $request->kodeproduk;
 
-        $jasperstarterPath = '/home/itsmee/Downloads/jasperstarter/bin/jasperstarter';
+        $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter');
         $reportName = 'CetakSuratBarang';
         $reportPath = resource_path("reports/$reportName");
         $jasperFile = "$reportPath.jasper";
