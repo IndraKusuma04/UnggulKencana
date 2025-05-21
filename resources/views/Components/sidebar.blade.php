@@ -5,8 +5,9 @@
                 <li class="submenu-open">
                     <ul>
                         <li>
-                            <a href="/admin/dashboard" data-menu-title="POS"><i data-feather="grid"></i><span>
-                                    Dashboard</span></a>
+                            <a href="/admin/dashboard" data-menu-title="POS">
+                                <b><i data-feather="grid"></i><span>Dashboard</span></b>
+                            </a>
                         </li>
                     </ul>
                 </li>
@@ -33,7 +34,8 @@
                     <ul>
                         <li class="submenu">
                             <a href="javascript:void(0);">
-                                <i data-feather="users"></i><span>User Management</span><span class="menu-arrow"></span>
+                                <b><i data-feather="users"></i><span>User Management</span><span
+                                        class="menu-arrow"></span></b>
                             </a>
                             <ul>
                                 <li><a href="/admin/pegawai" data-menu-title="Pegawai"><span>Pegawai</span></a></li>
@@ -46,7 +48,7 @@
                     <ul>
                         <li class="submenu">
                             <a href="javascript:void(0);">
-                                <i data-feather="archive"></i><span>Produk</span><span class="menu-arrow"></span>
+                                <b><i data-feather="archive"></i><span>Produk</span><span class="menu-arrow"></span></b>
                             </a>
                             <ul>
                                 <li>
@@ -71,8 +73,8 @@
                     <ul>
                         <li class="submenu">
                             <a href="javascript:void(0);">
-                                <i data-feather="users"></i><span>Pelanggan & Suplier</span><span
-                                    class="menu-arrow"></span>
+                                <b><i data-feather="users"></i><span>Pelanggan & Suplier</span><span
+                                        class="menu-arrow"></span></b>
                             </a>
                             <ul>
                                 <li>
@@ -91,7 +93,8 @@
                     <ul>
                         <li class="submenu">
                             <a href="javascript:void(0);">
-                                <i data-feather="users"></i><span>Transaksi</span><span class="menu-arrow"></span>
+                                <b><i data-feather="dollar-sign"></i><span>Transaksi</span><span
+                                        class="menu-arrow"></span></b>
                             </a>
                             <ul>
                                 <li><a href="/admin/pos" data-menu-title="POS"><i data-feather="hard-drive"></i><span>
@@ -121,9 +124,19 @@
                 </li>
                 <li class="submenu-open">
                     <ul>
+                        <li>
+                            <a href="/admin/perbaikan" data-menu-title="Perbaikan">
+                                <b><i data-feather="slack"></i><span>
+                                        Perbaikan</span></b>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="submenu-open">
+                    <ul>
                         <li class="submenu">
                             <a href="javascript:void(0);">
-                                <i data-feather="book"></i><span>Laporan</span><span class="menu-arrow"></span>
+                                <b><i data-feather="book"></i><span>Laporan</span><span class="menu-arrow"></span></b>
                             </a>
                             <ul>
                                 <li>
@@ -139,8 +152,6 @@
                         </li>
                     </ul>
                 </li>
-            </ul>
-            </li>
             </ul>
         </div>
     </div>

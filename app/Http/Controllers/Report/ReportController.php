@@ -64,43 +64,44 @@ class ReportController extends Controller
         ];
     }
 
-
     public function cetakDaftarProduk()
     {
 
-        $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter.exe');
-        $jasperFile = resource_path('reports/CetakDaftarProduk.jasper');
-        $outputPath = public_path('storage/reports/produk');
-        $jdbcDir    = resource_path('jdbc');
+        $jasper = new \PHPJasper\PHPJasper();
+        $input = resource_path('reports/CetakDaftarProduk.jasper');
+        $output = public_path('storage/reports/laporan');
 
-        // Pastikan folder output ada
-        if (!file_exists($outputPath)) {
-            mkdir($outputPath, 0755, true);
+        // Hapus folder output jika ada
+        if (file_exists($output)) {
+            File::deleteDirectory($output);
         }
 
-        // Bangun command (TANPA kutip satu tambahan!)
-        $cmd = sprintf(
-            '"%s" process "%s" -f pdf -o "%s" -t mysql -H 127.0.0.1 -u root -p admin -n dbunggulkencana --jdbc-dir "%s" 2>&1',
-            $jasperstarterPath,
-            $jasperFile,
-            $outputPath,
-            $jdbcDir
-        );
+        $jasper->process(
+            $input,
+            $output,
+            ['pdf'],
+            [], // Tanpa parameter
+            [
+                'driver' => 'mysql',
+                'host' => '127.0.0.1',
+                'username' => 'root',
+                'password' => 'kusuma04',
+                'database' => 'dbunggulkencana',
+                'jdbc_dir' => resource_path('jdbc')
+            ]
+        )->execute();
 
-        exec($cmd, $output, $resultCode);
+        $pdfPath = $output . '.pdf';
 
-        $pdfPath = $outputPath . '/CetakDaftarProduk.pdf';
-
-        if (!file_exists($pdfPath)) {
+        if (file_exists($pdfPath)) {
+            return response()->file($pdfPath);
+        } else {
             return response()->json([
                 'success' => false,
-                'message' => 'File PDF tidak ditemukan',
-                'cmd' => $cmd,
-                'output' => $output
-            ], 500);
+                'message' => 'Gagal generate PDF',
+                'error' => 'File tidak ditemukan'
+            ]);
         }
-
-        return response()->file($pdfPath);
     }
 
     public function cetakBarcodeProduk($id)
@@ -117,7 +118,7 @@ class ReportController extends Controller
 
         // Bangun command dengan parameter
         $cmd = sprintf(
-            '"%s" process "%s" -f pdf -o "%s" -t mysql -H 127.0.0.1 -u root -p admin -n dbunggulkencana --jdbc-dir "%s" -P Parameter1="%s"',
+            '"%s" process "%s" -f pdf -o "%s" -t mysql -H 127.0.0.1 -u root -p kusuma04 -n dbunggulkencana --jdbc-dir "%s" -P Parameter1="%s"',
             $jasperstarterPath,
             $jasperFile,
             $outputPath,
