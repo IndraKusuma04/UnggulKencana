@@ -71,7 +71,7 @@ $(document).ready(function () {
                             } else if (data == 2) {
                                 return `<span class="badge bg-success fw-medium fs-10"><b>SELSAI PERBAIKAN</b></span>`;
                             } else if(data == 0) {
-                                return `<span class="badge bg-danger fw-medium fs-10"><b>BATAL PERBAIKAN</b></span>`;
+                                return `<span class="badge bg-danger fw-medium fs-10"><b>BATAL TRANSAKSI</b></span>`;
                             }
                         }
                     },
@@ -89,7 +89,7 @@ $(document).ready(function () {
                                         <a class="me-2 p-2 confirm-payment" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="KONFIRMASI PEMBAYARAN">
                                             <i data-feather="check-circle" class="feather-edit"></i>
                                         </a>
-                                        <a class="cancel-payment p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="BATALKAN PEMBAYARAN">
+                                        <a class="cancel-payment p-2" data-id="${row.produk.kodeproduk}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="BATALKAN PEMBAYARAN">
                                             <i data-feather="x-circle" class="feather-trash-2"></i>
                                         </a>
                                     </div>
@@ -122,4 +122,29 @@ $(document).ready(function () {
 
     //panggil function getPembelian
     getPerbaikan();
+
+     //ketika button edit di tekan
+    $(document).on("click", ".btn-detail", function () {
+        const produkID = $(this).data("id");
+
+        $.ajax({
+            url: `/admin/perbaikan/getPerbaikanByID/${produkID}`, // Endpoint untuk mendapatkan data pegawai
+            type: "GET",
+            success: function (response) {
+                // Ambil data pertama
+                let data = response.Data[0];
+                
+
+                // Tampilkan modal edit
+                $("#detailTransaksi").modal("show");
+            },
+            error: function () {
+                Swal.fire(
+                    "Gagal!",
+                    "Tidak dapat mengambil data role.",
+                    "error"
+                );
+            },
+        });
+    });
 })

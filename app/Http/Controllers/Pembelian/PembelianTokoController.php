@@ -19,37 +19,37 @@ class PembelianTokoController extends Controller
 {
     public function generateKodePembelianProduk()
     {
-        // Ambil ID user yang sedang login
         $userId = Auth::id();
 
-        // Cek apakah ada kode keranjang terakhir dengan status 1 untuk user tersebut
-        $lastKeranjangWithStatusOne = DB::table('pembelian_produk')
+        // Cek apakah ada pembelian dengan status 1 untuk user ini
+        $lastActive = DB::table('pembelian_produk')
             ->where('status', 1)
-            ->where('oleh', $userId) // Pastikan hanya mengambil milik user ini
+            ->where('oleh', $userId)
             ->orderBy('kodepembelianproduk', 'desc')
             ->first();
 
-        // Jika ada kode keranjang dengan status 1, gunakan kode itu
-        if ($lastKeranjangWithStatusOne) {
-            return $lastKeranjangWithStatusOne->kodepembelianproduk;
+        if ($lastActive) {
+            return $lastActive->kodepembelianproduk;
         }
 
-        // Jika tidak ada keranjang dengan status 1, ambil kode keranjang terakhir untuk user ini
-        $lastKeranjang = DB::table('pembelian_produk')
-            ->where('oleh', $userId) // Pastikan hanya mengambil milik user ini
+        // Jika tidak ada, ambil kode terakhir untuk menentukan urutan
+        $last = DB::table('pembelian_produk')
             ->orderBy('kodepembelianproduk', 'desc')
             ->first();
 
-        // Jika tidak ada keranjang sama sekali, mulai dari 1
-        $lastNumber = $lastKeranjang ? (int) substr($lastKeranjang->kodepembelianproduk, -5) : 0;
+        $lastNumber = 1;
+        if ($last) {
+            $parts = explode('-', $last->kodepembelianproduk);
+            $lastNumber = isset($parts[3]) ? ((int) $parts[3]) + 1 : 1;
+        }
 
-        // Tambahkan 1 pada nomor terakhir
-        $newNumber = $lastNumber + 1;
+        $formattedNumber = str_pad($lastNumber, 4, '0', STR_PAD_LEFT);
+        $timestamp = Carbon::now()->format('YmdHis');
+        $random = rand(100, 999);
 
-        // Format kode keranjang baru dengan menambahkan ID user sebagai prefix
-        $newKodeKeranjang = '#PO-' . $userId . '-' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+        $kode = 'PO-' . $timestamp . '-' . $random . '-' . $formattedNumber;
 
-        return $newKodeKeranjang;
+        return $kode;
     }
 
     public function getTransaksiByKodeTransaksi(Request $request)

@@ -198,6 +198,64 @@ $(document).ready(function () {
         });
     });
 
+    // ketika button hapus di tekan
+    $(document).on("click", ".cancel-payment", function () {
+        const deleteID = $(this).data("id");
+
+        // SweetAlert2 untuk konfirmasi
+        Swal.fire({
+            title: "Pembatalan Pembelian",
+            text: "Konfirmasi Pembatalan pembelian ?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Batalkan!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Kirim permintaan hapus (gunakan itemId)
+                fetch(`/admin/pembelian/konfirmasiPembatalanPembelian/${deleteID}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            Swal.fire(
+                                "Dikonfirmasi!",
+                                "Pembatalan Pembelian berhasil dikonfirmasi.",
+                                "success"
+                            );
+                            // Reload DataTable pembelian_produk (pastikan sudah diinisialisasi sebelumnya)
+                            if ($.fn.DataTable.isDataTable('#pembelianTable')) {
+                                $('#pembelianTable').DataTable().ajax.reload();
+                            }
+                        } else {
+                            Swal.fire(
+                                "Gagal!",
+                                "Terjadi kesalahan saat konfirmasi pembatalan pembelian.",
+                                "error"
+                            );
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire(
+                            "Gagal!",
+                            "Terjadi kesalahan dalam konfirmasi pembatalan pembelian.",
+                            "error"
+                        );
+                    });
+            } else {
+                // Jika batal, beri tahu pengguna
+                Swal.fire("Dibatalkan", "Pembatalan Pembelian tidak dikonfirmasi.", "info");
+            }
+        });
+    });
+
     //ketika button edit di tekan
     $(document).on("click", ".btn-detail", function () {
         const produkID = $(this).data("id");
@@ -266,6 +324,11 @@ $(document).ready(function () {
                             <td>${item.nama}</td>
                             <td>${parseFloat(item.berat).toFixed(1)} gram</td>
                             <td>Rp ${Number(hargaBeli).toLocaleString('id-ID')}</td>
+                            <td>
+                                <div class="hstack gap-2 fs-15">
+                                    <a href="javascript:void(0);" id="printSuratBarang" data-kodetransaksi="${data.kodepembelian}" data-kodeproduk="${item.kodeproduk}" class="btn btn-icon btn-sm btn-soft-secondary rounded-pill"><i class="feather-printer"></i></a>
+                                </div>
+                            </td>
                         </tr>
                     `;
 

@@ -96,7 +96,7 @@ $(document).ready(function () {
                             } else if (data == 2) {
                                 return `<span class="badge bg-danger fw-medium fs-10">SOLD</span>`;
                             } else {
-                                return `<span class="badge bg-secondary fw-medium fs-10">UNKNOWN</span>`;
+                                return `<span class="badge bg-secondary fw-medium fs-10">TIDAK AKTIF</span>`;
                             }
                         }
                     },

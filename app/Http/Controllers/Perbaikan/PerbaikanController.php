@@ -36,4 +36,11 @@ class PerbaikanController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Data Perbaikan Berhasil Ditemukan', 'Data' => $perbaikan]);
     }
+
+    public function getPerbaikanByID($id)
+    {
+        $perbaikan = Perbaikan::where('id', $id)->with(['produk', 'kondisi'])->get();
+
+        return response()->json(['success' => true, 'message' => 'Data Perbaikan Berhasil Ditemukan', 'Data' => $perbaikan]);
+    }
 }

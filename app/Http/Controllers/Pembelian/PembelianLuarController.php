@@ -241,7 +241,7 @@ class PembelianLuarController extends Controller
 
             Perbaikan::where('produk_id', $idproduk)->update([
                 'status'        => 0,
-                'keterangan'    => 'Batal Perbaikan / Batal Transaksi, Pada Tanggal' . now(),
+                'keterangan'    => 'BATAL PERBAIKAN / BATAL TRANSAKSI, PADA TANGGAL' . now(),
             ]);
         }
 
