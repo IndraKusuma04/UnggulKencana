@@ -15,6 +15,7 @@ use App\Http\Controllers\Pelanggan\PelangganController;
 use App\Http\Controllers\Pembelian\PembelianController;
 use App\Http\Controllers\Pembelian\PembelianLuarController;
 use App\Http\Controllers\Pembelian\PembelianTokoController;
+use App\Http\Controllers\Perbaikan\PerbaikanController;
 use App\Http\Controllers\Produk\JenisProdukController;
 use App\Http\Controllers\Produk\ProdukController;
 use App\Http\Controllers\Report\ReportController;
@@ -208,6 +209,11 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::post('/admin/pembelianluartoko/updatePembelianByID/{id}', [PembelianLuarController::class, 'updatePembelianByID']);
     Route::delete('/admin/pembelianluartoko/deletePembelianProduk/{id}', [PembelianLuarController::class, 'deletePembelianProduk']);
     Route::post('/admin/pembelianluartoko/storePembelianLuarToko', [PembelianLuarController::class, 'storePembelianLuarToko']);
+
+    Route::get('/admin/perbaikan', function () {
+        return view('Admin.perbaikan');
+    });
+    Route::get('/admin/perbaikan/getPerbaikan', [PerbaikanController::class, 'getPerbaikan']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
     Route::get('/admin/report/cetakTransaksi/{id}', [ReportController::class, 'cetakTransaksi']);

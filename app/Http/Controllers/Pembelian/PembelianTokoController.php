@@ -6,12 +6,14 @@ use Carbon\Carbon;
 use App\Models\Produk;
 use App\Models\Keranjang;
 use App\Models\Pembelian;
+use App\Models\Perbaikan;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use App\Models\PembelianProduk;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Perbaikan\PerbaikanController;
 
 class PembelianTokoController extends Controller
 {
@@ -119,7 +121,6 @@ class PembelianTokoController extends Controller
             ]);
         }
 
-
         // Cek apakah sudah ada kodepembelianproduk di session
         $kodepembelianproduk = session('kodepembelianproduk');
 
@@ -128,7 +129,7 @@ class PembelianTokoController extends Controller
             session(['kodepembelianproduk' => $kodepembelianproduk]);
         }
 
-        PembelianProduk::create([
+        $InsertPembelianProduk = PembelianProduk::create([
             'kodepembelianproduk'   => $kodepembelianproduk,
             'kodeproduk'            => $produk->kodeproduk,
             'jenisproduk_id'        => $produk->jenisproduk_id,
@@ -144,6 +145,22 @@ class PembelianTokoController extends Controller
             'jenispembelian'        => 1,
             'status'                => 1,
         ]);
+
+        if ($InsertPembelianProduk) {
+            // Selalu buat data perbaikan
+            $perbaikanController = new PerbaikanController();
+            $kodePerbaikan = $perbaikanController->kodePerbaikan();
+
+            Perbaikan::create([
+                'kodeperbaikan' => $kodePerbaikan,
+                'produk_id'     => $produk->id,
+                'kondisi_id'    => $produk->kondisi_id,
+                'tanggalmasuk'  => now(),
+                'status'        => 1,
+                'keterangan'    => 'Masuk Tanggal ' . now()->format('Y-m-d H:i:s'),
+                'oleh'          => Auth::user()->id,
+            ]);
+        }
 
         return response()->json([
             'success' => true,
@@ -167,7 +184,7 @@ class PembelianTokoController extends Controller
 
     public function updatehargaPembelianProduk(Request $request, $id)
     {
-        $produk = PembelianProduk::where('id', $id)->first();
+        $produk = PembelianProduk::findOrFail($id);
 
         $messages = [
             'required' => ':attribute wajib di isi !!!',
@@ -175,14 +192,35 @@ class PembelianTokoController extends Controller
         ];
 
         $credentials = $request->validate([
-            'hargabeli'    =>  'integer',
+            'hargabeli' => 'required|integer',
+            'kondisi'   => 'required|integer'
         ], $messages);
 
-        $updateProduk = PembelianProduk::where('id', $id)
-            ->update([
-                'harga_beli'    =>  $request->hargabeli,
-                'kondisi_id'    =>  $request->kondisi
-            ]);
+        // Update data pembelian produk
+        $produk->update([
+            'harga_beli' => $request->hargabeli,
+            'kondisi_id' => $request->kondisi
+        ]);
+
+        // Ambil ID produk master dari kodeproduk
+        $produkMaster = Produk::where('kodeproduk', $produk->kodeproduk)->first();
+
+        // Jika ditemukan, update juga perbaikannya
+        if ($produkMaster) {
+            if (in_array($request->kondisi, [2, 3])) {
+                // Jika kondisi rusak atau kusam, update kondisi di perbaikan
+                Perbaikan::where('produk_id', $produkMaster->id)->update([
+                    'kondisi_id' => $request->kondisi,
+                    'status'     => 1
+                ]);
+            } elseif ($request->kondisi == 1) {
+                // Jika kondisi bagus, update status perbaikan menjadi selesai
+                Perbaikan::where('produk_id', $produkMaster->id)->update([
+                    'kondisi_id' => 1,
+                    'status'     => 0
+                ]);
+            }
+        }
 
         return response()->json(['success' => true, 'message' => 'Data Produk Berhasil Disimpan']);
     }
@@ -191,6 +229,7 @@ class PembelianTokoController extends Controller
     {
         // Cari data pelanggan berdasarkan ID
         $produk = PembelianProduk::find($id);
+        $idproduk   = Produk::where('kodeproduk', $produk->kodeproduk)->first()->id;
 
         // Periksa apakah data ditemukan
         if (!$produk) {
@@ -198,9 +237,16 @@ class PembelianTokoController extends Controller
         }
 
         // Update status menjadi 0 (soft delete manual)
-        $produk->update([
+        $updateProduk = $produk->update([
             'status' => 0,
         ]);
+
+        if ($updateProduk) {
+            Perbaikan::where('produk_id', $idproduk)
+                ->update([
+                    'status' => 0,
+                ]);
+        }
 
         return response()->json(['success' => true, 'message' => 'Produk Berhasil Dibatalkan.']);
     }
