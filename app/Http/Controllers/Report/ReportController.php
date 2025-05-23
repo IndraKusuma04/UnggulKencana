@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Report;
 
 use PHPJasper\PHPJasper;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
@@ -64,82 +65,119 @@ class ReportController extends Controller
         ];
     }
 
-    public function cetakDaftarProduk()
+    public function cetakLaporanProduk()
     {
+        // Path to the report files
+        $input = storage_path('app/reports/laporan/LaporanProduk.jrxml'); // Path to your jrxml file
+        $output = storage_path('app/public/output/laporan');
 
-        $jasper = new \PHPJasper\PHPJasper();
-        $input = resource_path('reports/CetakDaftarProduk.jasper');
-        $output = public_path('storage/reports/laporan');
-
-        // Hapus folder output jika ada
-        if (file_exists($output)) {
-            File::deleteDirectory($output);
-        }
-
-        $jasper->process(
-            $input,
-            $output,
-            ['pdf'],
-            [], // Tanpa parameter
-            [
+        // Database connection configuration
+        $options = [
+            'format' => ['pdf'],
+            'db_connection' => [
                 'driver' => 'mysql',
-                'host' => '127.0.0.1',
-                'username' => 'root',
-                'password' => 'kusuma04',
-                'database' => 'dbunggulkencana',
-                'jdbc_dir' => resource_path('jdbc')
-            ]
-        )->execute();
+                'host' => config('database.connections.mysql.host'),
+                'port' => config('database.connections.mysql.port', '3306'),
+                'database' => config('database.connections.mysql.database'),
+                'username' => config('database.connections.mysql.username'),
+                'password' => config('database.connections.mysql.password'),
+                'jdbc_driver' => 'com.mysql.cj.jdbc.Driver',
+                'jdbc_url' => 'jdbc:mysql://' . config('database.connections.mysql.host') . ':' . config('database.connections.mysql.port', '3306') . '/' . config('database.connections.mysql.database') . '?useUnicode=true&characterEncoding=UTF-8&useSSL=false',
+                'jdbc_dir' => base_path('vendor/geekcom/phpjasper/bin/jdbc'),
+            ],
+        ];
 
-        $pdfPath = $output . '.pdf';
+        // Create PHPJasper instance and process the report
+        $jasper = new PHPJasper;
 
-        if (file_exists($pdfPath)) {
-            return response()->file($pdfPath);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal generate PDF',
-                'error' => 'File tidak ditemukan'
-            ]);
+        try {
+            // Compile jrxml to jasper
+            $jasper->compile($input)->execute();
+
+            // Replace .jrxml extension with .jasper to specify compiled report path
+            $compiledReport = preg_replace('/\.jrxml$/', '.jasper', $input);
+
+            // Generate report PDF
+            $jasper->process(
+                $compiledReport,
+                $output,
+                $options['format'],
+                $options['db_connection']
+            )->execute();
+
+            $pdfFile = $output . '.pdf';
+
+            if (!file_exists($pdfFile)) {
+                return response('Report generation failed: PDF file not found.', 500);
+            }
+
+            // Example of logging the SQL query results
+            $results = DB::select("SELECT pr.kodeproduk, jp.jenis_produk, pr.nama, pr.harga_jual, pr.harga_beli, pr.berat, pr.karat, pr.lingkar, pr.panjang FROM produk pr JOIN jenis_produk jp ON pr.jenisproduk_id = jp.id JOIN kondisi k ON pr.kondisi_id = k.id");
+            Log::info('Query Results: ', (array) $results);
+            Log::info('DB config', config('database.connections.mysql'));
+
+
+            return response()->file($pdfFile)->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            return response('Error generating report: ' . $e->getMessage(), 500);
         }
     }
 
     public function cetakBarcodeProduk($id)
     {
-        $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter');
-        $jasperFile = resource_path('reports/CetakBarcodeProduk.jasper');
-        $outputPath = public_path('storage/reports/barcode');
-        $jdbcDir    = resource_path('jdbc');
+        // Path to the report files
+        $input = storage_path('app/reports/barcode/BarcodeProduk.jrxml'); // Path to your jrxml file
+        $output = storage_path('app/public/output/barcode');
 
-        // Pastikan folder output ada
-        if (!file_exists($outputPath)) {
-            mkdir($outputPath, 0755, true);
+        // Database connection configuration
+        $options = [
+            'format' => ['pdf'],
+            'params' => [
+                // Add your report parameters here, example:
+                'kodeproduk' => $id,
+            ],
+            'db_connection' => [
+                'driver' => 'mysql',
+                'host' => config('database.connections.mysql.host'),
+                'port' => config('database.connections.mysql.port', '3306'),
+                'database' => config('database.connections.mysql.database'),
+                'username' => config('database.connections.mysql.username'),
+                'password' => config('database.connections.mysql.password'),
+                'jdbc_driver' => 'com.mysql.cj.jdbc.Driver',
+                'jdbc_url' => 'jdbc:mysql://' . config('database.connections.mysql.host') . ':' . config('database.connections.mysql.port', '3306') . '/' . config('database.connections.mysql.database') . '?useUnicode=true&characterEncoding=UTF-8&useSSL=false',
+                'jdbc_dir' => base_path('vendor/geekcom/phpjasper/bin/jdbc'),
+            ],
+        ];
+
+        // Create PHPJasper instance and process the report
+        $jasper = new PHPJasper;
+
+        try {
+            // Compile jrxml to jasper
+            $jasper->compile($input)->execute();
+
+            // Replace .jrxml extension with .jasper to specify compiled report path
+            $compiledReport = preg_replace('/\.jrxml$/', '.jasper', $input);
+
+            // Generate report PDF
+            $jasper->process(
+                $compiledReport,
+                $output,
+                $options['format'],
+                $options['params'],
+                $options['db_connection']
+            )->execute();
+
+            $pdfFile = $output . '.pdf';
+
+            if (!file_exists($pdfFile)) {
+                return response('Report generation failed: PDF file not found.', 500);
+            }
+
+            return response()->file($pdfFile)->deleteFileAfterSend(true);
+        } catch (\Exception $e) {
+            return response('Error generating report: ' . $e->getMessage(), 500);
         }
-
-        // Bangun command dengan parameter
-        $cmd = sprintf(
-            '"%s" process "%s" -f pdf -o "%s" -t mysql -H 127.0.0.1 -u root -p kusuma04 -n dbunggulkencana --jdbc-dir "%s" -P Parameter1="%s"',
-            $jasperstarterPath,
-            $jasperFile,
-            $outputPath,
-            $jdbcDir,
-            $id
-        );
-
-        exec($cmd, $output, $resultCode);
-
-        $pdfPath = $outputPath . '/CetakBarcodeProduk.pdf';
-
-        if (!file_exists($pdfPath)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'File PDF tidak ditemukan',
-                'cmd' => $cmd,
-                'output' => $output
-            ], 500);
-        }
-
-        return response()->file($pdfPath);
     }
 
     public function cetakSuratBarang(Request $request)

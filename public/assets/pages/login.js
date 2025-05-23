@@ -27,10 +27,10 @@ $(document).ready(function () {
                 } else {
                     Swal.fire({
                         icon: "error",
-                        title: response.message,
-                        html: errorList,
+                        title: "Gagal",
+                        text: response.message ?? "Login gagal. Silakan periksa kembali email dan password.",
                         showConfirmButton: false,
-                        timer: 1000
+                        timer: 1500
                     });
                 }
             },

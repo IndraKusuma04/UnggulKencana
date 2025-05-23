@@ -163,7 +163,7 @@
                             </a>
                             <ul>
                                 <li>
-                                    <a href="/admin/report/cetakDaftarProduk" target="_blank"
+                                    <a href="/admin/report/cetakLaporanProduk" target="_blank"
                                         data-menu-title="Daftar Produk"></i><span>
                                             Laporan Produk</span>
                                     </a>
