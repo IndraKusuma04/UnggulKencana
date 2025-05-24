@@ -52,6 +52,34 @@ class PembelianTokoController extends Controller
         return $kode;
     }
 
+    private function terbilang($angka)
+    {
+        $angka = abs($angka);
+        $huruf = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
+
+        if ($angka < 12) {
+            return $huruf[$angka];
+        } elseif ($angka < 20) {
+            return $this->terbilang($angka - 10) . " belas";
+        } elseif ($angka < 100) {
+            return $this->terbilang(floor($angka / 10)) . " puluh " . $this->terbilang($angka % 10);
+        } elseif ($angka < 200) {
+            return "seratus " . $this->terbilang($angka - 100);
+        } elseif ($angka < 1000) {
+            return $this->terbilang(floor($angka / 100)) . " ratus " . $this->terbilang($angka % 100);
+        } elseif ($angka < 2000) {
+            return "seribu " . $this->terbilang($angka - 1000);
+        } elseif ($angka < 1000000) {
+            return $this->terbilang(floor($angka / 1000)) . " ribu " . $this->terbilang($angka % 1000);
+        } elseif ($angka < 1000000000) {
+            return $this->terbilang(floor($angka / 1000000)) . " juta " . $this->terbilang($angka % 1000000);
+        } elseif ($angka < 1000000000000) {
+            return $this->terbilang(floor($angka / 1000000000)) . " miliar " . $this->terbilang($angka % 1000000000);
+        } else {
+            return "angka terlalu besar";
+        }
+    }
+
     public function getTransaksiByKodeTransaksi(Request $request)
     {
 
@@ -129,6 +157,8 @@ class PembelianTokoController extends Controller
             session(['kodepembelianproduk' => $kodepembelianproduk]);
         }
 
+        $subtotalHarga = $produk->harga_beli * $keranjang->berat;
+
         $InsertPembelianProduk = PembelianProduk::create([
             'kodepembelianproduk'   => $kodepembelianproduk,
             'kodeproduk'            => $produk->kodeproduk,
@@ -142,6 +172,7 @@ class PembelianTokoController extends Controller
             'lingkar'               => $keranjang->lingkar,
             'panjang'               => $keranjang->panjang,
             'oleh'                  => Auth::user()->id,
+            'subtotalharga'         => $subtotalHarga,
             'jenispembelian'        => 1,
             'status'                => 1,
         ]);
@@ -196,10 +227,14 @@ class PembelianTokoController extends Controller
             'kondisi'   => 'required|integer'
         ], $messages);
 
-        // Update data pembelian produk
+        // Hitung subtotalharga baru (harga_beli * berat produk yang ada di pembelian_produk)
+        $subtotalHargaBaru = $request->hargabeli * $produk->berat;
+
+        // Update data pembelian produk sekaligus subtotalharga
         $produk->update([
-            'harga_beli' => $request->hargabeli,
-            'kondisi_id' => $request->kondisi
+            'harga_beli'     => $request->hargabeli,
+            'kondisi_id'     => $request->kondisi,
+            'subtotalharga'  => $subtotalHargaBaru,
         ]);
 
         // Ambil ID produk master dari kodeproduk
@@ -277,11 +312,18 @@ class PembelianTokoController extends Controller
             ->pluck('kodeproduk');
 
         // Step 2: Ambil harga_beli dari produk berdasarkan kodeproduk
-        $totalHargaBeli = PembelianProduk::whereIn('kodeproduk', $kodeProdukList)->where('status', 1)
-            ->sum('harga_beli');
+        // Hitung total harga beli (grandtotal) dari subtotalharga di pembelian_produk langsung
+        $totalHargaBeli = PembelianProduk::where('kodepembelianproduk', $kodepembelianproduk)
+            ->where('status', 1)
+            ->where('jenispembelian', 1)
+            ->where('oleh', Auth::id())
+            ->sum('subtotalharga');
 
         // Bisa juga ambil data lengkap jika diperlukan:
         $produkList = PembelianProduk::whereIn('kodeproduk', $kodeProdukList)->get();
+
+        $angka = abs($totalHargaBeli);
+        $terbilang = ucwords(trim($this->terbilang($angka))) . ' Rupiah';
 
         $pembelianproduk = Pembelian::create([
             'kodepembelian'          =>  $kodePembelian,
@@ -289,6 +331,7 @@ class PembelianTokoController extends Controller
             'pelanggan_id'           =>  $pelanggan,
             'tanggal'                =>  $tanggal,
             'total_harga'            =>  $totalHargaBeli,
+            'terbilang'              =>  $terbilang,
             'catatan'                =>  $catatan,
             'oleh'                   =>  Auth::user()->id,
             'jenispembelian'         =>  1,

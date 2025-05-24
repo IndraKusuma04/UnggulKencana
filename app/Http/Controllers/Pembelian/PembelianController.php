@@ -36,6 +36,7 @@ class PembelianController extends Controller
         return $kode;
     }
 
+
     public function getPembelian()
     {
         $pembelian = Pembelian::with(['suplier', 'pelanggan', 'pembelianproduk', 'user.pegawai'])->get();
@@ -94,6 +95,11 @@ class PembelianController extends Controller
                 ->update([
                     'status'        => 0,
                     'keterangan'    => "BATAL TRANSAKSI PADA TANGGAL " . Carbon::now(),
+                ]);
+
+            PembelianProduk::whereIn('kodeproduk', $kodeproduk)
+                ->update([
+                    'status'        => 3,
                 ]);
         }
 

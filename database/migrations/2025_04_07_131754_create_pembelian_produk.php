@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('panjang')->default(0);
             $table->text('keterangan')->nullable();
             $table->unsignedBigInteger('kondisi_id')->nullable();
+            $table->integer('subtotalharga');
             $table->unsignedBigInteger('oleh');
             $table->integer('jenispembelian');
             $table->integer('status'); // 1 = aktif, 0 = rusak/kusam

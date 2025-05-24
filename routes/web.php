@@ -220,6 +220,7 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/report/cetakTransaksi/{id}', [ReportController::class, 'cetakNotaTransaksi']);
     Route::get('/admin/report/cetakLaporanProduk', [ReportController::class, 'cetakLaporanProduk']);
     Route::post('/admin/report/cetakSuratBarang', [ReportController::class, 'cetakSuratBarang']);
+    Route::get('/admin/report/cetakPembelian/{id}', [ReportController::class, 'cetakNotaPembelian']);
 
     Route::get('/logout', [AuthController::class, 'logout']);
 });

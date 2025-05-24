@@ -286,6 +286,8 @@ $(document).ready(function () {
                 let tanggalAsli = data.tanggal; // misalnya "2025-04-07"
                 let tanggalBaru = new Date(tanggalAsli);
 
+                $("#cetakkodepembelian").attr("data-kodepembelian", data.kodepembelian);
+
                 // Format: 7 April 2025
                 let tanggalFormatted = new Intl.DateTimeFormat('id-ID', {
                     day: 'numeric',
@@ -311,19 +313,24 @@ $(document).ready(function () {
                 // Kosongkan isi tbody dulu
                 $("#pembelianProduk tbody").empty();
 
+                let subtotalharga = 0;
                 let totalHargaBeli = 0;
 
                 // Loop setiap item dalam keranjang
                 data.pembelianproduk.forEach(function (item) {
                     let hargaBeli = Number(item.harga_beli);
+                    let subtotal = Number(item.subtotalharga);
+
                     totalHargaBeli += hargaBeli;
+                    subtotalharga += subtotal;
 
                     let row = `
                         <tr>
                             <td>${item.kodeproduk}</td>
                             <td>${item.nama}</td>
                             <td>${parseFloat(item.berat).toFixed(1)} gram</td>
-                            <td>Rp ${Number(hargaBeli).toLocaleString('id-ID')}</td>
+                            <td>Rp ${hargaBeli.toLocaleString('id-ID')}</td>
+                            <td>Rp ${subtotal.toLocaleString('id-ID')}</td>
                             <td>
                                 <div class="hstack gap-2 fs-15">
                                     <a href="javascript:void(0);" id="printSuratBarang" data-kodetransaksi="${data.kodepembelian}" data-kodeproduk="${item.kodeproduk}" class="btn btn-icon btn-sm btn-soft-secondary rounded-pill"><i class="feather-printer"></i></a>
@@ -339,7 +346,7 @@ $(document).ready(function () {
                 let formatRupiah = angka => "Rp " + angka.toLocaleString('id-ID');
 
                 // Tampilkan ke elemen HTML
-                $("#subtotal").next("h5").text(formatRupiah(totalHargaBeli));
+                $("#subtotal").next("h5").text(formatRupiah(subtotalharga));
                 $("#diskon").next("h5").text(`0 %`);
                 $("#totalharga").next("h5").text(formatRupiah(data.total_harga));
 
@@ -354,5 +361,13 @@ $(document).ready(function () {
                 );
             },
         });
+    });
+
+    $(document).on("click", "#cetakkodepembelian", function () {
+        const kodeTransaksi = $(this).data("kodepembelian");
+        console.log("Kode Transaksi:", kodeTransaksi);
+
+        // Lakukan aksi lainnya, misalnya cetak
+        window.open(`/admin/report/cetakPembelian/${kodeTransaksi}`, '_blank');
     });
 })
