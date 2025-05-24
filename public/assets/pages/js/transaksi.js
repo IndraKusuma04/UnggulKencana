@@ -255,6 +255,8 @@ $(document).ready(function () {
                 let tanggalAsli = data.tanggal; // misalnya "2025-04-07"
                 let tanggalBaru = new Date(tanggalAsli);
 
+                $("#cetakkodetransaksi").attr("data-kodetransaksi", data.kodetransaksi);
+
                 // Format: 7 April 2025
                 let tanggalFormatted = new Intl.DateTimeFormat('id-ID', {
                     day: 'numeric',
@@ -335,6 +337,14 @@ $(document).ready(function () {
                 );
             },
         });
+    });
+
+    $(document).on("click", "#cetakkodetransaksi", function () {
+        const kodeTransaksi = $(this).data("kodetransaksi");
+        console.log("Kode Transaksi:", kodeTransaksi);
+
+        // Lakukan aksi lainnya, misalnya cetak
+        window.open(`/admin/report/cetakTransaksi/${kodeTransaksi}`, '_blank');
     });
 
     $(document).on("click", "#printSuratBarang", function (e) {
