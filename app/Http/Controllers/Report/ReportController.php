@@ -151,8 +151,12 @@ class ReportController extends Controller
         $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
 
         // Generate command with DB params
-        $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
-            . " -u {$dbUser} -p {$dbPass} -H {$dbHost} -n {$dbName}  --db-port={$dbPort}" . " -P kodeproduk={$id} -P barcodePath=public/storage/barcode/");
+        // $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
+        //     . " -u {$dbUser} -p {$dbPass} -H {$dbHost} -n {$dbName}  --db-port={$dbPort}" . " -P kodeproduk={$id} -P barcodePath=public/storage/barcode/");
+
+        $generateCommand = "\"{$jasperstarterCmd}\" process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
+            . " -u \"{$dbUser}\" -p \"{$dbPass}\" -H \"{$dbHost}\" -n \"{$dbName}\" --db-port=\"{$dbPort}\""
+            . " -P kodeproduk=\"{$id}\" barcodePath=\"{$barcodePath}\"";
 
         try {
             // Compile jrxml to jasper
@@ -185,7 +189,7 @@ class ReportController extends Controller
                 return response('Generated PDF file not found.', 500);
             }
 
-            return response()->file($pdfFilePath);
+            return response()->file($pdfFilePath)->deleteFileAfterSend(true);
         } catch (\Exception $ex) {
             Log::error('Exception when generating report: ' . $ex->getMessage());
             return response('Exception occurred: ' . $ex->getMessage(), 500);
