@@ -2,53 +2,47 @@
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
+                <b>
+                    <h6 class="submenu-hdr">MAIN</h6>
+                </b>
                 <li class="submenu-open">
                     <ul>
                         <li>
-                            <a href="/admin/dashboard" data-menu-title="POS"><i data-feather="grid"></i><span>
-                                    Dashboard</span></a>
+                            <a href="/admin/dashboard" data-menu-title="POS">
+                                <b><i data-feather="grid"></i><span>Dashboard</span></b>
+                            </a>
                         </li>
                     </ul>
                 </li>
                 <li class="submenu-open">
+                    <b>
+                        <h6 class="submenu-hdr">MASTER</h6>
+                    </b>
                     <ul>
                         <li class="submenu">
                             <a href="javascript:void(0);">
-                                <b><i data-feather="server"></i><span>Produk</span><span class="menu-arrow"></span></b>
+                                <b><i data-feather="users"></i><span>User Management</span><span
+                                        class="menu-arrow"></span></b>
                             </a>
                             <ul>
                                 <li><a href="/admin/jabatan" data-menu-title="Jabatan"><span>Jabatan</span></a>
                                 </li>
                                 <li><a href="/admin/role" data-menu-title="Role"></i><span>Role</span></a>
                                 </li>
-                                <li><a href="/admin/kondisi" data-menu-title="Kondisi"></i><span>Kondisi</span></a>
-                                </li>
-                                <li><a href="/admin/diskon" data-menu-title="Diskon"></i><span>Diskon</span></a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li class="submenu-open">
-                    <ul>
-                        <li class="submenu">
-                            <a href="javascript:void(0);">
-                                <i data-feather="users"></i><span>User Management</span><span class="menu-arrow"></span>
-                            </a>
-                            <ul>
                                 <li><a href="/admin/pegawai" data-menu-title="Pegawai"><span>Pegawai</span></a></li>
                                 <li><a href="/admin/users" data-menu-title="Users"></i><span>Users</span></a></li>
                             </ul>
                         </li>
-                    </ul>
-                </li>
-                <li class="submenu-open">
-                    <ul>
                         <li class="submenu">
                             <a href="javascript:void(0);">
-                                <i data-feather="archive"></i><span>Produk</span><span class="menu-arrow"></span>
+                                <b><i data-feather="archive"></i><span>Produk</span><span class="menu-arrow"></span></b>
                             </a>
                             <ul>
+
+                                <li><a href="/admin/kondisi" data-menu-title="Kondisi"></i><span>Kondisi</span></a>
+                                </li>
+                                <li><a href="/admin/diskon" data-menu-title="Diskon"></i><span>Diskon</span></a>
+                                </li>
                                 <li>
                                     <a href="/admin/jenisproduk" data-menu-title="Jenis Produk"><span>Jenis
                                             Produk</span></a>
@@ -65,14 +59,10 @@
                                 </li>
                             </ul>
                         </li>
-                    </ul>
-                </li>
-                <li class="submenu-open">
-                    <ul>
                         <li class="submenu">
                             <a href="javascript:void(0);">
-                                <i data-feather="users"></i><span>Pelanggan & Suplier</span><span
-                                    class="menu-arrow"></span>
+                                <b><i data-feather="users"></i><span>Pelanggan & Suplier</span><span
+                                        class="menu-arrow"></span></b>
                             </a>
                             <ul>
                                 <li>
@@ -88,59 +78,124 @@
                     </ul>
                 </li>
                 <li class="submenu-open">
+                    <b>
+                        <h6 class="submenu-hdr">TRANSAKSI</h6>
+                    </b>
                     <ul>
+                        <li>
+                            <a href="/admin/pos" data-menu-title="POS">
+                                <b>
+                                    <i data-feather="hard-drive"></i><span>
+                                        POS</span>
+                                </b>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/transaksi" data-menu-title="Transaksi Penjualan">
+                                <b>
+                                    <i data-feather="arrow-left-circle"></i><span>
+                                        Transaksi Penjualan</span>
+                                </b>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/pembelian" data-menu-title="Transaksi Pembelian">
+                                <b>
+                                    <i data-feather="arrow-right-circle"></i><span>
+                                        Transaksi Pembelian</span>
+                                </b>
+                            </a>
+                        </li>
                         <li class="submenu">
                             <a href="javascript:void(0);">
-                                <i data-feather="users"></i><span>Transaksi</span><span class="menu-arrow"></span>
+                                <b><i data-feather="layers"></i><span>Jenis Pembelian</span><span
+                                        class="menu-arrow"></span></b>
                             </a>
                             <ul>
-                                <li><a href="/admin/pos" data-menu-title="POS"><i data-feather="hard-drive"></i><span>
-                                            POS</span></a></li>
-                                <li><a href="/admin/transaksi" data-menu-title="Transaksi Penjualan"><i
-                                            data-feather="file-minus"></i><span>
-                                            Penjualan</span></a></li>
-                                <li class="submenu">
-                                    <a href="javascript:void(0);">
-                                        <i data-feather="layers"></i><span>Pembelian</span><span
-                                            class="menu-arrow"></span>
-                                    </a>
-                                    <ul>
-                                        <li><a href="/admin/pembelian" data-menu-title="Transaksi Pembelian">Transaksi
-                                                Pembelian</a></li>
-                                        <li><a href="/admin/pembeliantoko"
-                                                data-menu-title="Pembelian Produk Dari Toko">Pembelian Dari Toko</a>
-                                        </li>
-                                        <li><a href="/admin/pembelianluartoko"
-                                                data-menu-title="Pembelian Produk Diluar Toko">Pembelian Diluar
-                                                Toko</a></li>
-                                    </ul>
+                                <li><a href="/admin/pembeliantoko"
+                                        data-menu-title="Pembelian Produk Dari Toko">Pembelian Dari Toko</a>
                                 </li>
+                                <li><a href="/admin/pembelianluartoko"
+                                        data-menu-title="Pembelian Produk Diluar Toko">Pembelian Diluar
+                                        Toko</a></li>
                             </ul>
+                        </li>
+                        <li>
+                            <a href="/admin/perbaikan" data-menu-title="Perbaikan">
+                                <b><i data-feather="slack"></i><span>
+                                        Perbaikan</span></b>
+                            </a>
                         </li>
                     </ul>
                 </li>
                 <li class="submenu-open">
+                    <b>
+                        <h6 class="submenu-hdr">STOCK</h6>
+                    </b>
+                    <ul>
+                        <li>
+                            <a href="/admin/managestock" data-menu-title="Manage Stock">
+                                <b>
+                                    <i data-feather="layers"></i><span>
+                                        Manage Stock</span>
+                                </b>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/admin/stockadjusment" data-menu-title="Stock Adjustment">
+                                <b>
+                                    <i data-feather="activity"></i><span>
+                                        Stock Adjustment</span>
+                                </b>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="submenu-open">
+                    <b>
+                        <h6 class="submenu-hdr">LAPORAN</h6>
+                    </b>
                     <ul>
                         <li class="submenu">
                             <a href="javascript:void(0);">
-                                <i data-feather="book"></i><span>Laporan</span><span class="menu-arrow"></span>
+                                <b><i data-feather="book"></i><span>Laporan Produk</span><span
+                                        class="menu-arrow"></span></b>
+                            </a>
+                            <ul>
+                                <li>
+                                    <a href="/admin/report/cetakLaporanProduk" target="_blank"
+                                        data-menu-title="Daftar Produk"></i><span>
+                                            Laporan Produk</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/admin/report/cetakDaftarNampan" data-menu-title="Suplier"><span>
+                                            laporan Nampan Produk</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);">
+                                <b><i data-feather="book"></i><span>Laporan Transaksi</span><span
+                                        class="menu-arrow"></span></b>
                             </a>
                             <ul>
                                 <li>
                                     <a href="/admin/report/cetakDaftarProduk" target="_blank"
                                         data-menu-title="Daftar Produk"></i><span>
-                                            Daftar Produk</span></a>
+                                            Laporan Penjualan</span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a href="/admin/suplier" data-menu-title="Suplier"><span>
-                                            Suplier</span></a>
+                                    <a href="/admin/report/cetakDaftarNampan" data-menu-title="Suplier"><span>
+                                            laporan Pembelian</span>
+                                    </a>
                                 </li>
                             </ul>
                         </li>
                     </ul>
                 </li>
-            </ul>
-            </li>
             </ul>
         </div>
     </div>

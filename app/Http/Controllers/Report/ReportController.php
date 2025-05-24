@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Report;
 
 use PHPJasper\PHPJasper;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
@@ -64,90 +65,135 @@ class ReportController extends Controller
         ];
     }
 
-
-    public function cetakDaftarProduk()
+    public function cetakLaporanProduk()
     {
-        $jasper = new PHPJasper();
+        // // Paths
+        $jrxmlPath = storage_path('app/reports/laporan/LaporanProduk.jrxml');
+        $outputDir = public_path('reports');
+        $outputFileName = 'LaporanProduk.pdf';
 
-        $inputJrxml = resource_path('reports/CetakDaftarProduk.jrxml');
-        $jasper->compile($inputJrxml)->execute();
-
-        $jasperstarterPath = $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter.exe');
-        $jasperFile = resource_path('reports/CetakDaftarProduk.jasper');
-        $outputPath = public_path('storage/reports/produk');
-        $jdbcDir    = resource_path('jdbc');
-
-        // Pastikan folder output ada
-        if (!file_exists($outputPath)) {
-            mkdir($outputPath, 0755, true);
+        // Ensure output directory exists
+        if (!file_exists($outputDir)) {
+            mkdir($outputDir, 0755, true);
         }
 
-        // Bangun command (TANPA kutip satu tambahan!)
-        $cmd = sprintf(
-            '"%s" process "%s" -f pdf -o "%s" -t mysql -H 127.0.0.1 -u root -p admin -n dbunggulkencana --jdbc-dir "%s" 2>&1',
-            $jasperstarterPath,
-            $jasperFile,
-            $outputPath,
-            $jdbcDir
-        );
+        // JasperStarter executable path - adjust if needed
+        $jasperstarterCmd = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter'); // Change to your jasperstarter path
 
-        exec($cmd, $output, $resultCode);
+        // DB connection details from config
+        $dbHost = config('database.connections.mysql.host');
+        $dbPort = config('database.connections.mysql.port', '3306');
+        $dbName = config('database.connections.mysql.database');
+        $dbUser = config('database.connections.mysql.username');
+        $dbPass = config('database.connections.mysql.password');
 
-        $pdfPath = $outputPath . '/CetakDaftarProduk.pdf';
+        // Compile command
+        $compileCommand = "\"{$jasperstarterCmd}\" compile \"{$jrxmlPath}\"";
 
-        if (!file_exists($pdfPath)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'File PDF tidak ditemukan',
-                'cmd' => $cmd,
-                'output' => $output
-            ], 500);
+        // Generate command with DB params
+        $generateCommand = "\"{$jasperstarterCmd}\" process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
+            . " -u \"{$dbUser}\" -p \"{$dbPass}\" -H \"{$dbHost}\" -n \"{$dbName}\" --db-port=\"{$dbPort}\"";
+
+        try {
+            // Compile jrxml to jasper
+            Log::info("Running compile command: {$compileCommand}");
+            exec($compileCommand, $compileOutput, $compileReturnVar);
+            if ($compileReturnVar !== 0) {
+                Log::error('Compile failed: ' . implode("\n", $compileOutput));
+                return response('Failed to compile report.', 500);
+            }
+
+            // Generate report PDF
+            Log::info("Running generate command: {$generateCommand}");
+            exec($generateCommand, $generateOutput, $generateReturnVar);
+            if ($generateReturnVar !== 0) {
+                Log::error('Generate report failed: ' . implode("\n", $generateOutput));
+                return response('Failed to generate report.', 500);
+            }
+
+            $pdfFilePath = $outputDir . '/' . $outputFileName;
+            if (!file_exists($pdfFilePath)) {
+                Log::error("Generated PDF file not found at path: {$pdfFilePath}");
+                return response('Generated PDF file not found.', 500);
+            }
+
+            return response()->file($pdfFilePath)->deleteFileAfterSend(true);
+        } catch (\Exception $ex) {
+            Log::error('Exception when generating report: ' . $ex->getMessage());
+            return response('Exception occurred: ' . $ex->getMessage(), 500);
         }
-
-        return response()->file($pdfPath);
     }
 
     public function cetakBarcodeProduk($id)
     {
-        $jasper = new PHPJasper();
+        // // Paths
+        $jrxmlPath = storage_path('app/reports/barcode/BarcodeProduk.jrxml');
+        $outputDir = public_path('barcode');
+        $outputFileName = 'BarcodeProduk.pdf';
+        $barcodePath = public_path('storage/barcode/');
 
-        $inputJrxml = resource_path('reports/CetakBarcodeProduk.jrxml');
-        $jasper->compile($inputJrxml)->execute();
-
-        $jasperstarterPath = $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter.exe');
-        $jasperFile = resource_path('reports/CetakBarcodeProduk.jasper');
-        $outputPath = public_path('storage/reports/barcode');
-        $jdbcDir    = resource_path('jdbc');
-
-        // Pastikan folder output ada
-        if (!file_exists($outputPath)) {
-            mkdir($outputPath, 0755, true);
+        // Ensure output directory exists
+        if (!file_exists($outputDir)) {
+            mkdir($outputDir, 0755, true);
         }
 
-        // Bangun command dengan parameter
-        $cmd = sprintf(
-            '"%s" process "%s" -f pdf -o "%s" -t mysql -H 127.0.0.1 -u root -p admin -n dbunggulkencana --jdbc-dir "%s" -P Parameter1="%s"',
-            $jasperstarterPath,
-            $jasperFile,
-            $outputPath,
-            $jdbcDir,
-            $id
-        );
+        // JasperStarter executable path - adjust if needed
+        $jasperstarterCmd = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter'); // Change to your jasperstarter path
 
-        exec($cmd, $output, $resultCode);
+        // DB connection details from config
+        $dbHost = config('database.connections.mysql.host');
+        $dbPort = config('database.connections.mysql.port', '3306');
+        $dbName = config('database.connections.mysql.database');
+        $dbUser = config('database.connections.mysql.username');
+        $dbPass = config('database.connections.mysql.password');
 
-        $pdfPath = $outputPath . '/CetakBarcodeProduk.pdf';
+        // Compile command
+        $compileCommand = "\"{$jasperstarterCmd}\" compile \"{$jrxmlPath}\"";
 
-        if (!file_exists($pdfPath)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'File PDF tidak ditemukan',
-                'cmd' => $cmd,
-                'output' => $output
-            ], 500);
+        // Generate command with DB params
+        $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
+            . " -u {$dbUser} -p {$dbPass} -H {$dbHost} -n {$dbName}  --db-port={$dbPort}" . " -P kodeproduk={$id} -P barcodePath=public/storage/barcode/");
+
+        $generateCommand = "\"{$jasperstarterCmd}\" process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
+            . " -u \"{$dbUser}\" -p \"{$dbPass}\" -H \"{$dbHost}\" -n \"{$dbName}\" --db-port=\"{$dbPort}\""
+            . " -P kodeproduk=\"{$id}\" barcodePath=\"{$barcodePath}\"";
+
+        try {
+            // Compile jrxml to jasper
+            Log::info("Running compile command: {$compileCommand}");
+            exec($compileCommand, $compileOutput, $compileReturnVar);
+            if ($compileReturnVar !== 0) {
+                Log::error('Compile failed: ' . implode("\n", $compileOutput));
+                return response('Failed to compile report.', 500);
+            }
+
+            // Generate report PDF
+            Log::info("Running generate command: {$generateCommand}");
+            exec($generateCommand, $generateOutput, $generateReturnVar);
+            if ($generateReturnVar !== 0) {
+                Log::error('Generate report failed: ' . implode("\n", $generateOutput));
+                return response('Failed to generate report.', 500);
+            }
+
+            $fullBarcodeFile = $barcodePath . $id . ".png";
+
+            if (file_exists($fullBarcodeFile)) {
+                Log::info("File barcode ditemukan: " . $fullBarcodeFile);
+            } else {
+                Log::error("File barcode TIDAK ditemukan: " . $fullBarcodeFile);
+            }
+
+            $pdfFilePath = $outputDir . '/' . $outputFileName;
+            if (!file_exists($pdfFilePath)) {
+                Log::error("Generated PDF file not found at path: {$pdfFilePath}");
+                return response('Generated PDF file not found.', 500);
+            }
+
+            return response()->file($pdfFilePath)->deleteFileAfterSend(true);
+        } catch (\Exception $ex) {
+            Log::error('Exception when generating report: ' . $ex->getMessage());
+            return response('Exception occurred: ' . $ex->getMessage(), 500);
         }
-
-        return response()->file($pdfPath);
     }
 
     public function cetakSuratBarang(Request $request)
@@ -155,7 +201,7 @@ class ReportController extends Controller
         $kodetransaksi  = $request->kodetransaksi;
         $kodeproduk     = $request->kodeproduk;
 
-        $jasperstarterPath = '/home/itsmee/Downloads/jasperstarter/bin/jasperstarter';
+        $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter');
         $reportName = 'CetakSuratBarang';
         $reportPath = resource_path("reports/$reportName");
         $jasperFile = "$reportPath.jasper";
