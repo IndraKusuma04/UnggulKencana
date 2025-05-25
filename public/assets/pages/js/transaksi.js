@@ -309,17 +309,7 @@ $(document).ready(function () {
                             <td>Rp ${Number(item.total).toLocaleString('id-ID')}</td>
                             <td>
                                 <div class="hstack gap-2 fs-15">
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                    <a class="btn btn-icon btn-sm btn-secondary" id="btnPrintSuratProduk" data-kodeproduk="${produk.kodeproduk}" data-transaksi="${data.kodetransaksi}">
-                                        <i class="feather-printer"></i>
-                                    </a>
-=======
-                                    <a href="javascript:void(0);" id="printSuratBarang" data-kodetransaksi="${data.kodetransaksi}" data-kodeproduk="${produk.kodeproduk}" class="btn btn-icon btn-sm btn-soft-secondary rounded-pill"><i class="feather-printer"></i></a>
->>>>>>> c60d7d09c9182ef95c0d08759b0bef0c624fdcb5
-=======
                                     ${tombolCetak}
->>>>>>> linux-zorin
                                 </div>
                             </td>
                         </tr>
