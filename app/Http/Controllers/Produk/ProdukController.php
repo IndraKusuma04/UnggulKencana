@@ -29,7 +29,7 @@ class ProdukController extends Controller
 
     public function getProduk()
     {
-        $produk = Produk::where('status', 1)->with(['jenisproduk', 'kondisi'])->get();
+        $produk = Produk::where('status', '!=', 0)->with(['jenisproduk', 'kondisi'])->get();
 
         return response()->json(['success' => true, 'message' => 'Data Produk Berhasil Ditemukan', 'Data' => $produk]);
     }

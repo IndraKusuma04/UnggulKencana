@@ -6,48 +6,78 @@ use Carbon\Carbon;
 use App\Models\Produk;
 use App\Models\Keranjang;
 use App\Models\Pembelian;
+use App\Models\Perbaikan;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use App\Models\PembelianProduk;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Perbaikan\PerbaikanController;
 
 class PembelianTokoController extends Controller
 {
     public function generateKodePembelianProduk()
     {
-        // Ambil ID user yang sedang login
         $userId = Auth::id();
 
-        // Cek apakah ada kode keranjang terakhir dengan status 1 untuk user tersebut
-        $lastKeranjangWithStatusOne = DB::table('pembelian_produk')
+        // Cek apakah ada pembelian dengan status 1 untuk user ini
+        $lastActive = DB::table('pembelian_produk')
             ->where('status', 1)
-            ->where('oleh', $userId) // Pastikan hanya mengambil milik user ini
+            ->where('oleh', $userId)
             ->orderBy('kodepembelianproduk', 'desc')
             ->first();
 
-        // Jika ada kode keranjang dengan status 1, gunakan kode itu
-        if ($lastKeranjangWithStatusOne) {
-            return $lastKeranjangWithStatusOne->kodepembelianproduk;
+        if ($lastActive) {
+            return $lastActive->kodepembelianproduk;
         }
 
-        // Jika tidak ada keranjang dengan status 1, ambil kode keranjang terakhir untuk user ini
-        $lastKeranjang = DB::table('pembelian_produk')
-            ->where('oleh', $userId) // Pastikan hanya mengambil milik user ini
+        // Jika tidak ada, ambil kode terakhir untuk menentukan urutan
+        $last = DB::table('pembelian_produk')
             ->orderBy('kodepembelianproduk', 'desc')
             ->first();
 
-        // Jika tidak ada keranjang sama sekali, mulai dari 1
-        $lastNumber = $lastKeranjang ? (int) substr($lastKeranjang->kodepembelianproduk, -5) : 0;
+        $lastNumber = 1;
+        if ($last) {
+            $parts = explode('-', $last->kodepembelianproduk);
+            $lastNumber = isset($parts[3]) ? ((int) $parts[3]) + 1 : 1;
+        }
 
-        // Tambahkan 1 pada nomor terakhir
-        $newNumber = $lastNumber + 1;
+        $formattedNumber = str_pad($lastNumber, 4, '0', STR_PAD_LEFT);
+        $timestamp = Carbon::now()->format('YmdHis');
+        $random = rand(100, 999);
 
-        // Format kode keranjang baru dengan menambahkan ID user sebagai prefix
-        $newKodeKeranjang = '#PO-' . $userId . '-' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+        $kode = 'PO-' . $timestamp . '-' . $random . '-' . $formattedNumber;
 
-        return $newKodeKeranjang;
+        return $kode;
+    }
+
+    private function terbilang($angka)
+    {
+        $angka = abs($angka);
+        $huruf = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
+
+        if ($angka < 12) {
+            return $huruf[$angka];
+        } elseif ($angka < 20) {
+            return $this->terbilang($angka - 10) . " belas";
+        } elseif ($angka < 100) {
+            return $this->terbilang(floor($angka / 10)) . " puluh " . $this->terbilang($angka % 10);
+        } elseif ($angka < 200) {
+            return "seratus " . $this->terbilang($angka - 100);
+        } elseif ($angka < 1000) {
+            return $this->terbilang(floor($angka / 100)) . " ratus " . $this->terbilang($angka % 100);
+        } elseif ($angka < 2000) {
+            return "seribu " . $this->terbilang($angka - 1000);
+        } elseif ($angka < 1000000) {
+            return $this->terbilang(floor($angka / 1000)) . " ribu " . $this->terbilang($angka % 1000);
+        } elseif ($angka < 1000000000) {
+            return $this->terbilang(floor($angka / 1000000)) . " juta " . $this->terbilang($angka % 1000000);
+        } elseif ($angka < 1000000000000) {
+            return $this->terbilang(floor($angka / 1000000000)) . " miliar " . $this->terbilang($angka % 1000000000);
+        } else {
+            return "angka terlalu besar";
+        }
     }
 
     public function getTransaksiByKodeTransaksi(Request $request)
@@ -119,7 +149,6 @@ class PembelianTokoController extends Controller
             ]);
         }
 
-
         // Cek apakah sudah ada kodepembelianproduk di session
         $kodepembelianproduk = session('kodepembelianproduk');
 
@@ -128,7 +157,9 @@ class PembelianTokoController extends Controller
             session(['kodepembelianproduk' => $kodepembelianproduk]);
         }
 
-        PembelianProduk::create([
+        $subtotalHarga = $produk->harga_beli * $keranjang->berat;
+
+        $InsertPembelianProduk = PembelianProduk::create([
             'kodepembelianproduk'   => $kodepembelianproduk,
             'kodeproduk'            => $produk->kodeproduk,
             'jenisproduk_id'        => $produk->jenisproduk_id,
@@ -141,9 +172,26 @@ class PembelianTokoController extends Controller
             'lingkar'               => $keranjang->lingkar,
             'panjang'               => $keranjang->panjang,
             'oleh'                  => Auth::user()->id,
+            'subtotalharga'         => $subtotalHarga,
             'jenispembelian'        => 1,
             'status'                => 1,
         ]);
+
+        if ($InsertPembelianProduk) {
+            // Selalu buat data perbaikan
+            $perbaikanController = new PerbaikanController();
+            $kodePerbaikan = $perbaikanController->kodePerbaikan();
+
+            Perbaikan::create([
+                'kodeperbaikan' => $kodePerbaikan,
+                'produk_id'     => $produk->id,
+                'kondisi_id'    => $produk->kondisi_id,
+                'tanggalmasuk'  => now(),
+                'status'        => 1,
+                'keterangan'    => 'Masuk Tanggal ' . now()->format('Y-m-d H:i:s'),
+                'oleh'          => Auth::user()->id,
+            ]);
+        }
 
         return response()->json([
             'success' => true,
@@ -167,7 +215,7 @@ class PembelianTokoController extends Controller
 
     public function updatehargaPembelianProduk(Request $request, $id)
     {
-        $produk = PembelianProduk::where('id', $id)->first();
+        $produk = PembelianProduk::findOrFail($id);
 
         $messages = [
             'required' => ':attribute wajib di isi !!!',
@@ -175,14 +223,39 @@ class PembelianTokoController extends Controller
         ];
 
         $credentials = $request->validate([
-            'hargabeli'    =>  'integer',
+            'hargabeli' => 'required|integer',
+            'kondisi'   => 'required|integer'
         ], $messages);
 
-        $updateProduk = PembelianProduk::where('id', $id)
-            ->update([
-                'harga_beli'    =>  $request->hargabeli,
-                'kondisi_id'    =>  $request->kondisi
-            ]);
+        // Hitung subtotalharga baru (harga_beli * berat produk yang ada di pembelian_produk)
+        $subtotalHargaBaru = $request->hargabeli * $produk->berat;
+
+        // Update data pembelian produk sekaligus subtotalharga
+        $produk->update([
+            'harga_beli'     => $request->hargabeli,
+            'kondisi_id'     => $request->kondisi,
+            'subtotalharga'  => $subtotalHargaBaru,
+        ]);
+
+        // Ambil ID produk master dari kodeproduk
+        $produkMaster = Produk::where('kodeproduk', $produk->kodeproduk)->first();
+
+        // Jika ditemukan, update juga perbaikannya
+        if ($produkMaster) {
+            if (in_array($request->kondisi, [2, 3])) {
+                // Jika kondisi rusak atau kusam, update kondisi di perbaikan
+                Perbaikan::where('produk_id', $produkMaster->id)->update([
+                    'kondisi_id' => $request->kondisi,
+                    'status'     => 1
+                ]);
+            } elseif ($request->kondisi == 1) {
+                // Jika kondisi bagus, update status perbaikan menjadi selesai
+                Perbaikan::where('produk_id', $produkMaster->id)->update([
+                    'kondisi_id' => 1,
+                    'status'     => 0
+                ]);
+            }
+        }
 
         return response()->json(['success' => true, 'message' => 'Data Produk Berhasil Disimpan']);
     }
@@ -191,6 +264,7 @@ class PembelianTokoController extends Controller
     {
         // Cari data pelanggan berdasarkan ID
         $produk = PembelianProduk::find($id);
+        $idproduk   = Produk::where('kodeproduk', $produk->kodeproduk)->first()->id;
 
         // Periksa apakah data ditemukan
         if (!$produk) {
@@ -198,9 +272,16 @@ class PembelianTokoController extends Controller
         }
 
         // Update status menjadi 0 (soft delete manual)
-        $produk->update([
+        $updateProduk = $produk->update([
             'status' => 0,
         ]);
+
+        if ($updateProduk) {
+            Perbaikan::where('produk_id', $idproduk)
+                ->update([
+                    'status' => 0,
+                ]);
+        }
 
         return response()->json(['success' => true, 'message' => 'Produk Berhasil Dibatalkan.']);
     }
@@ -231,11 +312,18 @@ class PembelianTokoController extends Controller
             ->pluck('kodeproduk');
 
         // Step 2: Ambil harga_beli dari produk berdasarkan kodeproduk
-        $totalHargaBeli = PembelianProduk::whereIn('kodeproduk', $kodeProdukList)->where('status', 1)
-            ->sum('harga_beli');
+        // Hitung total harga beli (grandtotal) dari subtotalharga di pembelian_produk langsung
+        $totalHargaBeli = PembelianProduk::where('kodepembelianproduk', $kodepembelianproduk)
+            ->where('status', 1)
+            ->where('jenispembelian', 1)
+            ->where('oleh', Auth::id())
+            ->sum('subtotalharga');
 
         // Bisa juga ambil data lengkap jika diperlukan:
         $produkList = PembelianProduk::whereIn('kodeproduk', $kodeProdukList)->get();
+
+        $angka = abs($totalHargaBeli);
+        $terbilang = ucwords(trim($this->terbilang($angka))) . ' Rupiah';
 
         $pembelianproduk = Pembelian::create([
             'kodepembelian'          =>  $kodePembelian,
@@ -243,6 +331,7 @@ class PembelianTokoController extends Controller
             'pelanggan_id'           =>  $pelanggan,
             'tanggal'                =>  $tanggal,
             'total_harga'            =>  $totalHargaBeli,
+            'terbilang'              =>  $terbilang,
             'catatan'                =>  $catatan,
             'oleh'                   =>  Auth::user()->id,
             'jenispembelian'         =>  1,

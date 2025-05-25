@@ -26,6 +26,7 @@ class Pembelian extends Model
         'catatan',
         'jenispembelian',
         'status',
+        'terbilang'
     ];
 
     /**

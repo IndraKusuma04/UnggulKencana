@@ -16,27 +16,56 @@ class TransaksiController extends Controller
 {
     private function generateKodeTransaksi()
     {
-        // Ambil kode customer terakhir dari database
-        $lastCustomer = DB::table('transaksi')
-            ->orderBy('kodetransaksi', 'desc')
+        $now = Carbon::now()->format('YmdHis');
+
+        // Random 3 digit (untuk menghindari duplikasi pada timestamp yang sama)
+        $random = rand(100, 999);
+
+        // Ambil urutan terakhir jika ingin tetap menyimpan pola urutan
+        $last = DB::table('transaksi')
+            ->orderBy('id', 'desc')
             ->first();
 
-        // Jika tidak ada customer, mulai dari 1
-        $lastNumber = $lastCustomer ? (int) substr($lastCustomer->kodetransaksi, -5) : 0;
+        $lastNumber = $last ? $last->id + 1 : 1;
 
-        // Tambahkan 1 pada nomor terakhir
-        $newNumber = $lastNumber + 1;
+        // Format akhir kode
+        $kode = 'TRK-' . $now . '-' . $random . '-' . str_pad($lastNumber, 4, '0', STR_PAD_LEFT);
 
-        // Format kode customer baru
-        $newKodeCustomer = Carbon::now()->format('YmdHis') . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
-
-        return $newKodeCustomer;
+        return $kode;
     }
 
     public function getKodeTransaksi()
     {
         $kodetransaksi = $this->generateKodeTransaksi();
         return response()->json(['success' => true, 'kodetransaksi' => $kodetransaksi]);
+    }
+
+    private function terbilang($angka)
+    {
+        $angka = abs($angka);
+        $huruf = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
+
+        if ($angka < 12) {
+            return $huruf[$angka];
+        } elseif ($angka < 20) {
+            return $this->terbilang($angka - 10) . " belas";
+        } elseif ($angka < 100) {
+            return $this->terbilang(floor($angka / 10)) . " puluh " . $this->terbilang($angka % 10);
+        } elseif ($angka < 200) {
+            return "seratus " . $this->terbilang($angka - 100);
+        } elseif ($angka < 1000) {
+            return $this->terbilang(floor($angka / 100)) . " ratus " . $this->terbilang($angka % 100);
+        } elseif ($angka < 2000) {
+            return "seribu " . $this->terbilang($angka - 1000);
+        } elseif ($angka < 1000000) {
+            return $this->terbilang(floor($angka / 1000)) . " ribu " . $this->terbilang($angka % 1000);
+        } elseif ($angka < 1000000000) {
+            return $this->terbilang(floor($angka / 1000000)) . " juta " . $this->terbilang($angka % 1000000);
+        } elseif ($angka < 1000000000000) {
+            return $this->terbilang(floor($angka / 1000000000)) . " miliar " . $this->terbilang($angka % 1000000000);
+        } else {
+            return "angka terlalu besar";
+        }
     }
 
     public function payment(Request $request)
@@ -47,6 +76,9 @@ class TransaksiController extends Controller
             ->where('kodekeranjang', $request->kodeKeranjangID)
             ->pluck('produk_id');
 
+        $angka = abs($request->total);
+        $terbilang = ucwords(trim($this->terbilang($angka))) . ' Rupiah';
+
         // Buat transaksi baru
         $payment = Transaksi::create([
             'kodetransaksi'     => $request->transaksiID,
@@ -55,6 +87,7 @@ class TransaksiController extends Controller
             'diskon_id'         => $request->diskonID,
             'tanggal'           => Carbon::today()->format('Y-m-d'),
             'total'             => $request->total,
+            'terbilang'         => $terbilang,
             'oleh'              => Auth::id(),
             'status'            => 1,
         ]);
@@ -80,7 +113,8 @@ class TransaksiController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Transaksi Berhasil',
-                'transaksi_id' => $payment->id, // kalau nanti mau dipakai buat cetak
+                'transaksi_id' => $payment->id,
+                'terbilang' => $terbilang,
             ]);
         }
 
@@ -109,10 +143,25 @@ class TransaksiController extends Controller
 
     public function konfirmasiPembatalanPembayaran($id)
     {
+        $kodekeranjang = Transaksi::where('id', $id)->first()->kodekeranjang_id;
+
+        $produkIds = Keranjang::where('kodekeranjang', $kodekeranjang)
+            ->pluck('produk_id')
+            ->toArray();
+
         $transaksi  = Transaksi::where('id', $id)
             ->update([
                 'status' => 0,
             ]);
+
+        // Jika berhasil update transaksi, ubah status produk di nampan_produk
+        if ($transaksi) {
+            NampanProduk::whereIn('produk_id', $produkIds)
+                ->update(['status' => 1]); // aktif kembali
+
+            Produk::whereIn('id', $produkIds)
+                ->update(['status' => 1]);
+        }
 
         return response()->json(['success' => true, 'message' => 'Pembatalan Pembayaran Berhasil Dikonfirmasi']);
     }

@@ -11,28 +11,31 @@ use Illuminate\Http\Request;
 use App\Models\PembelianProduk;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Perbaikan;
 use Illuminate\Support\Facades\Auth;
 
 class PembelianController extends Controller
 {
     public function generateKodeTransaksiPembelian()
     {
-        // Ambil kode customer terakhir dari database
-        $lastCustomer = DB::table('pembelian')
-            ->orderBy('kodepembelian', 'desc')
+        $now = Carbon::now()->format('YmdHis');
+
+        // Random 3 digit (untuk menghindari duplikasi pada timestamp yang sama)
+        $random = rand(100, 999);
+
+        // Ambil urutan terakhir jika ingin tetap menyimpan pola urutan
+        $last = DB::table('pembelian')
+            ->orderBy('id', 'desc')
             ->first();
 
-        // Jika tidak ada customer, mulai dari 1
-        $lastNumber = $lastCustomer ? (int) substr($lastCustomer->kodepembelian, -5) : 0;
+        $lastNumber = $last ? $last->id + 1 : 1;
 
-        // Tambahkan 1 pada nomor terakhir
-        $newNumber = $lastNumber + 1;
+        // Format akhir kode
+        $kode = 'PMB-' . $now . '-' . $random . '-' . str_pad($lastNumber, 4, '0', STR_PAD_LEFT);
 
-        // Format kode customer baru
-        $newKodeCustomer = Carbon::now()->format('YmdHis') . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
-
-        return $newKodeCustomer;
+        return $kode;
     }
+
 
     public function getPembelian()
     {
@@ -74,6 +77,13 @@ class PembelianController extends Controller
         $pembelian = Pembelian::where('id', $id)->first();
 
         $kodepembelianproduk = $pembelian->kodepembelianproduk;
+        $kodeproduk = PembelianProduk::where('kodepembelianproduk', $kodepembelianproduk)
+            ->pluck('kodeproduk')
+            ->toArray();
+
+        $idproduk = Produk::whereIn('kodeproduk', $kodeproduk)
+            ->pluck('id')
+            ->toArray();
 
         $cancel = Pembelian::where('id', $id)
             ->update([
@@ -81,9 +91,15 @@ class PembelianController extends Controller
             ]);
 
         if ($cancel) {
-            PembelianProduk::where('kodepembelianproduk', $kodepembelianproduk)
+            Perbaikan::whereIn('produk_id', $idproduk)
                 ->update([
-                    'status' => 0,
+                    'status'        => 0,
+                    'keterangan'    => "BATAL TRANSAKSI PADA TANGGAL " . Carbon::now(),
+                ]);
+
+            PembelianProduk::whereIn('kodeproduk', $kodeproduk)
+                ->update([
+                    'status'        => 3,
                 ]);
         }
 

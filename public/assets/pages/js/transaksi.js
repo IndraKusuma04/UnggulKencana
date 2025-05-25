@@ -255,6 +255,14 @@ $(document).ready(function () {
                 let tanggalAsli = data.tanggal; // misalnya "2025-04-07"
                 let tanggalBaru = new Date(tanggalAsli);
 
+                $("#cetakkodetransaksi").attr("data-kodetransaksi", data.kodetransaksi);
+
+                if (data.status == 0) {
+                    $("#cetakkodetransaksi").closest("li").hide(); // sembunyikan jika status BATAL
+                } else {
+                    $("#cetakkodetransaksi").closest("li").show(); // tampilkan kalau status 1 atau 2
+                }
+
                 // Format: 7 April 2025
                 let tanggalFormatted = new Intl.DateTimeFormat('id-ID', {
                     day: 'numeric',
@@ -284,6 +292,14 @@ $(document).ready(function () {
                 data.keranjang.forEach(function (item) {
                     let produk = item.produk;
 
+                    let tombolCetak = '';
+                    if (data.status != 0) {
+                        tombolCetak = `
+                        <a href="javascript:void(0);" id="printSuratBarang" data-kodetransaksi="${data.kodetransaksi}" data-kodeproduk="${produk.kodeproduk}" class="btn btn-icon btn-sm btn-soft-secondary rounded-pill">
+                            <i class="feather-printer"></i>
+                        </a>`;
+                    }
+
                     let row = `
                         <tr>
                             <td>${produk.kodeproduk}</td>
@@ -294,12 +310,16 @@ $(document).ready(function () {
                             <td>
                                 <div class="hstack gap-2 fs-15">
 <<<<<<< HEAD
+<<<<<<< HEAD
                                     <a class="btn btn-icon btn-sm btn-secondary" id="btnPrintSuratProduk" data-kodeproduk="${produk.kodeproduk}" data-transaksi="${data.kodetransaksi}">
                                         <i class="feather-printer"></i>
                                     </a>
 =======
                                     <a href="javascript:void(0);" id="printSuratBarang" data-kodetransaksi="${data.kodetransaksi}" data-kodeproduk="${produk.kodeproduk}" class="btn btn-icon btn-sm btn-soft-secondary rounded-pill"><i class="feather-printer"></i></a>
 >>>>>>> c60d7d09c9182ef95c0d08759b0bef0c624fdcb5
+=======
+                                    ${tombolCetak}
+>>>>>>> linux-zorin
                                 </div>
                             </td>
                         </tr>
@@ -341,6 +361,14 @@ $(document).ready(function () {
                 );
             },
         });
+    });
+
+    $(document).on("click", "#cetakkodetransaksi", function () {
+        const kodeTransaksi = $(this).data("kodetransaksi");
+        console.log("Kode Transaksi:", kodeTransaksi);
+
+        // Lakukan aksi lainnya, misalnya cetak
+        window.open(`/admin/report/cetakTransaksi/${kodeTransaksi}`, '_blank');
     });
 
     $(document).on("click", "#printSuratBarang", function (e) {

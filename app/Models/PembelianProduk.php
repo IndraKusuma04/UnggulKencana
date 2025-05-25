@@ -29,7 +29,8 @@ class PembelianProduk extends Model
         'total',
         'oleh',
         'jenispembelian',
-        'status'
+        'status',
+        'subtotalharga'
     ];
 
     /**

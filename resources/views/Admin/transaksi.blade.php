@@ -68,11 +68,8 @@
                     </div>
                     <ul class="table-top-head">
                         <li>
-                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="Pdf"><img
-                                    src="{{ asset('assets') }}/img/icons/product-print.svg" alt="img"></a>
-                        </li>
-                        <li>
-                            <a data-bs-toggle="tooltip" id="btnPrintModal" data-bs-placement="top" title="Pdf"><img
+                            <a data-bs-toggle="tooltip" id="cetakkodetransaksi" data-kodetransaksi=""
+                                data-bs-placement="top" title="CETAK TRANSAKSI"><img
                                     src="{{ asset('assets') }}/img/icons/printer.svg" alt="img"></a>
                         </li>
                     </ul>

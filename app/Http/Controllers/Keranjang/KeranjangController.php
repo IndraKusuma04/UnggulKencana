@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Keranjang;
 
+use Carbon\Carbon;
 use App\Models\Produk;
 use App\Models\Keranjang;
 use Illuminate\Http\Request;
@@ -13,32 +14,36 @@ class KeranjangController extends Controller
 {
     private function generateKodeKeranjang()
     {
-        // Cek apakah ada kode keranjang terakhir dengan status 1
-        $lastKeranjangWithStatusOne = DB::table('keranjang')
+        // Cek apakah ada keranjang aktif (status = 1)
+        $lastActive = DB::table('keranjang')
             ->where('status', 1)
             ->orderBy('kodekeranjang', 'desc')
             ->first();
 
-        // Jika ada kode keranjang dengan status 1, gunakan kode itu
-        if ($lastKeranjangWithStatusOne) {
-            return $lastKeranjangWithStatusOne->kodekeranjang;
+        if ($lastActive) {
+            return $lastActive->kodekeranjang;
         }
 
-        // Jika tidak ada keranjang dengan status 1, ambil kode keranjang terakhir secara umum
-        $lastKeranjang = DB::table('keranjang')
-            ->orderBy('kodekeranjang', 'desc')
+        // Timestamp sekarang
+        $now = Carbon::now()->format('YmdHis');
+
+        // Random 3 digit untuk menghindari duplikasi
+        $random = rand(100, 999);
+
+        // Ambil nomor urut terakhir
+        $last = DB::table('keranjang')
+            ->orderBy('id', 'desc')
             ->first();
 
-        // Jika tidak ada keranjang sama sekali, mulai dari 1
-        $lastNumber = $lastKeranjang ? (int) substr($lastKeranjang->kodekeranjang, -5) : 0;
+        $lastNumber = $last ? $last->id + 1 : 1;
 
-        // Tambahkan 1 pada nomor terakhir
-        $newNumber = $lastNumber + 1;
+        // Format nomor urut 4 digit
+        $formattedNumber = str_pad($lastNumber, 4, '0', STR_PAD_LEFT);
 
-        // Format kode keranjang baru
-        $newKodeKeranjang = '#K-' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+        // Gabungkan semua bagian
+        $kode = 'KR-' . $now . '-' . $random . '-' . $formattedNumber;
 
-        return $newKodeKeranjang;
+        return $kode;
     }
 
     public function getKeranjang()

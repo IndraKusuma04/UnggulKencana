@@ -88,11 +88,11 @@ class ReportController extends Controller
         $dbPass = config('database.connections.mysql.password');
 
         // Compile command
-        $compileCommand = "\"{$jasperstarterCmd}\" compile \"{$jrxmlPath}\"";
+        $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
 
         // Generate command with DB params
-        $generateCommand = "\"{$jasperstarterCmd}\" process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
-            . " -u \"{$dbUser}\" -p \"{$dbPass}\" -H \"{$dbHost}\" -n \"{$dbName}\" --db-port=\"{$dbPort}\"";
+        $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
+            . " -u {$dbUser} -p {$dbPass} -H {$dbHost} -n {$dbName}  --db-port={$dbPort}");
 
         try {
             // Compile jrxml to jasper
@@ -151,9 +151,6 @@ class ReportController extends Controller
         $compileCommand = "\"{$jasperstarterCmd}\" compile \"{$jrxmlPath}\"";
 
         // Generate command with DB params
-        $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
-            . " -u {$dbUser} -p {$dbPass} -H {$dbHost} -n {$dbName}  --db-port={$dbPort}" . " -P kodeproduk={$id} -P barcodePath=public/storage/barcode/");
-
         $generateCommand = "\"{$jasperstarterCmd}\" process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
             . " -u \"{$dbUser}\" -p \"{$dbPass}\" -H \"{$dbHost}\" -n \"{$dbName}\" --db-port=\"{$dbPort}\""
             . " -P kodeproduk=\"{$id}\" barcodePath=\"{$barcodePath}\"";
@@ -196,47 +193,202 @@ class ReportController extends Controller
         }
     }
 
+    public function cetakNotaTransaksi($id)
+    {
+        // // Paths
+        $jrxmlPath = storage_path('app/reports/nota/CetakNotaTransaksi.jrxml');
+        $outputDir = public_path('nota');
+        $outputFileName = 'CetakNotaTransaksi.pdf';
+        $assetPath = public_path('assets/img/HEADER.jpg');
+        $svgPath   = public_path('assets/img/icons/instagram.svg');
+        $imagePath = public_path('storage/produk/');
+
+        // Ensure output directory exists
+        if (!file_exists($outputDir)) {
+            mkdir($outputDir, 0755, true);
+        }
+
+        // JasperStarter executable path - adjust if needed
+        $jasperstarterCmd = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter'); // Change to your jasperstarter path
+
+        // DB connection details from config
+        $dbHost = config('database.connections.mysql.host');
+        $dbPort = config('database.connections.mysql.port', '3306');
+        $dbName = config('database.connections.mysql.database');
+        $dbUser = config('database.connections.mysql.username');
+        $dbPass = config('database.connections.mysql.password');
+
+        // Compile command
+        $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
+
+        // Generate command with DB params
+        // $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
+        //     . " -u {$dbUser} -p {$dbPass} -H {$dbHost} -n {$dbName}  --db-port={$dbPort}" . " -P kodeproduk={$id} -P barcodePath=public/storage/barcode/");
+
+        $generateCommand = "\"{$jasperstarterCmd}\" process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
+            . " -u \"{$dbUser}\" -p \"{$dbPass}\" -H \"{$dbHost}\" -n \"{$dbName}\" --db-port=\"{$dbPort}\""
+            . " -P Parameter1=\"{$id}\" assetPath=\"{$assetPath}\" imagePath=\"{$imagePath}\" svgPath=\"{$svgPath}\"";
+
+        try {
+            // Compile jrxml to jasper
+            Log::info("Running compile command: {$compileCommand}");
+            exec($compileCommand, $compileOutput, $compileReturnVar);
+            if ($compileReturnVar !== 0) {
+                Log::error('Compile failed: ' . implode("\n", $compileOutput));
+                return response('Failed to compile report.', 500);
+            }
+
+            // Generate report PDF
+            Log::info("Running generate command: {$generateCommand}");
+            exec($generateCommand, $generateOutput, $generateReturnVar);
+            if ($generateReturnVar !== 0) {
+                Log::error('Generate report failed: ' . implode("\n", $generateOutput));
+                return response('Failed to generate report.', 500);
+            }
+
+            $pdfFilePath = $outputDir . '/' . $outputFileName;
+            if (!file_exists($pdfFilePath)) {
+                Log::error("Generated PDF file not found at path: {$pdfFilePath}");
+                return response('Generated PDF file not found.', 500);
+            }
+
+            return response()->file($pdfFilePath)->deleteFileAfterSend(true);
+        } catch (\Exception $ex) {
+            Log::error('Exception when generating report: ' . $ex->getMessage());
+            return response('Exception occurred: ' . $ex->getMessage(), 500);
+        }
+    }
+
     public function cetakSuratBarang(Request $request)
     {
         $kodetransaksi  = $request->kodetransaksi;
         $kodeproduk     = $request->kodeproduk;
+        // // Paths
+        $jrxmlPath = storage_path('app/reports/nota/CetakSuratBarang.jrxml');
+        $outputDir = public_path('nota');
+        $outputFileName = 'CetakSuratBarang.pdf';
+        $assetPath = public_path('assets/img/HEADER.jpg');
+        $svgPath   = public_path('assets/img/icons/instagram.svg');
+        $imagePath = public_path('storage/produk/');
 
-        $jasperstarterPath = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter');
-        $reportName = 'CetakSuratBarang';
-        $reportPath = resource_path("reports/$reportName");
-        $jasperFile = "$reportPath.jasper";
-        $outputPath = public_path('storage/reports/nota');
-        $jdbcDir = resource_path('jdbc');
-
-        // Buat folder output jika belum ada
-        if (!file_exists($outputPath)) {
-            mkdir($outputPath, 0755, true);
+        // Ensure output directory exists
+        if (!file_exists($outputDir)) {
+            mkdir($outputDir, 0755, true);
         }
 
-        // Langsung generate PDF tanpa compile ulang
-        $processCmd = sprintf(
-            '%s process "%s" -o "%s" -f pdf -t mysql -H 127.0.0.1 -u root -p@Admin123 -n dbunggulkencana --jdbc-dir "%s" -P Parameter1=%s Parameter2=%s',
-            $jasperstarterPath,
-            $jasperFile,
-            $outputPath,
-            $jdbcDir,
-            $kodetransaksi,
-            $kodeproduk
-        );
+        // JasperStarter executable path - adjust if needed
+        $jasperstarterCmd = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter'); // Change to your jasperstarter path
 
-        $processResult = $this->runCommandWithTimeout($processCmd, 20); // max 20 detik
+        // DB connection details from config
+        $dbHost = config('database.connections.mysql.host');
+        $dbPort = config('database.connections.mysql.port', '3306');
+        $dbName = config('database.connections.mysql.database');
+        $dbUser = config('database.connections.mysql.username');
+        $dbPass = config('database.connections.mysql.password');
 
-        $pdfPath = $outputPath . '/CetakSuratBarang.pdf';
+        // Compile command
+        $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
 
-        if (!file_exists($pdfPath)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'File PDF tidak ditemukan',
-                'cmd' => $processCmd,
-                'output' => $processResult['output'],
-            ], 500);
+        // Generate command with DB params
+        // $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
+        //     . " -u {$dbUser} -p {$dbPass} -H {$dbHost} -n {$dbName}  --db-port={$dbPort}" . " -P kodeproduk={$id} -P barcodePath=public/storage/barcode/");
+
+        $generateCommand = "\"{$jasperstarterCmd}\" process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
+            . " -u \"{$dbUser}\" -p \"{$dbPass}\" -H \"{$dbHost}\" -n \"{$dbName}\" --db-port=\"{$dbPort}\""
+            . " -P Parameter1=\"{$kodetransaksi}\" Parameter2=\"{$kodeproduk}\" assetPath=\"{$assetPath}\" imagePath=\"{$imagePath}\" svgPath=\"{$svgPath}\"";
+
+        try {
+            // Compile jrxml to jasper
+            Log::info("Running compile command: {$compileCommand}");
+            exec($compileCommand, $compileOutput, $compileReturnVar);
+            if ($compileReturnVar !== 0) {
+                Log::error('Compile failed: ' . implode("\n", $compileOutput));
+                return response('Failed to compile report.', 500);
+            }
+
+            // Generate report PDF
+            Log::info("Running generate command: {$generateCommand}");
+            exec($generateCommand, $generateOutput, $generateReturnVar);
+            if ($generateReturnVar !== 0) {
+                Log::error('Generate report failed: ' . implode("\n", $generateOutput));
+                return response('Failed to generate report.', 500);
+            }
+
+            $pdfFilePath = $outputDir . '/' . $outputFileName;
+            if (!file_exists($pdfFilePath)) {
+                Log::error("Generated PDF file not found at path: {$pdfFilePath}");
+                return response('Generated PDF file not found.', 500);
+            }
+
+            return response()->file($pdfFilePath)->deleteFileAfterSend(true);
+        } catch (\Exception $ex) {
+            Log::error('Exception when generating report: ' . $ex->getMessage());
+            return response('Exception occurred: ' . $ex->getMessage(), 500);
+        }
+    }
+
+    public function cetakNotaPembelian($id)
+    {
+        // // Paths
+        $jrxmlPath = storage_path('app/reports/nota/CetakNotaPembelian.jrxml');
+        $outputDir = public_path('nota');
+        $outputFileName = 'CetakNotaPembelian.pdf';
+        $assetPath = public_path('assets/img/HEADER.jpg');
+        $svgPath   = public_path('assets/img/icons/instagram.svg');
+
+        // Ensure output directory exists
+        if (!file_exists($outputDir)) {
+            mkdir($outputDir, 0755, true);
         }
 
-        return response()->file($pdfPath);
+        // JasperStarter executable path - adjust if needed
+        $jasperstarterCmd = base_path('vendor/geekcom/phpjasper/bin/jasperstarter/bin/jasperstarter'); // Change to your jasperstarter path
+
+        // DB connection details from config
+        $dbHost = config('database.connections.mysql.host');
+        $dbPort = config('database.connections.mysql.port', '3306');
+        $dbName = config('database.connections.mysql.database');
+        $dbUser = config('database.connections.mysql.username');
+        $dbPass = config('database.connections.mysql.password');
+
+        // Compile command
+        $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
+
+        // Generate command with DB params
+        // $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
+        //     . " -u {$dbUser} -p {$dbPass} -H {$dbHost} -n {$dbName}  --db-port={$dbPort}" . " -P kodeproduk={$id} -P barcodePath=public/storage/barcode/");
+
+        $generateCommand = "\"{$jasperstarterCmd}\" process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
+            . " -u \"{$dbUser}\" -p \"{$dbPass}\" -H \"{$dbHost}\" -n \"{$dbName}\" --db-port=\"{$dbPort}\""
+            . " -P kodepembelian=\"{$id}\" assetPath=\"{$assetPath}\" svgPath=\"{$svgPath}\"";
+
+        try {
+            // Compile jrxml to jasper
+            Log::info("Running compile command: {$compileCommand}");
+            exec($compileCommand, $compileOutput, $compileReturnVar);
+            if ($compileReturnVar !== 0) {
+                Log::error('Compile failed: ' . implode("\n", $compileOutput));
+                return response('Failed to compile report.', 500);
+            }
+
+            // Generate report PDF
+            Log::info("Running generate command: {$generateCommand}");
+            exec($generateCommand, $generateOutput, $generateReturnVar);
+            if ($generateReturnVar !== 0) {
+                Log::error('Generate report failed: ' . implode("\n", $generateOutput));
+                return response('Failed to generate report.', 500);
+            }
+
+            $pdfFilePath = $outputDir . '/' . $outputFileName;
+            if (!file_exists($pdfFilePath)) {
+                Log::error("Generated PDF file not found at path: {$pdfFilePath}");
+                return response('Generated PDF file not found.', 500);
+            }
+
+            return response()->file($pdfFilePath)->deleteFileAfterSend(true);
+        } catch (\Exception $ex) {
+            Log::error('Exception when generating report: ' . $ex->getMessage());
+            return response('Exception occurred: ' . $ex->getMessage(), 500);
+        }
     }
 }

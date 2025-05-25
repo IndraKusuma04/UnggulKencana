@@ -92,11 +92,11 @@ $(document).ready(function () {
                         render: function (data, type, row) {
                             // Menampilkan badge sesuai dengan status
                             if (data == 1) {
-                                return `<span class="badge bg-success fw-medium fs-10">ACTIVE</span>`;
+                                return `<span class="badge bg-success fw-medium fs-10">IN STOCK</span>`;
                             } else if (data == 2) {
-                                return `<span class="badge bg-danger fw-medium fs-10">IN ACTIVE</span>`;
+                                return `<span class="badge bg-danger fw-medium fs-10">SOLD</span>`;
                             } else {
-                                return `<span class="badge bg-secondary fw-medium fs-10">UNKNOWN</span>`;
+                                return `<span class="badge bg-secondary fw-medium fs-10">TIDAK AKTIF</span>`;
                             }
                         }
                     },

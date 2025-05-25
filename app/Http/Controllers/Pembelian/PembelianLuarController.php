@@ -6,11 +6,13 @@ use Carbon\Carbon;
 use App\Models\Produk;
 use App\Models\Kondisi;
 use App\Models\Pembelian;
+use App\Models\Perbaikan;
 use App\Models\JenisProduk;
 use Illuminate\Http\Request;
 use App\Models\PembelianProduk;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Perbaikan\PerbaikanController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -18,6 +20,34 @@ use App\Http\Controllers\Produk\ProdukController;
 
 class PembelianLuarController extends Controller
 {
+    private function terbilang($angka)
+    {
+        $angka = abs($angka);
+        $huruf = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
+
+        if ($angka < 12) {
+            return $huruf[$angka];
+        } elseif ($angka < 20) {
+            return $this->terbilang($angka - 10) . " belas";
+        } elseif ($angka < 100) {
+            return $this->terbilang(floor($angka / 10)) . " puluh " . $this->terbilang($angka % 10);
+        } elseif ($angka < 200) {
+            return "seratus " . $this->terbilang($angka - 100);
+        } elseif ($angka < 1000) {
+            return $this->terbilang(floor($angka / 100)) . " ratus " . $this->terbilang($angka % 100);
+        } elseif ($angka < 2000) {
+            return "seribu " . $this->terbilang($angka - 1000);
+        } elseif ($angka < 1000000) {
+            return $this->terbilang(floor($angka / 1000)) . " ribu " . $this->terbilang($angka % 1000);
+        } elseif ($angka < 1000000000) {
+            return $this->terbilang(floor($angka / 1000000)) . " juta " . $this->terbilang($angka % 1000000);
+        } elseif ($angka < 1000000000000) {
+            return $this->terbilang(floor($angka / 1000000000)) . " miliar " . $this->terbilang($angka % 1000000000);
+        } else {
+            return "angka terlalu besar";
+        }
+    }
+
     public function getPembelianProduk()
     {
         $pembelian = PembelianProduk::with(['jenisproduk', 'produk', 'kondisi'])
@@ -73,6 +103,8 @@ class PembelianLuarController extends Controller
             session(['kodepembelianproduk' => $kodepembelianproduk]);
         }
 
+        $subtotalHarga = $request->hargabeli * $request->berat;
+
         $createProduk = Produk::create([
             'kodeproduk'        =>  $newkodeproduk,
             'jenisproduk_id'    =>  $request->jenis,
@@ -101,10 +133,26 @@ class PembelianLuarController extends Controller
                 'panjang'               =>  $request->panjang,
                 'keterangan'            =>  $request->keterangan,
                 'kondisi_id'            =>  $request->kondisi,
+                'subtotalharga'         => $subtotalHarga,
                 'oleh'                  =>  Auth::user()->id,
                 'jenispembelian'        =>  2,
                 'status'                =>  1,
             ]);
+
+            if (in_array($request->kondisi, [2, 3])) {
+                $perbaikanController = new PerbaikanController(); // Panggil controller asal
+                $kodePerbaikan = $perbaikanController->kodePerbaikan(); // Dapatkan kode unik
+
+                Perbaikan::create([
+                    'kodeperbaikan' => $kodePerbaikan, // Tambahkan ke sini
+                    'produk_id'     => $createProduk->id,
+                    'kondisi_id'    => $request->kondisi,
+                    'tanggalmasuk'  => now(),
+                    'status'        => 1,
+                    'keterangan'    => 'Masuk Tanggal ' . Carbon::now()->format('Y-m-d H:i:s'),
+                    'oleh'          => Auth::user()->id,
+                ]);
+            }
         }
 
         return response()->json(['success' => true, 'message' => 'Data Berhasil Disimpan', 'kode' => $kodepembelianproduk]);
@@ -133,8 +181,8 @@ class PembelianLuarController extends Controller
 
         $credentials = $request->validate([
             'nama'                  =>  'required',
-            'jenis'        =>  'required|' . Rule::in(JenisProduk::where('status', 1)->pluck('id')),
-            'kondisi'            =>  'required|' . Rule::in(Kondisi::where('status', 1)->pluck('id')),
+            'jenis'                 =>  'required|' . Rule::in(JenisProduk::where('status', 1)->pluck('id')),
+            'kondisi'               =>  'required|' . Rule::in(Kondisi::where('status', 1)->pluck('id')),
             'berat'                 =>  [
                 'required',
                 'regex:/^\d+\.\d{1,}$/'
@@ -146,6 +194,9 @@ class PembelianLuarController extends Controller
         ], $messages);
 
         $kodeproduk = PembelianProduk::where('id', $id)->first()->kodeproduk;
+        $idproduk   = Produk::where('kodeproduk', $kodeproduk)->first()->id;
+
+        $subtotalHargaBaru = $request->hargabeli * $request->berat;
 
         $updateProduk = Produk::where('kodeproduk', $kodeproduk)
             ->update([
@@ -172,8 +223,31 @@ class PembelianLuarController extends Controller
                     'lingkar'           =>  $request->lingkar,
                     'panjang'           =>  $request->panjang,
                     'keterangan'        =>  $request->keterangan,
-                    'kondisi_id'        =>  $request->kondisi
+                    'kondisi_id'        =>  $request->kondisi,
+                    'subtotalharga'     =>  $subtotalHargaBaru,
                 ]);
+
+            if (in_array($request->kondisi, [2, 3])) {
+                // Cek apakah sudah ada data perbaikan
+                $perbaikan = Perbaikan::where('produk_id', $idproduk)->first();
+
+                if ($perbaikan) {
+                    // Update jika sudah ada
+                    $perbaikan->update([
+                        'kondisi_id'    => $request->kondisi,
+                        'status'        => 1, // aktif di perbaikan
+                        'keterangan'    => 'Update Tanggal ' . now(),
+                        'tanggalmasuk'  => now(),
+                    ]);
+                }
+            } elseif ($request->kondisi == 1) {
+                // Jika diubah menjadi kondisi "baik", set perbaikan menjadi tidak aktif
+                Perbaikan::where('produk_id', $idproduk)->update([
+                    'kondisi_id'    => 1,
+                    'status'        => 0,
+                    'keterangan'    => 'Selesai Tanggal ' . now(),
+                ]);
+            }
         }
 
         return response()->json(['success' => true, 'message' => 'Data Produk Berhasil Diupdate']);
@@ -184,6 +258,7 @@ class PembelianLuarController extends Controller
         // Cari data pelanggan berdasarkan ID
         $produk = PembelianProduk::find($id);
         $kodeproduk = PembelianProduk::where('id', $id)->first()->kodeproduk;
+        $idproduk   = Produk::where('kodeproduk', $kodeproduk)->first()->id;
 
         // Periksa apakah data ditemukan
         if (!$produk) {
@@ -197,6 +272,10 @@ class PembelianLuarController extends Controller
 
         if ($delete) {
             Produk::where('kodeproduk', $kodeproduk)->update(['status' => 0]);
+            Perbaikan::where('produk_id', $idproduk)->update([
+                'status'        => 0,
+                'keterangan'    => 'BATAL PERBAIKAN / BATAL TRANSAKSI, PADA TANGGAL' . now(),
+            ]);
         }
 
         return response()->json(['success' => true, 'message' => 'Produk Berhasil Dibatalkan.']);
@@ -235,9 +314,12 @@ class PembelianLuarController extends Controller
             ->where('jenispembelian', 2)
             ->pluck('kodeproduk');
 
-        // Step 2: Ambil harga_beli dari produk berdasarkan kodeproduk
-        $totalHargaBeli = PembelianProduk::whereIn('kodeproduk', $kodeProdukList)->where('status', 1)
-            ->sum('harga_beli');
+        // Hitung total harga beli (grandtotal) dari subtotalharga di pembelian_produk langsung
+        $totalHargaBeli = PembelianProduk::where('kodepembelianproduk', $kodepembelianproduk)
+            ->where('status', 1)
+            ->where('jenispembelian', 2)
+            ->where('oleh', Auth::id())
+            ->sum('subtotalharga');
 
         if ($request->suplier_id != "" || $request->pelanggan_id == "") {
             $request['pelanggan'] = null;
@@ -247,6 +329,9 @@ class PembelianLuarController extends Controller
             $request['suplier'] = null;
             $request['pelanggan'] = null;
         }
+
+        $angka = abs($totalHargaBeli);
+        $terbilang = ucwords(trim($this->terbilang($angka))) . ' Rupiah';
 
         $pembelianproduk = Pembelian::create([
             'kodepembelian'          =>  $kodePembelian,
@@ -258,6 +343,7 @@ class PembelianLuarController extends Controller
             'tanggal'                =>  $tanggal,
             'total_harga'            =>  $totalHargaBeli,
             'catatan'                =>  $request->catatan,
+            'terbilang'              =>  $terbilang,
             'oleh'                   =>  Auth::user()->id,
             'jenispembelian'         =>  2,
             'status'                 =>  1,
