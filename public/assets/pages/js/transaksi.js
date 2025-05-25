@@ -257,6 +257,12 @@ $(document).ready(function () {
 
                 $("#cetakkodetransaksi").attr("data-kodetransaksi", data.kodetransaksi);
 
+                if (data.status == 0) {
+                    $("#cetakkodetransaksi").closest("li").hide(); // sembunyikan jika status BATAL
+                } else {
+                    $("#cetakkodetransaksi").closest("li").show(); // tampilkan kalau status 1 atau 2
+                }
+
                 // Format: 7 April 2025
                 let tanggalFormatted = new Intl.DateTimeFormat('id-ID', {
                     day: 'numeric',
@@ -286,6 +292,14 @@ $(document).ready(function () {
                 data.keranjang.forEach(function (item) {
                     let produk = item.produk;
 
+                    let tombolCetak = '';
+                    if (data.status != 0) {
+                        tombolCetak = `
+                        <a href="javascript:void(0);" id="printSuratBarang" data-kodetransaksi="${data.kodetransaksi}" data-kodeproduk="${produk.kodeproduk}" class="btn btn-icon btn-sm btn-soft-secondary rounded-pill">
+                            <i class="feather-printer"></i>
+                        </a>`;
+                    }
+
                     let row = `
                         <tr>
                             <td>${produk.kodeproduk}</td>
@@ -295,7 +309,7 @@ $(document).ready(function () {
                             <td>Rp ${Number(item.total).toLocaleString('id-ID')}</td>
                             <td>
                                 <div class="hstack gap-2 fs-15">
-                                    <a href="javascript:void(0);" id="printSuratBarang" data-kodetransaksi="${data.kodetransaksi}" data-kodeproduk="${produk.kodeproduk}" class="btn btn-icon btn-sm btn-soft-secondary rounded-pill"><i class="feather-printer"></i></a>
+                                    ${tombolCetak}
                                 </div>
                             </td>
                         </tr>

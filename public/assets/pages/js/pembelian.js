@@ -288,6 +288,12 @@ $(document).ready(function () {
 
                 $("#cetakkodepembelian").attr("data-kodepembelian", data.kodepembelian);
 
+                if (data.status == 0) {
+                    $("#cetakkodepembelian").closest("li").hide(); // sembunyikan jika status BATAL
+                } else {
+                    $("#cetakkodepembelian").closest("li").show(); // tampilkan kalau status 1 atau 2
+                }
+
                 // Format: 7 April 2025
                 let tanggalFormatted = new Intl.DateTimeFormat('id-ID', {
                     day: 'numeric',
@@ -324,6 +330,12 @@ $(document).ready(function () {
                     totalHargaBeli += hargaBeli;
                     subtotalharga += subtotal;
 
+                    let tombolPrint = "";
+                    if (data.status != 0) {
+                        tombolPrint = `<a href="javascript:void(0);" id="printSuratBarang" data-kodetransaksi="${data.kodepembelian}" data-kodeproduk="${item.kodeproduk}" class="btn btn-icon btn-sm btn-soft-secondary rounded-pill"><i class="feather-printer"></i></a>`;
+                    }
+
+
                     let row = `
                         <tr>
                             <td>${item.kodeproduk}</td>
@@ -333,7 +345,7 @@ $(document).ready(function () {
                             <td>Rp ${subtotal.toLocaleString('id-ID')}</td>
                             <td>
                                 <div class="hstack gap-2 fs-15">
-                                    <a href="javascript:void(0);" id="printSuratBarang" data-kodetransaksi="${data.kodepembelian}" data-kodeproduk="${item.kodeproduk}" class="btn btn-icon btn-sm btn-soft-secondary rounded-pill"><i class="feather-printer"></i></a>
+                                    ${tombolPrint}
                                 </div>
                             </td>
                         </tr>
