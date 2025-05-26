@@ -116,7 +116,6 @@
                                             <th>BERAT</th>
                                             <th>HARGA BELI</th>
                                             <th>TOTAL</th>
-                                            <th>ACTION</th>
                                         </tr>
                                     </thead>
                                     <tbody>

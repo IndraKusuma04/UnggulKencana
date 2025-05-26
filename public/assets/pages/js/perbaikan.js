@@ -57,6 +57,19 @@ $(document).ready(function () {
                         data: "produk.kodeproduk",
                     },
                     {
+                        data: "kondisi.kondisi",
+                        render: function (data, type, row) {
+                            // Menampilkan badge sesuai dengan status
+                            if (data == "BAIK") {
+                                return `<span class="badge bg-success fw-medium fs-10"><b>BAIK</b></span>`;
+                            } else if (data == "KUSAM") {
+                                return `<span class="badge bg-warning fw-medium fs-10"><b>KUSAM</b></span>`;
+                            } else if (data == "RUSAK") {
+                                return `<span class="badge bg-danger fw-medium fs-10"><b>RUSAK</b></span>`;
+                            }
+                        }
+                    },
+                    {
                         data: "tanggalmasuk",
                     },
                     {
@@ -70,7 +83,7 @@ $(document).ready(function () {
                                 return `<span class="badge bg-warning fw-medium fs-10"><b>DALAM PERBAIKAN</b></span>`;
                             } else if (data == 2) {
                                 return `<span class="badge bg-success fw-medium fs-10"><b>SELSAI PERBAIKAN</b></span>`;
-                            } else if(data == 0) {
+                            } else if (data == 0) {
                                 return `<span class="badge bg-danger fw-medium fs-10"><b>BATAL TRANSAKSI</b></span>`;
                             }
                         }
@@ -86,7 +99,7 @@ $(document).ready(function () {
                                         <a class="me-2 edit-icon p-2 btn-detail" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="DETAIL TRANSAKSI">
                                             <i data-feather="eye" class="action-eye"></i>
                                         </a>
-                                        <a class="me-2 p-2 confirm-payment" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="KONFIRMASI PEMBAYARAN">
+                                        <a class="me-2 p-2 confirm-repair" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="KONFIRMASI PEMBAYARAN">
                                             <i data-feather="check-circle" class="feather-edit"></i>
                                         </a>
                                         <a class="cancel-payment p-2" data-id="${row.produk.kodeproduk}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="BATALKAN PEMBAYARAN">
@@ -123,7 +136,7 @@ $(document).ready(function () {
     //panggil function getPembelian
     getPerbaikan();
 
-     //ketika button edit di tekan
+    //ketika button edit di tekan
     $(document).on("click", ".btn-detail", function () {
         const produkID = $(this).data("id");
 
@@ -131,12 +144,22 @@ $(document).ready(function () {
             url: `/admin/perbaikan/getPerbaikanByID/${produkID}`, // Endpoint untuk mendapatkan data pegawai
             type: "GET",
             success: function (response) {
-                // Ambil data pertama
-                let data = response.Data[0];
-                
+                if (response.Data && response.Data.length > 0) {
+                    let data = response.Data[0];
 
-                // Tampilkan modal edit
-                $("#detailTransaksi").modal("show");
+                    // Isi field input sesuai ID-nya
+                    $("#detailkodeperbaikan").val(data.kodeperbaikan);
+                    $("#detailkodeproduk").val(data.produk.kodeproduk); // contoh jika ada field nama produk
+                    $("#detailkondisi").val(data.kondisi.kondisi); // contoh kondisi produk
+                    $("#detailketerangan").val(data.keterangan); // contoh keterangan
+                    $("#tanggalmasuk").val(data.tanggalmasuk);
+                    $("#tanggalkeluar").val(data.tanggalkeluar ?? "BARANG BELUM KELUAR");
+
+                    // Tampilkan modal
+                    $("#mdDetailPerbaikan").modal("show");
+                } else {
+                    Swal.fire("Data tidak ditemukan", "", "warning");
+                }
             },
             error: function () {
                 Swal.fire(
@@ -145,6 +168,64 @@ $(document).ready(function () {
                     "error"
                 );
             },
+        });
+    });
+
+    // ketika button hapus di tekan
+    $(document).on("click", ".confirm-repair", function () {
+        const deleteID = $(this).data("id");
+
+        // SweetAlert2 untuk konfirmasi
+        Swal.fire({
+            title: "Konfirmasi Perbaikan",
+            text: "Produk Sudah Direpair ?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Sudah!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Kirim permintaan hapus (gunakan itemId)
+                fetch(`/admin/perbaikan/konfirmasiPerbaikan/${deleteID}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            Swal.fire(
+                                "Dikonfirmasi!",
+                                "Produk berhasil dikonfirmasi.",
+                                "success"
+                            );
+                            // Reload DataTable pembelian_produk (pastikan sudah diinisialisasi sebelumnya)
+                            if ($.fn.DataTable.isDataTable('#perbaikanTable')) {
+                                $('#perbaikanTable').DataTable().ajax.reload();
+                            }
+                        } else {
+                            Swal.fire(
+                                "Gagal!",
+                                "Terjadi kesalahan saat konfirmasi perbaikan.",
+                                "error"
+                            );
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire(
+                            "Gagal!",
+                            "Terjadi kesalahan dalam konfirmasi perbaikan.",
+                            "error"
+                        );
+                    });
+            } else {
+                // Jika batal, beri tahu pengguna
+                Swal.fire("Dibatalkan", "Perbaikan tidak dikonfirmasi.", "info");
+            }
         });
     });
 })

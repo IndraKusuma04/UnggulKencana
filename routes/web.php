@@ -215,6 +215,7 @@ Route::middleware(['checkRole:admin'])->group(function () {
     });
     Route::get('/admin/perbaikan/getPerbaikan', [PerbaikanController::class, 'getPerbaikan']);
     Route::get('/admin/perbaikan/getPerbaikanByID/{id}', [PerbaikanController::class, 'getPerbaikanByID']);
+    Route::get('/admin/perbaikan/konfirmasiPerbaikan/{id}', [PerbaikanController::class, 'konfirmasiPerbaikan']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
     Route::get('/admin/report/cetakTransaksi/{id}', [ReportController::class, 'cetakNotaTransaksi']);

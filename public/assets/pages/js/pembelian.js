@@ -330,10 +330,10 @@ $(document).ready(function () {
                     totalHargaBeli += hargaBeli;
                     subtotalharga += subtotal;
 
-                    let tombolPrint = "";
-                    if (data.status != 0) {
-                        tombolPrint = `<a href="javascript:void(0);" id="printSuratBarang" data-kodetransaksi="${data.kodepembelian}" data-kodeproduk="${item.kodeproduk}" class="btn btn-icon btn-sm btn-soft-secondary rounded-pill"><i class="feather-printer"></i></a>`;
-                    }
+                    // let tombolPrint = "";
+                    // if (data.status != 0) {
+                    //     tombolPrint = `<a href="javascript:void(0);" id="printSuratBarang" data-kodetransaksi="${data.kodepembelian}" data-kodeproduk="${item.kodeproduk}" class="btn btn-icon btn-sm btn-soft-secondary rounded-pill"><i class="feather-printer"></i></a>`;
+                    // }
 
 
                     let row = `
@@ -343,11 +343,6 @@ $(document).ready(function () {
                             <td>${parseFloat(item.berat).toFixed(1)} gram</td>
                             <td>Rp ${hargaBeli.toLocaleString('id-ID')}</td>
                             <td>Rp ${subtotal.toLocaleString('id-ID')}</td>
-                            <td>
-                                <div class="hstack gap-2 fs-15">
-                                    ${tombolPrint}
-                                </div>
-                            </td>
                         </tr>
                     `;
 
