@@ -18,6 +18,10 @@ return new class extends Migration
             $table->date('tanggal');
             $table->date('tanggalkeluar')->nullable();
             $table->unsignedBigInteger('oleh');
+            $table->integer('stokprodukawal')->default(0);
+            $table->integer('stokprodukakhir')->default(0);
+            $table->decimal('stokawalberat', 13, 5)->default(0.0);
+            $table->decimal('stokakhirberat', 13, 5)->default(0.0);
             $table->integer('status');
             $table->timestamps();
 
