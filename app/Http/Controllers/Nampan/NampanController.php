@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Nampan;
 use App\Http\Controllers\Controller;
 use App\Models\Nampan;
 use App\Models\NampanProduk;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class NampanController extends Controller
@@ -44,7 +45,9 @@ class NampanController extends Controller
         $storeNampan = Nampan::create([
             'jenisproduk_id'  =>  $request->jenis,
             'nampan'          =>  $request->nampan,
+            'tanggal'         =>  Carbon::now(),
             'status'          =>  1,
+            'status_final'    =>  1,
         ]);
 
         return response()->json(['success' => true, 'message' => 'Data Nampan Berhasil Disimpan']);
@@ -83,6 +86,31 @@ class NampanController extends Controller
         ]);
 
         return response()->json(['success' => true, 'message' => 'Nampan Berhasil Diperbarui.']);
+    }
+
+    public function finalNampan($id)
+    {
+        $nampan = Nampan::findOrFail($id);
+        $produkAwal  = NampanProduk::where('nampan_id', $id)->where('jenis', 'awal');
+        $produkMasuk = NampanProduk::where('nampan_id', $id)->where('jenis', 'masuk');
+        $produkKeluar = NampanProduk::where('nampan_id', $id)->where('jenis', 'keluar');
+
+        $stokAkhirProduk = ($produkAwal->sum('stokprodukawal') + $produkMasuk->sum('stokprodukawal')) - $produkKeluar->sum('stokprodukawal');
+        $stokAkhirBerat  = ($produkAwal->sum('stokawalberat') + $produkMasuk->sum('stokawalberat')) - $produkKeluar->sum('stokawalberat');
+
+        $nampan->update([
+            'status_final' => 2,
+            // kalau mau, bisa juga simpan hasil finalnya di kolom baru seperti stokakhir
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Nampan berhasil difinalkan.',
+            'stok_produk_akhir' => $stokAkhirProduk,
+            'stok_berat_akhir' => $stokAkhirBerat,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Nampan Berhasil Difinal.']);
     }
 
     public function deleteNampan($id)

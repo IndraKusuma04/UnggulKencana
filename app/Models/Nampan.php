@@ -15,7 +15,9 @@ class Nampan extends Model
     [
         'nampan',
         'jenisproduk_id',
-        'status'
+        'tanggal',
+        'status',
+        'status_final'
     ];
 
     /**

@@ -61,32 +61,51 @@ $(document).ready(function () {
                         render: function (data, type, row) {
                             // Menampilkan badge sesuai dengan status
                             if (data == 1) {
-                                return `<span class="badge bg-success fw-medium fs-10">ACTIVE</span>`;
+                                return `<span class="badge bg-success fw-medium fs-10"><b>ACTIVE</b></span>`;
                             } else if (data == 2) {
-                                return `<span class="badge bg-danger fw-medium fs-10">IN ACTIVE</span>`;
+                                return `<span class="badge bg-danger fw-medium fs-10"><b>IN ACTIVE</b></span>`;
                             } else {
-                                return `<span class="badge bg-secondary fw-medium fs-10">UNKNOWN</span>`;
+                                return `<span class="badge bg-secondary fw-medium fs-10"><b>UNKNOWN</b></span>`;
                             }
                         }
                     },
                     {
-                        data: null,        // Kolom aksi
+                        data: 'status_final',        // Kolom aksi
                         orderable: false,  // Aksi tidak perlu diurutkan
                         className: "action-table-data",
                         render: function (data, type, row, meta) {
-                            return `
-                            <div class="edit-delete-action">
-                                <a class="me-2 edit-icon p-2 btn-detail" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="DETAIL DATA">
-                                    <i data-feather="eye" class="action-eye"></i>
-                                </a>
-                                <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="EDIT DATA">
-                                    <i data-feather="edit" class="feather-edit"></i>
-                                </a>
-                                <a class="confirm-text p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="HAPUS DATA">
-                                    <i data-feather="trash-2" class="feather-trash-2"></i>
-                                </a>
-                            </div>
-                        `;
+                            if (data == 1) {
+                                return `
+                                    <div class="edit-delete-action">
+                                        <a class="me-2 edit-icon p-2 btn-detail" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="DETAIL DATA">
+                                            <i data-feather="eye" class="action-eye"></i>
+                                        </a>
+                                        <a class="me-2 p-2 btn-edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="EDIT DATA">
+                                            <i data-feather="edit" class="feather-edit"></i>
+                                        </a>
+                                        <a class="me-2 final-nampan p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="FINAL NAMPAN">
+                                            <i data-feather="check" class="feather-print"></i>
+                                        </a>
+                                        <a class="confirm-text p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="HAPUS DATA">
+                                            <i data-feather="trash-2" class="feather-trash-2"></i>
+                                        </a>
+                                    </div>
+                                `;
+                            } else {
+                                return `
+                                    <div class="edit-delete-action">
+                                        <a class="me-2 edit-icon p-2 btn-detail" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="DETAIL DATA">
+                                            <i data-feather="eye" class="action-eye"></i>
+                                        </a>
+                                        <a class="me-2 final-nampan p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="FINAL NAMPAN">
+                                            <i data-feather="check" class="feather-print"></i>
+                                        </a>
+                                        <a class="confirm-text p-2" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="HAPUS DATA">
+                                            <i data-feather="trash-2" class="feather-trash-2"></i>
+                                        </a>
+                                    </div>
+                                `;
+                            }
                         }
                     }
                 ],
@@ -321,6 +340,61 @@ $(document).ready(function () {
                     });
                 }
             },
+        });
+    });
+
+    // ketika button hapus di tekan
+    $(document).on("click", ".final-nampan", function () {
+        const deleteID = $(this).data("id");
+
+        // SweetAlert2 untuk konfirmasi
+        Swal.fire({
+            title: "Konfirmasi Final Nampan",
+            text: "Nampan Akan Difinal!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Ya, Final!",
+            cancelButtonText: "Batal",
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Kirim permintaan hapus (gunakan itemId)
+                fetch(`/admin/nampan/finalNampan/${deleteID}`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            Swal.fire(
+                                "Difinal!",
+                                "Nampan berhasil difinal.",
+                                "success"
+                            );
+                            tableNampan.ajax.reload(null, false); // Reload data dari server
+                        } else {
+                            Swal.fire(
+                                "Gagal!",
+                                "Terjadi kesalahan saat memfinal nampan.",
+                                "error"
+                            );
+                        }
+                    })
+                    .catch((error) => {
+                        Swal.fire(
+                            "Gagal!",
+                            "Terjadi kesalahan dalam memfinal nampan.",
+                            "error"
+                        );
+                    });
+            } else {
+                // Jika batal, beri tahu pengguna
+                Swal.fire("Dibatalkan", "Nampan tidak difinal.", "info");
+            }
         });
     });
 

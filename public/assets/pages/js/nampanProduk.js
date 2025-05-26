@@ -189,88 +189,113 @@ $(document).ready(function () {
 
     // Fungsi untuk menangani submit form nampan produk
     $("#formTambahProdukNampan").on("submit", function (event) {
-        event.preventDefault(); // Mencegah form submit secara default
-        // Ambil elemen input file
+        event.preventDefault(); // Cegah submit default
 
-        let selectedItems = []; // Array untuk menyimpan data checkbox yang dicentang
+        let selectedItems = [];
 
-        // Loop melalui checkbox yang dicentang
         $("input[name='items[]']:checked").each(function () {
-            selectedItems.push($(this).val()); // Ambil nilai checkbox dan masukkan ke array
+            selectedItems.push($(this).val());
         });
 
-        const formData = new FormData(this);
+        if (selectedItems.length === 0) {
+            Swal.fire("Peringatan", "Silakan pilih minimal satu produk.", "warning");
+            return;
+        }
 
-        selectedItems.forEach((item, index) => {
-            formData.append(`selectedItems[${index}]`, item);
-        });
-        $.ajax({
-            url: `/admin/nampan/nampanproduk/storeProdukNampan/${nampanID}`, // Endpoint Laravel untuk menyimpan nampan produk
-            type: "POST",
-            data: formData,
-            processData: false, // Agar data tidak diubah menjadi string
-            contentType: false, // Agar header Content-Type otomatis disesuaikan
-            success: function (response) {
-                if (response.success == true) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Berhasil",
-                        text: response.message,
-                        showConfirmButton: false,
-                        timer: 1000
-                    });
-                    $("#mdTambahProduk").modal("hide"); // Tutup modal
-                    tableNamProd.ajax.reload(); // Reload data dari server
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Gagal",
-                        text: response.message || "Terjadi kesalahan saat memproses data.",
-                    });
-                }
+        // Tampilkan SweetAlert untuk memilih jenis
+        Swal.fire({
+            title: "PILIH JENIS BARANG",
+            input: "select",
+            inputOptions: {
+                awal: "STOK AWAL",
+                masuk: "BARANG MASUK"
             },
-            error: function (xhr) {
-                if (xhr.responseJSON && xhr.responseJSON.errors) {
-                    const errors = xhr.responseJSON.errors;
-                    let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
+            inputPlaceholder: "PILIH JENIS ..",
+            showCancelButton: true,
+            confirmButtonText: "LANJUTAKAN",
+            cancelButtonText: "BATAL",
+            customClass: {
+                input: 'select form-control'  // Ini membuat <select> punya class "form-control"
+            },
+            inputValidator: (value) => {
+                if (!value) {
+                    return "Silakan pilih jenis transaksi terlebih dahulu!";
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const jenis = result.value;
 
-                    for (let key in errors) {
-                        if (errors.hasOwnProperty(key)) {
-                            errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
+                const formData = new FormData($("#formTambahProdukNampan")[0]);
+
+                selectedItems.forEach((item, index) => {
+                    formData.append(`selectedItems[${index}]`, item);
+                });
+
+                formData.append("jenis", jenis); // Tambahkan jenis ke formData
+
+                // AJAX tetap jalan setelah pilih jenis
+                $.ajax({
+                    url: `/admin/nampan/nampanproduk/storeProdukNampan/${nampanID}`,
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.success == true) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Berhasil",
+                                text: response.message,
+                                showConfirmButton: false,
+                                timer: 1000
+                            });
+                            $("#mdTambahProduk").modal("hide");
+                            tableNamProd.ajax.reload();
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Gagal",
+                                text: response.message || "Terjadi kesalahan saat memproses data.",
+                            });
                         }
-                    }
+                    },
+                    error: function (xhr) {
+                        // Error handler tetap sama seperti sebelumnya
+                        if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            const errors = xhr.responseJSON.errors;
+                            let errorList = "<ul style='text-align: left; padding-left: 20px;'>";
 
-                    errorList += "</ul>";
+                            for (let key in errors) {
+                                if (errors.hasOwnProperty(key)) {
+                                    errorList += `<li><span class="text-danger ms-1">* ${errors[key][0]}</span></li>`;
+                                }
+                            }
 
-                    Swal.fire({
-                        icon: "error",
-                        title: "Validasi Gagal",
-                        html: errorList,
-                        showConfirmButton: false,
-                        timer: 1000
-                    });
+                            errorList += "</ul>";
 
-                } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Gagal",
-                        text: xhr.responseJSON.message,
-                        showConfirmButton: false,
-                        timer: 1000
-                    });
-
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Terjadi Kesalahan",
-                        text: "Tidak dapat memproses permintaan. Silakan coba lagi.",
-                        showConfirmButton: false,
-                        timer: 1000
-                    });
-                }
-            },
+                            Swal.fire({
+                                icon: "error",
+                                title: "Validasi Gagal",
+                                html: errorList,
+                                showConfirmButton: false,
+                                timer: 1000
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Terjadi Kesalahan",
+                                text: xhr.responseJSON?.message || "Tidak dapat memproses permintaan.",
+                                showConfirmButton: false,
+                                timer: 1000
+                            });
+                        }
+                    },
+                });
+            }
         });
     });
+
 
     // ketika button hapus di tekan
     $(document).on("click", ".confirm-text", function () {

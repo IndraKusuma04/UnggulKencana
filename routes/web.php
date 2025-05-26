@@ -131,6 +131,7 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::post('/admin/nampan/storeNampan', [NampanController::class, 'storeNampan']);
     Route::get('/admin/nampan/getNampanByID/{id}', [NampanController::class, 'getNampanByID']);
     Route::post('/admin/nampan/updateNampan/{id}', [NampanController::class, 'updateNampan']);
+    Route::get('/admin/nampan/finalNampan/{id}', [NampanController::class, 'finalNampan']);
     Route::delete('/admin/nampan/deleteNampan/{id}', [NampanController::class, 'deleteNampan']);
 
     Route::get('/admin/nampan/NampanProduk/{id}', function () {
