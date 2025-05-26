@@ -107,7 +107,10 @@ class TransaksiController extends Controller
                     ->update(['status' => 2]);
 
                 NampanProduk::where('produk_id', $produk_id)
-                    ->update(['status' => 2]);
+                    ->update([
+                        'status' => 2,
+                        'tanggalkeluar' => Carbon::now()
+                    ]);
             }
 
             return response()->json([

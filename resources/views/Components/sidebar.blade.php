@@ -134,10 +134,10 @@
                     </b>
                     <ul>
                         <li>
-                            <a href="/admin/managestock" data-menu-title="Manage Stock">
+                            <a href="/admin/stok/nampanstok" data-menu-title="Manage Stock">
                                 <b>
                                     <i data-feather="layers"></i><span>
-                                        Manage Stock</span>
+                                        Nampan Stok</span>
                                 </b>
                             </a>
                         </li>

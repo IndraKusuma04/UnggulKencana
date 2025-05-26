@@ -19,6 +19,8 @@ use App\Http\Controllers\Perbaikan\PerbaikanController;
 use App\Http\Controllers\Produk\JenisProdukController;
 use App\Http\Controllers\Produk\ProdukController;
 use App\Http\Controllers\Report\ReportController;
+use App\Http\Controllers\Stok\StokNampan;
+use App\Http\Controllers\Stok\StokNampanController;
 use App\Http\Controllers\Suplier\SuplierController;
 use App\Http\Controllers\Transaksi\TransaksiController;
 
@@ -216,6 +218,12 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::get('/admin/perbaikan/getPerbaikan', [PerbaikanController::class, 'getPerbaikan']);
     Route::get('/admin/perbaikan/getPerbaikanByID/{id}', [PerbaikanController::class, 'getPerbaikanByID']);
     Route::get('/admin/perbaikan/konfirmasiPerbaikan/{id}', [PerbaikanController::class, 'konfirmasiPerbaikan']);
+    Route::get('/admin/perbaikan/konfirmasiBatalPerbaikan/{id}', [PerbaikanController::class, 'konfirmasiBatalPerbaikan']);
+
+    Route::get('/admin/stok/nampanstok', function () {
+        return view('Admin.nampanstok');
+    });
+    Route::get('/admin/stok/nampanstok/getNampanStok', [StokNampanController::class, 'getNampanStok']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
     Route::get('/admin/report/cetakTransaksi/{id}', [ReportController::class, 'cetakNotaTransaksi']);

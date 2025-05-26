@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('nampan_id');
             $table->unsignedBigInteger('produk_id');
             $table->date('tanggal');
+            $table->date('tanggalkeluar')->nullable();
             $table->unsignedBigInteger('oleh');
             $table->integer('status');
             $table->timestamps();
