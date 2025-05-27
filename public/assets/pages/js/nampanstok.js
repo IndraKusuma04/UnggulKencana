@@ -92,7 +92,7 @@ $(document).ready(function () {
                         render: function (data, type, row, meta) {
                             return `
                             <div class="edit-delete-action">
-                                <a class="me-2 edit-icon p-2 btn-detail" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="DETAIL DATA">
+                                <a class="me-2 edit-icon p-2 btn-detail" data-id="${row.nampan_id}" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="DETAIL DATA">
                                     <i data-feather="file-text" class="action-eye"></i>
                                 </a>
                             </div>
@@ -116,4 +116,11 @@ $(document).ready(function () {
 
     //panggul function getKondisi
     getNampan();
+
+    // Ketika tombol detail produk ditekan
+    $(document).on("click", ".btn-detail", function () {
+        const nampanID = $(this).data("id");
+        const url = `/admin/stok/nampanstok/detailNampanStok/${nampanID}`; // Sesuaikan dengan route Laravel
+        window.location.href = url;
+    });
 });

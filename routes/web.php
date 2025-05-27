@@ -225,6 +225,10 @@ Route::middleware(['checkRole:admin'])->group(function () {
         return view('Admin.nampanstok');
     });
     Route::get('/admin/stok/nampanstok/getNampanStok', [StokNampanController::class, 'getNampanStok']);
+    Route::get('/admin/stok/nampanstok/detailNampanStok/{id}', function () {
+        return view('Admin.detailStokNampan');
+    });
+    Route::get('/admin/stok/nampanstok/getDetailNampanStok/{id}', [StokNampanController::class, 'detailNampanStok']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
     Route::get('/admin/report/cetakTransaksi/{id}', [ReportController::class, 'cetakNotaTransaksi']);
