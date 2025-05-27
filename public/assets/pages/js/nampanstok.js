@@ -51,10 +51,26 @@ $(document).ready(function () {
                         orderable: false,
                     },
                     {
-                        data: "nampan",
+                        data: "nampan.nampan",
                     },
                     {
-                        data: "jenis_produk",
+                        data: "nampan.jenis_produk.jenis_produk",
+                    },
+                    {
+                        data: "stokprodukawal",
+                        className: "text-center", // Tengah
+                        render: function (data, type, row) {
+                            return `${data} pcs`;
+                        }
+                    },
+                    {
+                        data: "stokawalberat",
+                        className: "text-center", // Tengah
+                        render: function (data) {
+                            if (!data) return '0 gram';
+                            const number = Number(data);
+                            return `${parseFloat(number.toFixed(2))} gram`;
+                        }
                     },
                     {
                         data: 'status',
@@ -68,9 +84,6 @@ $(document).ready(function () {
                                 return `<span class="badge bg-secondary fw-medium fs-10">UNKNOWN</span>`;
                             }
                         }
-                    },
-                    {
-                        data: 'totalProduk'
                     },
                     {
                         data: null,        // Kolom aksi

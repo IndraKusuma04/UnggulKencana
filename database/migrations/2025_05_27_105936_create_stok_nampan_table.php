@@ -11,20 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nampan_produk', function (Blueprint $table) {
+        Schema::create('stok_nampan', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('nampan_id');
-            $table->unsignedBigInteger('produk_id');
-            $table->enum('jenis', ['awal', 'masuk', 'keluar']);
-            $table->date('tanggalmasuk');
-            $table->date('tanggalkeluar')->nullable();
-            $table->unsignedBigInteger('oleh');
+            $table->date('tanggal');
+            $table->integer('stokprodukawal')->default(0);
+            $table->integer('stokprodukakhir')->default(0);
+            $table->decimal('stokawalberat', 13, 5)->default(0.0);
+            $table->decimal('stokakhirberat', 13, 5)->default(0.0);
             $table->integer('status');
             $table->timestamps();
 
             $table->foreign('nampan_id')->references('id')->on('nampan')->onDelete('cascade');
-            $table->foreign('produk_id')->references('id')->on('produk')->onDelete('cascade');
-            $table->foreign('oleh')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -33,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nampan_produk');
+        Schema::dropIfExists('stok_nampan');
     }
 };

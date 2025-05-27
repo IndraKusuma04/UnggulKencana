@@ -44,8 +44,9 @@
                                     <th>NO.</th>
                                     <th>NAMPAN</th>
                                     <th>JENIS</th>
+                                    <th>STOK AWAL PRODUK</th>
+                                    <th>STOK AWAL BERAT</th>
                                     <th>STATUS</th>
-                                    <th>TOTAL STOK</th>
                                     <th class="no-sort">ACTION</th>
                                 </tr>
                             </thead>
@@ -59,79 +60,103 @@
         </div>
     </div>
 
-    <!-- md Tambah Nampan -->
-    <div class="modal fade" id="mdTambahNampan">
-        <div class="modal-dialog modal-dialog-centered">
+    <!-- details popup -->
+    <div class="modal fade" id="mdDetailStokNampan">
+        <div class="modal-dialog sales-details-modal">
             <div class="modal-content">
-                <div class="modal-header">
-                    <div class="page-title">
-                        <h4>TAMBAH NAMPAN</h4>
+                <div class="page-header p-4 border-bottom mb-0 d-print-none">
+                    <div class="add-item d-flex align-items-center">
+                        <div class="page-title modal-datail">
+                            <h4 class="mb-0 me-2">DETAIL TRANSAKSI</h4>
+                        </div>
                     </div>
-                    <button type="button" class="close bg-danger text-white fs-16" data-bs-dismiss="modal"
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <ul class="table-top-head">
+                        <li>
+                            <a data-bs-toggle="tooltip" id="cetakLaporan" data-kodetransaksi="" data-bs-placement="top"
+                                title="CETAK TRANSAKSI"><img src="{{ asset('assets') }}/img/icons/printer.svg"
+                                    alt="img"></a>
+                        </li>
+                    </ul>
                 </div>
-                <form id="formTambahNampan" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">NAMPAN<span class="text-danger ms-1">*</span></label>
-                            <input type="text" name="nampan" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">JENIS PRODUK</label>
-                            <select class="select" name="jenis" id="jenisProduk">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer d-flex justify-content-between">
-                        <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
-                        <button type="submit" class="btn btn-primary">SIMPAN</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
-    <!-- md Tambah Jabatan -->
-    <div class="modal fade" id="mdEditNampan">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="page-title">
-                        <h4>EDIT NAMPAN</h4>
+                <div class="card border-0">
+                    <div class="card-body pb-0">
+                        <div class="invoice-box table-height"
+                            style="max-width: 1600px;width:100%;padding: 0;font-size: 14px;line-height: 24px;color: #555;">
+                            <div class="row sales-details-items d-flex">
+                                <div class="col-md-4 details-item">
+                                    <h6>PELANGGAN</h6>
+                                    <h4 class="mb-1"> <span id="namapelanggan"></span></h4>
+                                    <p class="mb-0"> <span id="alamatpelanggan"></span></p>
+                                    <p class="mb-0"> <span id="kontakpelanggan"></span></p>
+                                </div>
+                                <div class="col-md-4 details-item">
+                                    <h6>TOKO</h6>
+                                    <h4 class="mb-1">UNGGUL KENCANA</h4>
+                                    <p class="mb-0">Ruko No. 8, Jl. Patimura, Karang Lewas, Purwokerto, Banyumas, Jawa
+                                        Tengah</p>
+                                    <p class="mb-0">Telp <span>0822 2537 7888</span></p>
+                                </div>
+                                <div class="col-md-4 details-item">
+                                    <h6>FAKTUR</h6>
+                                    <p class="mb-0">No. Transaksi: <span class="fs-16 text-primary ms-2">#<span
+                                                id="kodetransaksi"></span></span>
+                                    </p>
+                                    <p class="mb-0">Tanggal: <span class="ms-2 text-gray-9" id="tanggaltransaksi"></span>
+                                    </p>
+                                    <p class="mb-0">Status: <span id="statustransaksi"></span>
+                                    </p>
+                                    <p class="mb-0">Sales: <span class="ms-2 text-gray-9" id="oleh">
+                                            ></span></p>
+                                </div>
+                            </div>
+                            <h5 class="order-text">DETAIL PESANAN</h5>
+                            <div class="table-responsive no-pagination mb-3">
+                                <table class="table" id="transaksiProduk">
+                                    <thead>
+                                        <tr>
+                                            <th>KODE PRODUK</th>
+                                            <th>NAMA PRODUK</th>
+                                            <th>BERAT</th>
+                                            <th>HARGA</th>
+                                            <th>TOTAL</th>
+                                            <th>ACTION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-lg-6 ms-auto">
+                                    <div class="total-order w-100 max-widthauto m-auto mb-4">
+                                        <ul class="border-1 rounded-1">
+                                            <li class="border-bottom">
+                                                <h4 class="border-end" id="subtotal">Sub Total</h4>
+                                                <h5 class="text-danger"></h5>
+                                            </li>
+                                            <li class="border-bottom">
+                                                <h4 class="border-end" id="diskon">Diskon</h4>
+                                                <h5 class="text-secondary"></h5>
+                                            </li>
+                                            <li class="border-bottom">
+                                                <h4 class="border-end" id="totalharga">Total</h4>
+                                                <h5 class="text-success"></h5>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <button type="button" class="close bg-danger text-white fs-16" data-bs-dismiss="modal"
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
-                <form id="formEditNampan" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">ID<span class="text-danger ms-1">*</span></label>
-                            <input type="text" name="id" id="editid" class="form-control" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">NAMPAN<span class="text-danger ms-1">*</span></label>
-                            <input type="text" name="nampan" id="editnampan" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">JENIS PRODUK</label>
-                            <select class="select" name="jenis" id="editJenisProduk">
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer d-flex justify-content-between">
-                        <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
-                        <button type="submit" class="btn btn-primary">SIMPAN</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
+    <!-- /details popup -->
 
     <!-- /Add Jenis -->
     <script src="{{ asset('assets') }}/js/jquery-3.7.1.min.js" type="text/javascript"></script>

@@ -65,7 +65,24 @@ class NampanProdukController extends Controller
             'jenis' => 'required|in:awal,masuk,keluar',
         ]);
 
-        $jenis = $request->jenis; // dapatkan jenis barang
+        $jenis = $request->jenis;
+
+        $nampan = Nampan::findOrFail($id);
+
+        // Validasi jenis input berdasarkan status final nampan
+        if ($nampan->status_final == 1 && $jenis != 'awal') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nampan belum difinal, hanya boleh input produk dengan jenis "awal".'
+            ]);
+        }
+
+        if ($nampan->status_final == 2 && $jenis != 'masuk') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nampan sudah difinal, hanya boleh input produk dengan jenis "masuk".'
+            ]);
+        }
 
         // Cek produk yang sudah ada aktif (status=1) di nampan ini dan jenis 'awal' atau 'masuk'
         $existingProducts = NampanProduk::where('status', 1)
@@ -82,37 +99,13 @@ class NampanProdukController extends Controller
 
         foreach ($request->items as $produk_id) {
             // Ambil stokakhirproduk & berat dari record terakhir produk di nampan ini
-            $lastRecord = NampanProduk::where('nampan_id', $id)
-                ->where('produk_id', $produk_id)
-                ->orderBy('tanggal', 'desc')
-                ->first();
-
-            $stokAwalProduk = $lastRecord ? $lastRecord->stokakhirproduk : 0;
-            $stokAwalBerat = $lastRecord ? $lastRecord->stokakhirberat : 0;
-
-            // Hitung stok akhir tergantung jenis
-            if ($jenis == 'awal' || $jenis == 'masuk') {
-                $stokAkhirProduk = $stokAwalProduk + 1; // Asumsikan 1 produk masuk
-                $stokAkhirBerat = $stokAwalBerat + $this->getBeratProduk($produk_id);
-            } elseif ($jenis == 'keluar') {
-                $stokAkhirProduk = max(0, $stokAwalProduk - 1); // stok tidak bisa kurang dari 0
-                $stokAkhirBerat = max(0, $stokAwalBerat - $this->getBeratProduk($produk_id));
-            } else {
-                $stokAkhirProduk = $stokAwalProduk;
-                $stokAkhirBerat = $stokAwalBerat;
-            }
-
             $nampanProducts[] = NampanProduk::create([
                 'nampan_id'       => $id,
                 'produk_id'       => $produk_id,
-                'tanggal'         => Carbon::today()->format('Y-m-d'),
-                'oleh'            => Auth::user()->id,
-                'status'          => 1,
                 'jenis'           => $jenis,
-                'stokawalproduk'  => $stokAwalProduk,
-                'stokakhirproduk' => $stokAkhirProduk,
-                'stokawalberat'   => $stokAwalBerat,
-                'stokakhirberat'  => $stokAkhirBerat,
+                'tanggalmasuk'    => Carbon::today()->format('Y-m-d'),
+                'status'          => 1,
+                'oleh'            => Auth::user()->id,
             ]);
         }
 
