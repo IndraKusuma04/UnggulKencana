@@ -43,6 +43,7 @@
                                 <tr>
                                     <th>NO.</th>
                                     <th>NAMPAN</th>
+                                    <th>TANGGAL</th>
                                     <th>JENIS</th>
                                     <th>STOK AWAL PRODUK</th>
                                     <th>STOK AWAL BERAT</th>

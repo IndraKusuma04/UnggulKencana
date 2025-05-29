@@ -54,6 +54,9 @@ $(document).ready(function () {
                         data: "nampan.nampan",
                     },
                     {
+                        data: "nampan.tanggal",
+                    },
+                    {
                         data: "nampan.jenis_produk.jenis_produk",
                     },
                     {
