@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Stok;
 
+use App\Models\Nampan;
+use App\Models\StokNampan;
 use App\Models\NampanProduk;
 use Illuminate\Http\Request;
+use PhpParser\Node\Expr\FuncCall;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\StokNampan;
 
 class StokNampanController extends Controller
 {
@@ -19,29 +21,18 @@ class StokNampanController extends Controller
 
     public function detailNampanStok($id)
     {
-        $stok = DB::table('stok_nampan as sn')
-            ->leftJoin('nampan as n', 'sn.nampan_id', '=', 'n.id')
-            ->leftJoin('jenis_produk as jp', 'n.jenisproduk_id', '=', 'jp.id')
-            ->leftJoin('nampan_produk as np', 'sn.nampan_id', '=', 'np.nampan_id')
-            ->leftJoin('produk as p', 'np.produk_id', '=', 'p.id')
-            ->where('sn.nampan_id', $id)
-            ->orderBy('np.jenis')
-            ->orderBy('np.tanggalmasuk')
-            ->select(
-                'n.nampan',
-                'jp.jenis_produk',
-                'p.nama',
-                'p.berat',
-                'np.jenis',
-                'np.tanggalmasuk',
-                'np.tanggalkeluar',
-                'sn.stokprodukawal',
-                'sn.stokprodukakhir',
-                'sn.stokawalberat',
-                'sn.stokakhirberat'
-            )
-            ->get();
+        $nampan_id = StokNampan::where('id', $id)->first()->nampan_id;
 
-        return response()->json(['success' => true, 'message' => 'Detail Stok Berhasil Ditemukan', 'Data' => $stok]);
+        $nampan = Nampan::with([
+            'jenisProduk:id,jenis_produk',
+            'stokNampan:id,nampan_id,tanggal,stokprodukawal,stokawalberat,stokprodukakhir,stokakhirberat',
+            'nampanProduk' => function ($query) {
+                $query->with(['produk:id,kodeproduk,nama,berat'])
+                    ->orderBy('tanggalmasuk')
+                    ->orderBy('tanggalkeluar');
+            }
+        ])->findOrFail($nampan_id); // Ganti dengan $nampan_id dinamis
+
+        return response()->json(['success' => true, 'message' => 'Data Detail Stok Berhasil Ditemukan', 'Data' => $nampan]);
     }
 }

@@ -584,7 +584,7 @@ $(document).ready(function () {
         });
     });
 
-    // ketika button payment di tekan
+    // Ketika button payment ditekan
     $(document).on("click", "#payment", function (e) {
         e.preventDefault();
 
@@ -621,7 +621,7 @@ $(document).ready(function () {
 
         // Ambil kodekeranjang dulu
         $.ajax({
-            url: "/admin/keranjang/getKodeKeranjang", // endpoint khusus untuk ambil kodekeranjang
+            url: "/admin/keranjang/getKodeKeranjang",
             type: "GET",
             success: function (res) {
                 if (res.success && res.kode) {
@@ -629,7 +629,7 @@ $(document).ready(function () {
 
                     // Kirim data pembayaran lengkap
                     $.ajax({
-                        url: "/admin/transaksi/payment", // Endpoint Laravel
+                        url: "/admin/transaksi/payment",
                         type: "POST",
                         data: {
                             _token: csrfToken,
@@ -648,35 +648,40 @@ $(document).ready(function () {
                                     showConfirmButton: false,
                                     timer: 1000
                                 });
+
+                                // Reset tampilan
                                 getKeranjang();
                                 getNampanProduk('all');
                                 getNampan();
-
                                 $("#grandTotal").text("Rp0");
                                 $("#total").text("Rp0");
                                 $("#subtotal").text("Rp0");
                                 $("#diskonDipilih").text("0 %");
                                 $("#pelanggan").val("");
                                 $("#diskon").val("");
-                                // window.open(`/admin/transaksi/cetak/${res.transaksi_id}`, "_blank"); // optional
+
+                                // window.open(`/admin/transaksi/cetak/${res.transaksi_id}`, "_blank"); // jika ingin cetak otomatis
                             } else {
-                                showToast("danger", res.message);
+                                // Jika gagal dari sisi server (response success: false)
                                 Swal.fire({
                                     icon: "error",
-                                    title: "Terjadi Kesalahan",
-                                    text: res.message,
-                                    showConfirmButton: false,
-                                    timer: 1000
+                                    title: "Gagal",
+                                    text: res.message || "Terjadi kesalahan saat memproses transaksi.",
+                                    showConfirmButton: true,
                                 });
                             }
                         },
-                        error: function () {
+                        error: function (xhr) {
+                            let errorMsg = "Gagal memproses pembayaran.";
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMsg = xhr.responseJSON.message;
+                            }
+
                             Swal.fire({
                                 icon: "error",
                                 title: "Terjadi Kesalahan",
-                                text: "Gagal memproses pembayaran.",
-                                showConfirmButton: false,
-                                timer: 1000
+                                text: errorMsg,
+                                showConfirmButton: true,
                             });
                         }
                     });
@@ -686,8 +691,7 @@ $(document).ready(function () {
                         icon: "error",
                         title: "Terjadi Kesalahan",
                         text: "Gagal mengambil kode keranjang.",
-                        showConfirmButton: false,
-                        timer: 1000
+                        showConfirmButton: true
                     });
                 }
             },
@@ -696,12 +700,12 @@ $(document).ready(function () {
                     icon: "error",
                     title: "Terjadi Kesalahan",
                     text: "Terjadi kesalahan saat mengambil kode keranjang.",
-                    showConfirmButton: false,
-                    timer: 1000
+                    showConfirmButton: true
                 });
             }
         });
     }
+
 
     //load data pelanggan
     function getTransaksi() {

@@ -79,52 +79,67 @@ class TransaksiController extends Controller
         $angka = abs($request->total);
         $terbilang = ucwords(trim($this->terbilang($angka))) . ' Rupiah';
 
-        // Buat transaksi baru
-        $payment = Transaksi::create([
-            'kodetransaksi'     => $request->transaksiID,
-            'kodekeranjang_id'  => $request->kodeKeranjangID,
-            'pelanggan_id'      => $request->pelangganID,
-            'diskon_id'         => $request->diskonID,
-            'tanggal'           => Carbon::today()->format('Y-m-d'),
-            'total'             => $request->total,
-            'terbilang'         => $terbilang,
-            'oleh'              => Auth::id(),
-            'status'            => 1,
-        ]);
+        DB::beginTransaction();
 
-        if ($payment) {
+        try {
+            // Simpan transaksi utama
+            $payment = Transaksi::create([
+                'kodetransaksi'     => $request->transaksiID,
+                'kodekeranjang_id'  => $request->kodeKeranjangID,
+                'pelanggan_id'      => $request->pelangganID,
+                'diskon_id'         => $request->diskonID,
+                'tanggal'           => Carbon::today()->format('Y-m-d'),
+                'total'             => $request->total,
+                'terbilang'         => $terbilang,
+                'oleh'              => Auth::id(),
+                'status'            => 1,
+            ]);
+
             // Update status keranjang jadi 2
             Keranjang::where('status', 1)
                 ->where('oleh', Auth::id())
                 ->where('kodekeranjang', $request->kodeKeranjangID)
-                ->update([
-                    'status' => 2,
-                ]);
+                ->update(['status' => 2]);
 
-            // Update status semua produk dan relasi ke nampan
             foreach ($produkIDs as $produk_id) {
-                Produk::where('id', $produk_id)
-                    ->update(['status' => 2]);
+                // Update produk menjadi tidak aktif (terjual)
+                Produk::where('id', $produk_id)->update(['status' => 2]);
 
-                NampanProduk::where('produk_id', $produk_id)
-                    ->update([
-                        'status' => 2,
-                        'tanggalkeluar' => Carbon::now()
+                // Ambil entri nampan_produk asalnya (yang aktif)
+                $nampanProdukAwal = NampanProduk::where('produk_id', $produk_id)
+                    ->where('status', 1)
+                    ->latest('id')
+                    ->first();
+
+                if ($nampanProdukAwal) {
+                    // Tandai yang awal sudah tidak aktif
+                    $nampanProdukAwal->update(['status' => 2]);
+
+                    // Buat histori keluar (entry baru)
+                    NampanProduk::create([
+                        'produk_id'     => $produk_id,
+                        'nampan_id'     => $nampanProdukAwal->nampan_id,
+                        'jenis'         => 'keluar',
+                        'tanggalmasuk'  => null,
+                        'tanggalkeluar' => Carbon::now(),
+                        'status'        => 2,
+                        'oleh'          => Auth::user()->id,
                     ]);
+                }
             }
 
+            DB::commit();
             return response()->json([
                 'success' => true,
                 'message' => 'Transaksi Berhasil',
-                'transaksi_id' => $payment->id,
-                'terbilang' => $terbilang,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Transaksi gagal: ' . $e->getMessage(),
             ]);
         }
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Transaksi gagal disimpan.',
-        ]);
     }
 
     public function getTransaksi()
@@ -146,27 +161,31 @@ class TransaksiController extends Controller
 
     public function konfirmasiPembatalanPembayaran($id)
     {
-        $kodekeranjang = Transaksi::where('id', $id)->first()->kodekeranjang_id;
+        $transaksi = Transaksi::findOrFail($id);
+
+        $kodekeranjang = $transaksi->kodekeranjang_id;
 
         $produkIds = Keranjang::where('kodekeranjang', $kodekeranjang)
             ->pluck('produk_id')
             ->toArray();
 
-        $transaksi  = Transaksi::where('id', $id)
-            ->update([
-                'status' => 0,
-            ]);
+        // Update status transaksi ke batal
+        $transaksi->update(['status' => 0]);
 
-        // Jika berhasil update transaksi, ubah status produk di nampan_produk
-        if ($transaksi) {
-            NampanProduk::whereIn('produk_id', $produkIds)
-                ->update(['status' => 1]); // aktif kembali
+        // Batalkan efek transaksi hanya pada produk yang keluar karena transaksi ini
+        NampanProduk::whereIn('produk_id', $produkIds)
+            ->where('jenis', 'keluar')
+            ->where('kodekeranjang', $kodekeranjang)
+            ->update(['status' => 0]); // dibatalkan
 
-            Produk::whereIn('id', $produkIds)
-                ->update(['status' => 1]);
-        }
+        // Kembalikan status produk ke aktif (jika memang ingin dipakai ulang)
+        Produk::whereIn('id', $produkIds)
+            ->update(['status' => 1]);
 
-        return response()->json(['success' => true, 'message' => 'Pembatalan Pembayaran Berhasil Dikonfirmasi']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Pembatalan pembayaran berhasil dikonfirmasi.'
+        ]);
     }
 
     public function getTransaksiByID($id)

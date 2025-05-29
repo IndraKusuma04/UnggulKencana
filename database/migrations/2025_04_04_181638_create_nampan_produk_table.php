@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('nampan_id');
             $table->unsignedBigInteger('produk_id');
             $table->enum('jenis', ['awal', 'masuk', 'keluar']);
-            $table->date('tanggalmasuk');
+            $table->date('tanggalmasuk')->nullable();
             $table->date('tanggalkeluar')->nullable();
             $table->unsignedBigInteger('oleh');
             $table->integer('status');

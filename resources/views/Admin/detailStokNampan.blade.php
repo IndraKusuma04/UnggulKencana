@@ -20,10 +20,6 @@
                                 data-feather="chevron-up" class="feather-chevron-up"></i></a>
                     </li>
                 </ul>
-                <div class="page-btn">
-                    <a class="btn btn-added" id="btnTambahNampan"><i data-feather="plus-circle" class="me-2"></i>TAMBAH
-                        NAMPAN</a>
-                </div>
             </div>
 
             <div class="card">
@@ -32,18 +28,15 @@
                         <table class="table table-bordered mb-0">
                             <thead>
                                 <tr>
-                                    <th>Firstname</th>
-                                    <th>Lastname</th>
-                                    <th>Email</th>
+                                    <th>KODE PRODUK</th>
+                                    <th>NAMA PRODUK</th>
+                                    <th>BERAT</th>
+                                    <th>JENIS</th>
+                                    <th>TANGGAL MASUK</th>
+                                    <th>TANGGAL KELUAR</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>John</td>
-                                    <td>Doe</td>
-                                    <td></a>
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -55,5 +48,5 @@
 
     <!-- /Add Jenis -->
     <script src="{{ asset('assets') }}/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-    <script src="{{ asset('assets') }}/pages/js/nampanstok.js"></script>
+    <script src="{{ asset('assets') }}/pages/js/detailnampanstok.js"></script>
 @endsection
