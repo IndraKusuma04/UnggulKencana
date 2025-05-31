@@ -88,11 +88,11 @@ class ReportController extends Controller
         $dbPass = config('database.connections.mysql.password');
 
         // Compile command
-        $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
+        $compileCommand = "\"{$jasperstarterCmd}\" compile \"{$jrxmlPath}\"";
 
         // Generate command with DB params
-        $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
-            . " -u {$dbUser} -p {$dbPass} -H {$dbHost} -n {$dbName}  --db-port={$dbPort}");
+        $generateCommand = "\"{$jasperstarterCmd}\" process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
+            . " -u \"{$dbUser}\" -p \"{$dbPass}\" -H \"{$dbHost}\" -n \"{$dbName}\" --db-port=\"{$dbPort}\"";
 
         try {
             // Compile jrxml to jasper
@@ -148,7 +148,7 @@ class ReportController extends Controller
         $dbPass = config('database.connections.mysql.password');
 
         // Compile command
-        $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
+        $compileCommand = "\"{$jasperstarterCmd}\" compile \"{$jrxmlPath}\"";
 
         // Generate command with DB params
         // $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
