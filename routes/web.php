@@ -47,6 +47,10 @@ Route::middleware(['checkRole'])->group(function () {
 
 // Route untuk masing-masing role
 Route::middleware(['checkRole:admin'])->group(function () {
+    Route::get('/admin/profile', function () {
+        return view('Admin.profile');
+    });
+
     Route::get('/admin/dashboard', function () {
         return view('Admin.dashboard');
     });
