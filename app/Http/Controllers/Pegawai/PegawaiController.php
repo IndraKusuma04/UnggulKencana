@@ -139,4 +139,13 @@ class PegawaiController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Pegawai Berhasil Dihapus.']);
     }
+
+    public function getProfile($id)
+    {
+        $pegawai_id = User::where('id', $id)->first()->pegawai_id;
+
+        $pegawai = User::with(['pegawai', 'role', 'pegawai.jabatan'])->where('pegawai_id', $id)->get();
+
+        return response()->json(['success' => true, 'message' => 'Data Pegawai Berhasil Ditemukan', 'Data' => $pegawai]);
+    }
 }

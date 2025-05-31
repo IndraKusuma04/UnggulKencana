@@ -47,9 +47,10 @@ Route::middleware(['checkRole'])->group(function () {
 
 // Route untuk masing-masing role
 Route::middleware(['checkRole:admin'])->group(function () {
-    Route::get('/admin/profile', function () {
+    Route::get('/admin/profile/{id}', function () {
         return view('Admin.profile');
     });
+    Route::get('/admin/profile/getProfile/{id}', [PegawaiController::class, 'getProfile']);
 
     Route::get('/admin/dashboard', function () {
         return view('Admin.dashboard');
