@@ -15,7 +15,9 @@ class Nampan extends Model
     [
         'nampan',
         'jenisproduk_id',
-        'status'
+        'tanggal',
+        'status',
+        'status_final'
     ];
 
     /**
@@ -29,6 +31,17 @@ class Nampan extends Model
     }
 
     public function produk()
+    {
+        return $this->hasMany(NampanProduk::class, 'nampan_id');
+    }
+
+
+    public function stokNampan()
+    {
+        return $this->hasOne(StokNampan::class, 'nampan_id');
+    }
+
+    public function nampanProduk()
     {
         return $this->hasMany(NampanProduk::class, 'nampan_id');
     }

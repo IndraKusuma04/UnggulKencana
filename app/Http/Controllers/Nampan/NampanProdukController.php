@@ -62,10 +62,31 @@ class NampanProdukController extends Controller
     {
         $request->validate([
             'items' => 'required|array',
+            'jenis' => 'required|in:awal,masuk,keluar',
         ]);
 
-        // Ambil daftar produk_id yang sudah ada di NampanProduk dan aktif (status = 1)
+        $jenis = $request->jenis;
+
+        $nampan = Nampan::findOrFail($id);
+
+        // Validasi jenis input berdasarkan status final nampan
+        if ($nampan->status_final == 1 && $jenis != 'awal') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nampan belum difinal, hanya boleh input produk dengan jenis "awal".'
+            ]);
+        }
+
+        if ($nampan->status_final == 2 && $jenis != 'masuk') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nampan sudah difinal, hanya boleh input produk dengan jenis "masuk".'
+            ]);
+        }
+
+        // Cek produk yang sudah ada aktif (status=1) di nampan ini dan jenis 'awal' atau 'masuk'
         $existingProducts = NampanProduk::where('status', 1)
+            ->where('nampan_id', $id)
             ->whereIn('produk_id', $request->items)
             ->pluck('produk_id')
             ->toArray();
@@ -74,19 +95,28 @@ class NampanProdukController extends Controller
             return response()->json(['success' => false, 'message' => 'Beberapa produk sudah ada.']);
         }
 
-        // Tambahkan produk yang belum ada
         $nampanProducts = [];
-        foreach ($request->items as $item) {
+
+        foreach ($request->items as $produk_id) {
+            // Ambil stokakhirproduk & berat dari record terakhir produk di nampan ini
             $nampanProducts[] = NampanProduk::create([
-                'nampan_id' => $id,
-                'produk_id' => $item,
-                'tanggal'   => Carbon::today()->format('Y-m-d'),
-                'oleh'      => Auth::user()->id,
-                'status'    => 1,
+                'nampan_id'       => $id,
+                'produk_id'       => $produk_id,
+                'jenis'           => $jenis,
+                'tanggalmasuk'    => Carbon::today()->format('Y-m-d'),
+                'status'          => 1,
+                'oleh'            => Auth::user()->id,
             ]);
         }
 
         return response()->json(['success' => true, 'message' => 'Produk berhasil ditambahkan']);
+    }
+
+    // Contoh fungsi getBeratProduk (bisa sesuaikan dengan model produkmu)
+    private function getBeratProduk($produk_id)
+    {
+        $produk = Produk::find($produk_id);
+        return $produk ? $produk->berat : 0;
     }
 
     public function deleteNampanProduk($id)

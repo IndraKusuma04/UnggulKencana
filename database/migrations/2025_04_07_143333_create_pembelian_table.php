@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('nonsuplierdanpembeli', 100)->nullable(); // jika input manual
             $table->date('tanggal');
             $table->integer('total_harga')->default(0);
+            $table->string('terbilang', 100);
             $table->unsignedBigInteger('oleh'); // user yang menginput
             $table->text('catatan')->nullable(); // opsional
             $table->integer('jenispembelian');

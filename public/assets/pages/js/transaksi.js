@@ -367,7 +367,6 @@ $(document).ready(function () {
         const kodetransaksi = $(this).data("kodetransaksi");
         const kodeproduk = $(this).data("kodeproduk");
 
-
         // Buat form dinamis
         const form = $('<form>', {
             method: 'POST',

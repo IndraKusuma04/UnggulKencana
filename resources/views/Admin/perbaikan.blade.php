@@ -40,6 +40,7 @@
                                     <th>NO.</th>
                                     <th>KODE PERBAIKAN</th>
                                     <th>KODE PRODUK</th>
+                                    <th>KONDISI</th>
                                     <th>TANGGAL</th>
                                     <th>KETERANGAN</th>
                                     <th>STATUS</th>
@@ -53,6 +54,57 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- md Tambah Jabatan -->
+    <div class="modal fade" id="mdDetailPerbaikan">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="page-title">
+                        <h4>DETAIL PERBAIKAN</h4>
+                    </div>
+                    <button type="button" class="close bg-danger text-white fs-16" data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">KODE PERBAIKAN<span class="text-danger ms-1">*</span></label>
+                                <input type="text" name="id" id="detailkodeperbaikan" class="form-control" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">KODE PRODUK<span class="text-danger ms-1">*</span></label>
+                                <input type="text" name="id" id="detailkodeproduk" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">KONDISI<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="id" id="detailkondisi" class="form-control" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">TANGGAL MASUK<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="id" id="tanggalmasuk" class="form-control" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">TANGGAL KELUAR<span class="text-danger ms-1">*</span></label>
+                            <input type="text" name="id" id="tanggalkeluar" class="form-control" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">KETERANGAN<span class="text-danger ms-1">*</span></label>
+                            <textarea class="form-control" rows="4" id="detailketerangan"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn me-2 btn-secondary" data-bs-dismiss="modal">BATAL</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 

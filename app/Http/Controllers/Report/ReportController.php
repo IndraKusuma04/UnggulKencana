@@ -68,7 +68,7 @@ class ReportController extends Controller
     public function cetakLaporanProduk()
     {
         // // Paths
-        $jrxmlPath = storage_path('app/reports/laporan/LaporanProduk.jrxml');
+        $jrxmlPath = storage_path('app/reports/laporan/LaporanProduk.jasper');
         $outputDir = public_path('reports');
         $outputFileName = 'LaporanProduk.pdf';
 
@@ -88,7 +88,7 @@ class ReportController extends Controller
         $dbPass = config('database.connections.mysql.password');
 
         // Compile command
-        $compileCommand = "\"{$jasperstarterCmd}\" compile \"{$jrxmlPath}\"";
+        // $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
 
         // Generate command with DB params
         $generateCommand = "\"{$jasperstarterCmd}\" process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
@@ -96,12 +96,12 @@ class ReportController extends Controller
 
         try {
             // Compile jrxml to jasper
-            Log::info("Running compile command: {$compileCommand}");
-            exec($compileCommand, $compileOutput, $compileReturnVar);
-            if ($compileReturnVar !== 0) {
-                Log::error('Compile failed: ' . implode("\n", $compileOutput));
-                return response('Failed to compile report.', 500);
-            }
+            // Log::info("Running compile command: {$compileCommand}");
+            // exec($compileCommand, $compileOutput, $compileReturnVar);
+            // if ($compileReturnVar !== 0) {
+            //     Log::error('Compile failed: ' . implode("\n", $compileOutput));
+            //     return response('Failed to compile report.', 500);
+            // }
 
             // Generate report PDF
             Log::info("Running generate command: {$generateCommand}");
@@ -127,7 +127,7 @@ class ReportController extends Controller
     public function cetakBarcodeProduk($id)
     {
         // // Paths
-        $jrxmlPath = storage_path('app/reports/barcode/BarcodeProduk.jrxml');
+        $jrxmlPath = storage_path('app/reports/barcode/BarcodeProduk.jasper');
         $outputDir = public_path('barcode');
         $outputFileName = 'BarcodeProduk.pdf';
         $barcodePath = public_path('storage/barcode/');
@@ -148,24 +148,21 @@ class ReportController extends Controller
         $dbPass = config('database.connections.mysql.password');
 
         // Compile command
-        $compileCommand = "\"{$jasperstarterCmd}\" compile \"{$jrxmlPath}\"";
+        // $compileCommand = "\"{$jasperstarterCmd}\" compile \"{$jrxmlPath}\"";
 
         // Generate command with DB params
-        // $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
-        //     . " -u {$dbUser} -p {$dbPass} -H {$dbHost} -n {$dbName}  --db-port={$dbPort}" . " -P kodeproduk={$id} -P barcodePath=public/storage/barcode/");
-
         $generateCommand = "\"{$jasperstarterCmd}\" process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
             . " -u \"{$dbUser}\" -p \"{$dbPass}\" -H \"{$dbHost}\" -n \"{$dbName}\" --db-port=\"{$dbPort}\""
             . " -P kodeproduk=\"{$id}\" barcodePath=\"{$barcodePath}\"";
 
         try {
             // Compile jrxml to jasper
-            Log::info("Running compile command: {$compileCommand}");
-            exec($compileCommand, $compileOutput, $compileReturnVar);
-            if ($compileReturnVar !== 0) {
-                Log::error('Compile failed: ' . implode("\n", $compileOutput));
-                return response('Failed to compile report.', 500);
-            }
+            // Log::info("Running compile command: {$compileCommand}");
+            // exec($compileCommand, $compileOutput, $compileReturnVar);
+            // if ($compileReturnVar !== 0) {
+            //     Log::error('Compile failed: ' . implode("\n", $compileOutput));
+            //     return response('Failed to compile report.', 500);
+            // }
 
             // Generate report PDF
             Log::info("Running generate command: {$generateCommand}");
@@ -199,7 +196,7 @@ class ReportController extends Controller
     public function cetakNotaTransaksi($id)
     {
         // // Paths
-        $jrxmlPath = storage_path('app/reports/nota/CetakNotaTransaksi.jrxml');
+        $jrxmlPath = storage_path('app/reports/nota/CetakNotaTransaksi.jasper');
         $outputDir = public_path('nota');
         $outputFileName = 'CetakNotaTransaksi.pdf';
         $assetPath = public_path('assets/img/HEADER.jpg');
@@ -222,7 +219,7 @@ class ReportController extends Controller
         $dbPass = config('database.connections.mysql.password');
 
         // Compile command
-        $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
+        // $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
 
         // Generate command with DB params
         // $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
@@ -234,12 +231,12 @@ class ReportController extends Controller
 
         try {
             // Compile jrxml to jasper
-            Log::info("Running compile command: {$compileCommand}");
-            exec($compileCommand, $compileOutput, $compileReturnVar);
-            if ($compileReturnVar !== 0) {
-                Log::error('Compile failed: ' . implode("\n", $compileOutput));
-                return response('Failed to compile report.', 500);
-            }
+            // Log::info("Running compile command: {$compileCommand}");
+            // exec($compileCommand, $compileOutput, $compileReturnVar);
+            // if ($compileReturnVar !== 0) {
+            //     Log::error('Compile failed: ' . implode("\n", $compileOutput));
+            //     return response('Failed to compile report.', 500);
+            // }
 
             // Generate report PDF
             Log::info("Running generate command: {$generateCommand}");
@@ -266,9 +263,8 @@ class ReportController extends Controller
     {
         $kodetransaksi  = $request->kodetransaksi;
         $kodeproduk     = $request->kodeproduk;
-
         // // Paths
-        $jrxmlPath = storage_path('app/reports/nota/CetakSuratBarang.jrxml');
+        $jrxmlPath = storage_path('app/reports/nota/CetakSuratBarang.jasper');
         $outputDir = public_path('nota');
         $outputFileName = 'CetakSuratBarang.pdf';
         $assetPath = public_path('assets/img/HEADER.jpg');
@@ -291,7 +287,7 @@ class ReportController extends Controller
         $dbPass = config('database.connections.mysql.password');
 
         // Compile command
-        $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
+        // $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
 
         // Generate command with DB params
         // $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
@@ -303,12 +299,12 @@ class ReportController extends Controller
 
         try {
             // Compile jrxml to jasper
-            Log::info("Running compile command: {$compileCommand}");
-            exec($compileCommand, $compileOutput, $compileReturnVar);
-            if ($compileReturnVar !== 0) {
-                Log::error('Compile failed: ' . implode("\n", $compileOutput));
-                return response('Failed to compile report.', 500);
-            }
+            // Log::info("Running compile command: {$compileCommand}");
+            // exec($compileCommand, $compileOutput, $compileReturnVar);
+            // if ($compileReturnVar !== 0) {
+            //     Log::error('Compile failed: ' . implode("\n", $compileOutput));
+            //     return response('Failed to compile report.', 500);
+            // }
 
             // Generate report PDF
             Log::info("Running generate command: {$generateCommand}");
@@ -334,7 +330,7 @@ class ReportController extends Controller
     public function cetakNotaPembelian($id)
     {
         // // Paths
-        $jrxmlPath = storage_path('app/reports/nota/CetakNotaPembelian.jrxml');
+        $jrxmlPath = storage_path('app/reports/nota/CetakNotaPembelian.jasper');
         $outputDir = public_path('nota');
         $outputFileName = 'CetakNotaPembelian.pdf';
         $assetPath = public_path('assets/img/HEADER.jpg');
@@ -356,7 +352,7 @@ class ReportController extends Controller
         $dbPass = config('database.connections.mysql.password');
 
         // Compile command
-        $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
+        // $compileCommand = escapeshellcmd("{$jasperstarterCmd} compile \"{$jrxmlPath}\"");
 
         // Generate command with DB params
         // $generateCommand = escapeshellcmd("{$jasperstarterCmd} process \"{$jrxmlPath}\" -o \"{$outputDir}\" -f pdf -t mysql"
@@ -368,12 +364,12 @@ class ReportController extends Controller
 
         try {
             // Compile jrxml to jasper
-            Log::info("Running compile command: {$compileCommand}");
-            exec($compileCommand, $compileOutput, $compileReturnVar);
-            if ($compileReturnVar !== 0) {
-                Log::error('Compile failed: ' . implode("\n", $compileOutput));
-                return response('Failed to compile report.', 500);
-            }
+            // Log::info("Running compile command: {$compileCommand}");
+            // exec($compileCommand, $compileOutput, $compileReturnVar);
+            // if ($compileReturnVar !== 0) {
+            //     Log::error('Compile failed: ' . implode("\n", $compileOutput));
+            //     return response('Failed to compile report.', 500);
+            // }
 
             // Generate report PDF
             Log::info("Running generate command: {$generateCommand}");

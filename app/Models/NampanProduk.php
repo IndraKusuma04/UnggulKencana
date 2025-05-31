@@ -15,9 +15,15 @@ class NampanProduk extends Model
     [
         'nampan_id',
         'produk_id',
-        'tanggal',
+        'jenis',
+        'tanggalmasuk',
+        'tanggalkeluar',
+        'stokprodukawal',
+        'stokprodukakhir',
+        'stokawalberat',
+        'stokakhirberat',
         'oleh',
-        'status'
+        'status',
     ];
 
     /**

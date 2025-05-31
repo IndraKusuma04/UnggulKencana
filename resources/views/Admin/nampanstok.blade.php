@@ -1,12 +1,12 @@
 @extends('Layouts.app')
-@section('title', 'Pembelian')
+@section('title', 'Nampan Stok')
 @section('content')
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
                 <div class="add-item d-flex">
                     <div class="page-title">
-                        <h4>PEMBELIAN BARANG</h4>
+                        <h4>NAMPAN STOK</h4>
                     </div>
                 </div>
                 <ul class="table-top-head">
@@ -20,6 +20,10 @@
                                 data-feather="chevron-up" class="feather-chevron-up"></i></a>
                     </li>
                 </ul>
+                <div class="page-btn">
+                    <a class="btn btn-added" id="btnTambahNampan"><i data-feather="plus-circle" class="me-2"></i>TAMBAH
+                        NAMPAN</a>
+                </div>
             </div>
 
             <div class="card table-list-card">
@@ -34,16 +38,17 @@
                     </div>
 
                     <div class="table-responsive product-list">
-                        <table id="pembelianTable" class="table table-hover" style="width: 100%">
+                        <table id="nampanStokTable" class="table table-hover" style="width: 100%">
                             <thead class="thead-secondary">
                                 <tr>
                                     <th>NO.</th>
-                                    <th>KODE PEMBELIAN</th>
+                                    <th>NAMPAN</th>
                                     <th>TANGGAL</th>
-                                    <th>PENJUAL</th>
-                                    <th>TOTAL</th>
+                                    <th>JENIS</th>
+                                    <th>STOK AWAL PRODUK</th>
+                                    <th>STOK AWAL BERAT</th>
                                     <th>STATUS</th>
-                                    <th class="no-sort text-center">ACTION</th>
+                                    <th class="no-sort">ACTION</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -57,7 +62,7 @@
     </div>
 
     <!-- details popup -->
-    <div class="modal fade" id="detailPembelian">
+    <div class="modal fade" id="mdDetailStokNampan">
         <div class="modal-dialog sales-details-modal">
             <div class="modal-content">
                 <div class="page-header p-4 border-bottom mb-0 d-print-none">
@@ -68,9 +73,9 @@
                     </div>
                     <ul class="table-top-head">
                         <li>
-                            <a data-bs-toggle="tooltip" id="cetakkodepembelian" data-kodepembelian=""
-                                data-bs-placement="top" title="CETAK TRANSAKSI"><img
-                                    src="{{ asset('assets') }}/img/icons/printer.svg" alt="img"></a>
+                            <a data-bs-toggle="tooltip" id="cetakLaporan" data-kodetransaksi="" data-bs-placement="top"
+                                title="CETAK TRANSAKSI"><img src="{{ asset('assets') }}/img/icons/printer.svg"
+                                    alt="img"></a>
                         </li>
                     </ul>
                 </div>
@@ -108,14 +113,15 @@
                             </div>
                             <h5 class="order-text">DETAIL PESANAN</h5>
                             <div class="table-responsive no-pagination mb-3">
-                                <table class="table" id="pembelianProduk">
+                                <table class="table" id="transaksiProduk">
                                     <thead>
                                         <tr>
                                             <th>KODE PRODUK</th>
                                             <th>NAMA PRODUK</th>
                                             <th>BERAT</th>
-                                            <th>HARGA BELI</th>
+                                            <th>HARGA</th>
                                             <th>TOTAL</th>
+                                            <th>ACTION</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -153,6 +159,7 @@
     </div>
     <!-- /details popup -->
 
+    <!-- /Add Jenis -->
     <script src="{{ asset('assets') }}/js/jquery-3.7.1.min.js" type="text/javascript"></script>
-    <script src="{{ asset('assets') }}/pages/js/pembelian.js"></script>
+    <script src="{{ asset('assets') }}/pages/js/nampanstok.js"></script>
 @endsection

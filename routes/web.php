@@ -19,6 +19,8 @@ use App\Http\Controllers\Perbaikan\PerbaikanController;
 use App\Http\Controllers\Produk\JenisProdukController;
 use App\Http\Controllers\Produk\ProdukController;
 use App\Http\Controllers\Report\ReportController;
+use App\Http\Controllers\Stok\StokNampan;
+use App\Http\Controllers\Stok\StokNampanController;
 use App\Http\Controllers\Suplier\SuplierController;
 use App\Http\Controllers\Transaksi\TransaksiController;
 
@@ -45,6 +47,10 @@ Route::middleware(['checkRole'])->group(function () {
 
 // Route untuk masing-masing role
 Route::middleware(['checkRole:admin'])->group(function () {
+    Route::get('/admin/profile', function () {
+        return view('Admin.profile');
+    });
+
     Route::get('/admin/dashboard', function () {
         return view('Admin.dashboard');
     });
@@ -129,7 +135,8 @@ Route::middleware(['checkRole:admin'])->group(function () {
     Route::post('/admin/nampan/storeNampan', [NampanController::class, 'storeNampan']);
     Route::get('/admin/nampan/getNampanByID/{id}', [NampanController::class, 'getNampanByID']);
     Route::post('/admin/nampan/updateNampan/{id}', [NampanController::class, 'updateNampan']);
-    Route::delete('/admin/nampan/deleteNampan/{id}', [NampanController::class, 'deleteNampan']);
+    Route::get('/admin/nampan/finalNampan/{id}', [NampanController::class, 'finalNampan']);
+    Route::get('/admin/nampan/tutupNampan/{id}', [NampanController::class, 'tutupNampan']);
 
     Route::get('/admin/nampan/NampanProduk/{id}', function () {
         return view('Admin.nampanProduk');
@@ -215,6 +222,17 @@ Route::middleware(['checkRole:admin'])->group(function () {
     });
     Route::get('/admin/perbaikan/getPerbaikan', [PerbaikanController::class, 'getPerbaikan']);
     Route::get('/admin/perbaikan/getPerbaikanByID/{id}', [PerbaikanController::class, 'getPerbaikanByID']);
+    Route::get('/admin/perbaikan/konfirmasiPerbaikan/{id}', [PerbaikanController::class, 'konfirmasiPerbaikan']);
+    Route::get('/admin/perbaikan/konfirmasiBatalPerbaikan/{id}', [PerbaikanController::class, 'konfirmasiBatalPerbaikan']);
+
+    Route::get('/admin/stok/nampanstok', function () {
+        return view('Admin.nampanstok');
+    });
+    Route::get('/admin/stok/nampanstok/getNampanStok', [StokNampanController::class, 'getNampanStok']);
+    Route::get('/admin/stok/nampanstok/detailNampanStok/{id}', function () {
+        return view('Admin.detailStokNampan');
+    });
+    Route::get('/admin/stok/nampanstok/getDetailNampanStok/{id}', [StokNampanController::class, 'detailNampanStok']);
 
     Route::get('/admin/report/cetakBarcodeProduk/{id}', [ReportController::class, 'cetakBarcodeProduk']);
     Route::get('/admin/report/cetakTransaksi/{id}', [ReportController::class, 'cetakNotaTransaksi']);

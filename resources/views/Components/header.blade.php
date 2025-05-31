@@ -204,7 +204,7 @@
                         </div>
                     </div>
                     <hr class="m-0">
-                    <a class="dropdown-item" href="profile.html"> <i class="me-2" data-feather="user"></i>
+                    <a class="dropdown-item" href="/admin/profile"> <i class="me-2" data-feather="user"></i>
                         My
                         Profile</a>
                     <a class="dropdown-item" href="general-settings.html"><i class="me-2"
@@ -223,7 +223,7 @@
         <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
             aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
         <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="profile.html">My Profile</a>
+            <a class="dropdown-item" href="/admin/profile">My Profile</a>
             <a class="dropdown-item" href="general-settings.html">Settings</a>
             <a class="dropdown-item" href="/logout">Logout</a>
         </div>
